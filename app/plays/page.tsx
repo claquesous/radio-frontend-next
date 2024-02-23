@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Rating from '../rating'
 
 async function getPlays() {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays')
@@ -17,6 +18,7 @@ export default async function Page() {
     <ul>{ plays.map(play =>
       <li key={play.id}>
         <Link href={`/artists/${play.artist.id}`}>{play.artist.name}</Link> - <Link href={`/songs/${play.song.id}`}>{play.song.title}</Link>
+        <Rating rating={play.song.rating} />
       </li>
     ) }</ul>
   </>)
