@@ -11,7 +11,7 @@ async function getPlays() {
   return res.json()
 }
 
-export default async function Page() {
+export default async function Plays() {
   const plays = await getPlays()
 
   return (<>
