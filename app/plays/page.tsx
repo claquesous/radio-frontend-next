@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Rating from '../rating'
 
 async function getPlays() {
-  const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays')
+  const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays', { next: { revalidate: 60 } })
 
   if (!res.ok) {
     throw new Error('Failed to fetch data')
