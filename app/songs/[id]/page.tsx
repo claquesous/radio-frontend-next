@@ -3,7 +3,7 @@ import Rating from '../../rating'
 import TimeAgo from '../../timeago'
 
 async function getSong(id) {
-  const res = await fetch(process.env.RADIO_BACKEND_PATH + `/songs/${id}`)
+  const res = await fetch(process.env.RADIO_BACKEND_PATH + `/songs/${id}`, { next: { revalidate: 14400 } })
 
   if (!res.ok) {
     throw new Error('Failed to fetch data')
