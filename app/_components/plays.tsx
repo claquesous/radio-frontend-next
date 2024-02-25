@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
-import Rating from '../rating'
+import Rating from './rating'
 
 async function getPlays() {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays', { next: { revalidate: 60 } })

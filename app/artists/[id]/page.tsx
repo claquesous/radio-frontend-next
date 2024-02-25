@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
-import Rating from '../../rating'
-import PlayStats from '../../playstats'
+import Rating from '../../_components/rating'
+import PlayStats from '../../_components/playstats'
 
 async function getArtist(id) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/artists/${id}`, { next: { revalidate: 7200 } })

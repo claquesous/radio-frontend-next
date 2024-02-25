@@ -1,4 +1,4 @@
-import Plays from './plays/plays'
+import Plays from './_components/plays'
 
 export default function Home() {
   return <Plays />
