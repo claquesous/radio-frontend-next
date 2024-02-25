@@ -2,9 +2,11 @@ import Link from 'next/link'
 import Searchbox from './searchbox'
 
 export default function TopBar() {
-  return <div>
-    <Link href="/">ClaqRadio</Link>
-    <Searchbox />
-  </div>
+  return <>
+    <Link className="mt-4 ml-2 text-xl inline-block text-slate-200" href="/">Claq Radio</Link>
+    <div className="inline-block float-right">
+      <Searchbox />
+    </div>
+  </>
 }
 
