@@ -10,11 +10,13 @@ export default function Rating(props: { rating: integer } ) {
     startColor='blue'
     endColor='red'
     segments={200}
-    ringWidth={30}
+    ringWidth={15}
+    width={150}
+    height={80}
+    needleHeightRatio={0.40}
     maxSegmentLabels={0}
     currentValueText={''}
     needleColor='grey'
-    needleHeightRatio={0.75}
     svgAriaLabel={`Rating of ${rating}`}
   />
 }

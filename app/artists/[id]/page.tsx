@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import Link from 'next/link'
 import Rating from '../../rating'
 import TimeAgo from '../../timeago'
@@ -18,14 +19,16 @@ export default async function Page({ params }: { params: { id: integer } }) {
 
   return (<>
     {artist.name}
-    <ul>
+    <div className="grid grid-cols-2">
       { artist.songs.map(song =>
-        <li key={song.id}>
-          <Link href={`/songs/${song.id}`}>{song.title}</Link>
+        <Fragment key={song.id}>
+          <Link className="py-7 pl-3"
+            href={`/songs/${song.id}`}>{song.title}
+          </Link>
           <Rating rating={song.rating} />
-        </li>
+        </Fragment>
       ) }
-    </ul>
+    </div>
     <div className="w-80 shadow rounded">
       <p>Totals Plays: {artist.play_count}</p>
       <p>Last Played: <TimeAgo date={artist.last_played_at} /></p>

@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import Link from 'next/link'
 import Rating from '../rating'
 
@@ -14,13 +15,16 @@ async function getPlays() {
 export default async function Plays() {
   const plays = await getPlays()
 
-  return (<>
-    <ul>{ plays.map(play =>
-      <li key={play.id}>
-        <Link href={`/artists/${play.artist.id}`}>{play.artist.name}</Link> - <Link href={`/songs/${play.song.id}`}>{play.song.title}</Link>
-        <Rating rating={play.song.rating} />
-      </li>
-    ) }</ul>
-  </>)
+  return <div className="grid grid-cols-3">{ plays.map(play =>
+    <Fragment key={play.id}>
+      <Link className="py-7 pl-3"
+        href={`/artists/${play.artist.id}`}>{play.artist.name}
+      </Link>
+      <Link className="py-7"
+        href={`/songs/${play.song.id}`}>{play.song.title}
+      </Link>
+      <Rating rating={play.song.rating} />
+    </Fragment>
+  ) }</div>
 }
 
