@@ -33,7 +33,7 @@ export default function Searchbar() {
   }
 
   const onInputChange = (event, value, reason) => {
-    if (reason === 'input') {
+    if (reason === 'input' && value.length > 0) {
       getData(value)
     } else {
       setOptions([])
