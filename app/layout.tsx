@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
 import TopBar from './_components/topbar'
+import Footer from './_components/footer'
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Claq Radio",
   description: "Our space age algorithms are guaranteed to give you the most eclectic mix of alternative music.",
-};
+}
 
 export default function RootLayout({
   children,
@@ -24,7 +25,8 @@ export default function RootLayout({
         <div className="pt-16">
           {children}
         </div>
+        <Footer />
       </body>
     </html>
-  );
+  )
 }
