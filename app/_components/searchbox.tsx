@@ -5,20 +5,20 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 import debounce from 'debounce'
+import { Song } from '../_types/types'
 
-interface Song {
-  id: number
-  title: string
+interface AbortController {
+  abort(): void
 }
 
 export default function Searchbar() {
   const [options, setOptions] = useState<readonly Song[]>([])
-  const [toggle,setToggle] = useState(true)
+  const [toggle,setToggle] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
-  const previousController = useRef()
+  const previousController = useRef<AbortController>()
   const router = useRouter()
 
-  const getData = async (searchTerm) => {
+  const getData = async (searchTerm: string) => {
     setLoading(true)
     if (previousController.current) {
       previousController.current.abort()
@@ -32,7 +32,7 @@ export default function Searchbar() {
     setLoading(false)
   }
 
-  const onInputChange = (event, value, reason) => {
+  const onInputChange = (_:any, value:string, reason:string) => {
     if (reason === 'input' && value.length > 0) {
       getData(value)
     } else {
@@ -40,7 +40,7 @@ export default function Searchbar() {
     }
   }
 
-  const onChange = (event, value) => {
+  const onChange = (_:any, value: Song | null) => {
     setOptions([])
     if (value) {
       router.push(`/songs/${value.id}`)
@@ -54,7 +54,6 @@ export default function Searchbar() {
       onInputChange={onInputChange}
       onChange={debounce(onChange,1000)}
       loading={loading}
-      key={toggle}
       noOptionsText={'Type to search'}
       getOptionLabel={(option) => option ? `${option.artist.name} - ${option.title}` : ''}
       sx={{ width: 300 }}

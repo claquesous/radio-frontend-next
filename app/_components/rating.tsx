@@ -1,7 +1,7 @@
 'use client'
 import ReactSpeedometer from 'react-d3-speedometer'
 
-export default function Rating(props: { rating: integer } ) {
+export default function Rating(props: { rating: number } ) {
   const { rating } = props
 
   return <ReactSpeedometer 

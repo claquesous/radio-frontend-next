@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
 import Rating from './rating'
+import { Play } from '../_types/types'
 
 async function getPlays() {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays', { next: { revalidate: 60 } })
@@ -15,7 +16,7 @@ async function getPlays() {
 export default async function Plays() {
   const plays = await getPlays()
 
-  return <div className="grid grid-cols-3">{ plays.map(play =>
+  return <div className="grid grid-cols-3">{ plays.map((play: Play) =>
     <Fragment key={play.id}>
       <Link className="py-7 pl-3"
         href={`/artists/${play.artist.id}`}>{play.artist.name}
