@@ -25,3 +25,7 @@ export type PlayStats = {
   previous_played_at: string
 }
 
+export type Stream = {
+  name: string
+}
+
