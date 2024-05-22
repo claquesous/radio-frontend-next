@@ -9,7 +9,9 @@ CURRENT_SYMLINK = File.join(DEPLOY_DIR, 'current')
 NEXT_SYMLINK = File.join(DEPLOY_DIR, 'next')
 KEEP_RELEASES = 5
 
-current_dir = File.expand_path(File.readlink(CURRENT_SYMLINK))
+FileUtils.mkdir_p(RELEASES_DIR)
+
+current_dir = File.expand_path(File.readlink(CURRENT_SYMLINK)) if File.exist?(CURRENT_SYMLINK)
 
 dirs = Dir.entries(RELEASES_DIR).select do |entry|
   path = File.join(RELEASES_DIR, entry)
@@ -19,7 +21,7 @@ end.sort_by do |entry|
 end.reverse
 
 keep_dirs = dirs.first(KEEP_RELEASES).map { |dir| File.join(RELEASES_DIR, dir) }
-keep_dirs << current_dir
+keep_dirs << current_dir if current_dir
 
 dirs.each do |dir|
   full_path = File.join(RELEASES_DIR, dir)
@@ -34,7 +36,6 @@ puts "Cleanup complete. Retained the five most recent and the current directory.
 timestamp = Time.now.utc.strftime('%Y%m%d%H%M%S')
 new_release_dir = File.join(RELEASES_DIR, timestamp)
 
-FileUtils.mkdir_p(RELEASES_DIR)
 FileUtils.mkdir_p(new_release_dir)
 puts "Created new release directory: #{new_release_dir}"
 
