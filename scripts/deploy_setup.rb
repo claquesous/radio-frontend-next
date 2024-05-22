@@ -3,7 +3,7 @@
 require 'fileutils'
 require 'time'
 
-DEPLOY_DIR = '/opt/claqradio/radio-backend/'
+DEPLOY_DIR = '/opt/claqradio/radio-frontend/'
 RELEASES_DIR = File.join(DEPLOY_DIR, 'releases')
 CURRENT_SYMLINK = File.join(DEPLOY_DIR, 'current')
 NEXT_SYMLINK = File.join(DEPLOY_DIR, 'next')
