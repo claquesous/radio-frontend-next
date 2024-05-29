@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm i
+  build:
+    commands:
+      - npm run build
+  post_build:
+    commands:
+      - npm ci --omit=dev
+      - tar czf radio-frontend.tgz --exclude-vcs --exclude=coverage --exclude=.env* * .next
+artifacts:
+  files:
+    - 'radio-frontend.tgz'
