@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Rating from '../../_components/rating'
 import PlayStats from '../../_components/playstats'
+import getStream from '../../_utils/streampreferences'
 
 async function getSong(id: number) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/songs/${id}`, { next: { revalidate: 14400 } })
@@ -10,6 +11,17 @@ async function getSong(id: number) {
   }
 
   return res.json()
+}
+
+async function getRating(id: number) {
+  const res = await fetch(process.env.RADIO_BACKEND_PATH + `/songs/${id}`, { next: { revalidate: 14400 } })
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+
+  return res.json()
+
 }
 
 export default async function Page({ params }: { params: { id: number } }) {

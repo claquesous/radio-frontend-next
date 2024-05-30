@@ -39,7 +39,7 @@ interface ParsedMetadata {
   }
 }
 
-function getStream() {
+function getStreams() {
   return fetch('/api/streams')
     .then(res => {
       if (!res.ok) {
@@ -54,10 +54,22 @@ function getStream() {
 
       return streams[0]
     })
+    .catch(() => {
+      return [
+        {
+          id: 1,
+          name: "claqradio4.mp3",
+          user_id: 1,
+          created_at: "2024-05-06T03:30:23.455Z",
+          updated_at: "2024-05-06T03:30:23.455Z",
+          url: "https://claqradio.kicks-ass.net/admin/streams/1.json"
+        }
+      ]
+    })
 }
 
 export default function Player() {
-  const { data: stream, error, isLoading, isValidating } = useSWR('/api/streams', getStream, {
+  const { data: streams, error, isLoading, isValidating } = useSWR('/api/streams', getStreams, {
     revalidateOnFocus: false
   })
 

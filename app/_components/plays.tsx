@@ -4,7 +4,7 @@ import Rating from './rating'
 import { Play } from '../_types/types'
 
 async function getPlays() {
-  const res = await fetch(process.env.RADIO_BACKEND_PATH + '/plays', { next: { revalidate: 60 } })
+  const res = await fetch(process.env.RADIO_BACKEND_PATH + '/streams/1/plays', { next: { revalidate: 60 } })
 
   if (!res.ok) {
     throw new Error('Failed to fetch data')
