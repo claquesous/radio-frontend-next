@@ -1,9 +1,13 @@
 import type { Metadata } from "next"
+import dynamic from 'next/dynamic'
 import { Inter } from "next/font/google"
 import TopBar from './_components/topbar'
 import Footer from './_components/footer'
-import Player from './_components/player'
 import "./globals.css";
+
+const DynamicPlayer = dynamic(() => import('./_components/player'), {
+  ssr: false,
+})
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,12 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="fixed top-0 w-full bg-slate-500 shadow-md">
+        <header className="sticky top-0 py-1 w-full bg-slate-500 shadow-md">
           <TopBar />
         </header>
-        <Player />
-        <div className="pt-16">
-          {children}
+        <div>
+          <DynamicPlayer />
+          <div className="pt-16">
+            {children}
+          </div>
         </div>
         <Footer />
       </body>
