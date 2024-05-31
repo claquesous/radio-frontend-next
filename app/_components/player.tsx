@@ -20,7 +20,9 @@ function getStream() {
 }
 
 export default function Player() {
-  const { data: stream, error, isLoading, isValidating } = useSWR('/api/streams', getStream)
+  const { data: stream, error, isLoading, isValidating } = useSWR('/api/streams', getStreams, {
+    revalidateOnFocus: false
+  })
 
   if (error || isLoading || isValidating) {
     return <div />
