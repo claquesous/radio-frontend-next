@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Stream } from '../_types/types'
 import IcecastMetadataPlayer from 'icecast-metadata-player'
@@ -34,7 +34,7 @@ export default function Player() {
 
   const [nowPlaying, setNowPlaying] = useState('Press play to start the stream')
   const [isPlaying, setIsPlaying] = useState(false)
-  const [player, setPlayer] = useState<IcecastMetadataPlayer | undefined>(undefined)
+  const playerRef = useRef<IcecastMetadataPlayer | null>(null)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
 
   const startStream = () => {
@@ -43,36 +43,49 @@ export default function Player() {
       onMetadata,
       metadataTypes: ["icy"],
     })
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler('pause', stopStream)
+      navigator.mediaSession.setActionHandler('stop', stopStream)
+      navigator.mediaSession.setActionHandler('play', startStream)
+    }
     player.play()
-    setPlayer(player)
+    playerRef.current = player
   }
 
   const stopStream = () => {
     setIsPlaying(false)
-    if (player) {
-      player.stop()
-      player.detachAudioElement()
+    if (playerRef.current) {
+      playerRef.current.stop()
+      playerRef.current.detachAudioElement()
     }
   }
 
   const crankIt = () => {
     const newVolume = Math.min(volume + 1, VOLUME_INCREMENTS)
     setVolume(newVolume)
-    if (player) {
-      player.audioElement.volume = newVolume / VOLUME_INCREMENTS
+    if (playerRef.current) {
+      playerRef.current.audioElement.volume = newVolume / VOLUME_INCREMENTS
     }
   }
 
   const tooLoud = () => {
     const newVolume = Math.max(volume - 1, 0)
     setVolume(newVolume)
-    if (player) {
-      player.audioElement.volume = newVolume / VOLUME_INCREMENTS
+    if (playerRef.current) {
+      playerRef.current.audioElement.volume = newVolume / VOLUME_INCREMENTS
     }
   }
 
   const onMetadata = (metadata: IcyMetadata) => {
     setNowPlaying(metadata.StreamTitle ?? 'Title Unavailable')
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata.StreamTitle,
+        artwork: [{
+          src: '/logo.jpg', sizes: '512x512', type: 'image/jpg'
+        }],
+      })
+    }
   }
 
   const getVolumeColor = (index: number) => {
