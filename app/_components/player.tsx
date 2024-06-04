@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
+import Link from 'next/link'
 import useSWR from 'swr'
 import { Stream } from '../_types/types'
 import IcecastMetadataPlayer from 'icecast-metadata-player'
@@ -8,6 +9,34 @@ const VOLUME_INCREMENTS = 10
 
 interface IcyMetadata {
   StreamTitle?: string
+}
+
+interface SessionMeta {
+  title: string,
+  artist?: string,
+  album?: string,
+}
+
+interface NowPlayingMeta {
+  title: string,
+  artist: string,
+  album?: string,
+  song_id: number,
+  artist_id: number,
+}
+
+interface ParsedMetadata {
+  song : {
+    id: number,
+    title: string,
+    album?: {
+      title: string,
+    },
+  },
+  artist: {
+    id: number,
+    name: string,
+  }
 }
 
 function getStream() {
@@ -32,7 +61,7 @@ export default function Player() {
     revalidateOnFocus: false
   })
 
-  const [nowPlaying, setNowPlaying] = useState('Press play to start the stream')
+  const [nowPlaying, setNowPlaying] = useState<NowPlayingMeta | string>('Press play to start the stream')
   const [isPlaying, setIsPlaying] = useState(false)
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
@@ -77,10 +106,36 @@ export default function Player() {
   }
 
   const onMetadata = (metadata: IcyMetadata) => {
-    setNowPlaying(metadata.StreamTitle ?? 'Title Unavailable')
+    let playerMeta: SessionMeta
+    try {
+      if (metadata.StreamTitle === undefined) {
+        throw new Error('StreamTitle is undefined');
+      }
+      const parsedMeta: ParsedMetadata = JSON.parse(metadata.StreamTitle)
+      playerMeta = {
+        title: parsedMeta.song.title,
+        artist: parsedMeta.artist.name,
+      }
+      const nowPlayingMeta: NowPlayingMeta = {
+        title: parsedMeta.song.title,
+        artist: parsedMeta.artist.name,
+        artist_id: parsedMeta.artist.id,
+        song_id: parsedMeta.song.id,
+      }
+      if (!!parsedMeta.song.album) {
+        playerMeta.album = parsedMeta.song.album.title
+        nowPlayingMeta.album = parsedMeta.song.album.title
+      }
+      setNowPlaying(nowPlayingMeta)
+    } catch (error) {
+      playerMeta = {
+        title: metadata?.StreamTitle || ''
+      }
+      setNowPlaying(playerMeta.title)
+    }
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: metadata.StreamTitle,
+        ...playerMeta,
         artwork: [{
           src: '/logo.jpg', sizes: '512x512', type: 'image/jpg'
         }],
@@ -102,13 +157,27 @@ export default function Player() {
     return <div />
   }
 
+  function NowPlayingDisplay() {
+    if (typeof nowPlaying === 'string') {
+      return (<>
+        <p>Now Playing:</p>
+        <p>{nowPlaying}</p>
+      </>)
+    } else {
+      return (<>
+        <p>Now Playing:</p>
+        <p>
+          <Link href={`/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
+        </p>
+      </>)
+    }
+  }
+
   return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200">
     <div>
       <h2>Current stream: {stream?.name ?? 'None selected'}</h2>
     </div>
-
-    <p>Now Playing:</p>
-    <p>{nowPlaying}</p>
+    <NowPlayingDisplay />
     <div className="flex space-x-1">
       <button
         onClick={isPlaying ? stopStream : startStream}
