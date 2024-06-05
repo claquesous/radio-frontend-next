@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { stream_id: number, id
       { artist.songs.map((song: Song) =>
         <Fragment key={song.id}>
           <Link className="py-7 pl-3"
-            href={`/stations/${stream_id}/songs/${song.id}`}>{song.title}
+            href={`/s/${stream_id}/songs/${song.id}`}>{song.title}
           </Link>
           <Rating rating={song.rating} />
         </Fragment>

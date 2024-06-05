@@ -28,7 +28,6 @@ export default function RootLayout({
           <TopBar />
         </header>
         <div>
-          <DynamicPlayer />
           <div className="pt-16">
             {children}
           </div>
