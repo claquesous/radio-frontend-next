@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const DynamicPlayer = dynamic(() => import('./../../_components/player'), {
+const DynamicPlayer = dynamic(() => import('./_components/player'), {
   ssr: false,
 })
 
@@ -11,7 +11,7 @@ export default function RootLayout({
 }>) {
   return (<>
     <DynamicPlayer />
-    <div className="pt-16">
+    <div className="pt-2">
       {children}
     </div>
   </>)

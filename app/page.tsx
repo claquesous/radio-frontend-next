@@ -1,6 +1,6 @@
-import Plays from './_components/plays'
-
 export default function Home() {
-  return <Plays />
+  return (<>
+    Welcome to My Claqradio Rocks!
+  </>)
 }
 

@@ -5,10 +5,6 @@ import TopBar from './_components/topbar'
 import Footer from './_components/footer'
 import "./globals.css";
 
-const DynamicPlayer = dynamic(() => import('./_components/player'), {
-  ssr: false,
-})
-
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -27,10 +23,8 @@ export default function RootLayout({
         <header className="sticky top-0 py-1 w-full bg-slate-500 shadow-md">
           <TopBar />
         </header>
-        <div>
-          <div className="pt-16">
-            {children}
-          </div>
+        <div className="primary-content p-4">
+          {children}
         </div>
         <Footer />
       </body>
