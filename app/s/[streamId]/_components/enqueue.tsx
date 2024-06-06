@@ -5,7 +5,7 @@ export default function Enqueue(props: { streamId: number, songId: number }) {
 
   const requestSong = async () => {
     try {
-      const res = await fetch(`/admin/streams/${streamId}/requests`, {
+      const res = await fetch(`/api/streams/${streamId}/requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

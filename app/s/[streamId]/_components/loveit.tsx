@@ -5,7 +5,7 @@ export default function LoveIt(props: { streamId: number, playId: number}) {
 
   const rateUp = async () => {
     try {
-      const res = await fetch(`/admin/streams/${streamId}/ratings`, {
+      const res = await fetch(`/api/streams/${streamId}/ratings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
