@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Rating from '../../_components/rating'
 import PlayStats from '../../_components/playstats'
 import Enqueue from '../../_components/enqueue'
-import getStream from '../../../../_utils/streampreferences'
 
 async function getSong(streamId: number, id: number) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/streams/${streamId}/songs/${id}`, { next: { revalidate: 14400 } })

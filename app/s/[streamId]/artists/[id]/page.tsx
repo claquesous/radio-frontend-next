@@ -28,7 +28,7 @@ export default async function ArtistPage({ params }: { params: { streamId: numbe
             <Link className="py-7 pl-3"
               href={`/s/${streamId}/songs/${song.id}`}>{song.title}
             </Link>
-            <Enqueue className="place-self-end"
+            <Enqueue
               streamId={streamId}
               songId={song.id}
             />

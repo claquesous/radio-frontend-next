@@ -223,7 +223,7 @@ export default function Player(props: { streamId: number }) {
         onClick={crankIt}
         className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
       >+</button>
-      {canVote && <>
+      {canVote && typeof nowPlaying != 'string' && <>
         <LoveIt
           streamId={streamId}
           playId={nowPlaying.id}
