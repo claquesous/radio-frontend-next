@@ -12,6 +12,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.10",
+    "cookie": "^0.6.0",
     "debounce": "^2.0.0",
     "icecast-metadata-player": "^1.17.3",
     "next": "14.2.2",
@@ -22,6 +23,7 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
+    "@types/cookie": "^0.6.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

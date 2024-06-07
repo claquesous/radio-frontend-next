@@ -18,6 +18,9 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(
       to bottom,
       transparent,
@@ -31,3 +34,8 @@ body {
     text-wrap: balance;
   }
 }
+
+.primary-content {
+    flex: 1;
+}
+

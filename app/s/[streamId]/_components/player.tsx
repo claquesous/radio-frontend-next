@@ -2,8 +2,10 @@
 import { useRef, useState } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { Stream } from '../_types/types'
+import { Stream } from '../../../_types/types'
 import IcecastMetadataPlayer from 'icecast-metadata-player'
+import LoveIt from './loveit'
+import HateIt from './hateit'
 
 const VOLUME_INCREMENTS = 10
 
@@ -18,6 +20,7 @@ interface SessionMeta {
 }
 
 interface NowPlayingMeta {
+  id: number,
   title: string,
   artist: string,
   album?: string,
@@ -26,6 +29,7 @@ interface NowPlayingMeta {
 }
 
 interface ParsedMetadata {
+  id: number,
   song : {
     id: number,
     title: string,
@@ -39,32 +43,27 @@ interface ParsedMetadata {
   }
 }
 
-function getStream() {
-  return fetch('/api/streams')
+function getStreams(url : string) {
+  return fetch(url)
     .then(res => {
       if (!res.ok) {
         throw new Error('Fetch failed')
       }
       return res.json()
     })
-    .then(streams => {
-      if (streams.length==0) {
-        throw new Error('No streams found')
-      }
-
-      return streams[0]
-    })
 }
 
-export default function Player() {
-  const { data: stream, error, isLoading, isValidating } = useSWR('/api/streams', getStream, {
+export default function Player(props: { streamId: number }) {
+  const { streamId } = props
+  const { data: stream, error, isLoading, isValidating } = useSWR(`/api/streams/${streamId}`, getStreams, {
     revalidateOnFocus: false
   })
 
   const [nowPlaying, setNowPlaying] = useState<NowPlayingMeta | string>('Press play to start the stream')
+  const [canVote, setCanVote] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const playerRef = useRef<IcecastMetadataPlayer | null>(null)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
+  const playerRef = useRef<IcecastMetadataPlayer | null>(null)
 
   const startStream = () => {
     setIsPlaying(true)
@@ -83,6 +82,7 @@ export default function Player() {
 
   const stopStream = () => {
     setIsPlaying(false)
+    setCanVote(false)
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
@@ -117,6 +117,7 @@ export default function Player() {
         artist: parsedMeta.artist.name,
       }
       const nowPlayingMeta: NowPlayingMeta = {
+        id: parsedMeta.id,
         title: parsedMeta.song.title,
         artist: parsedMeta.artist.name,
         artist_id: parsedMeta.artist.id,
@@ -127,11 +128,13 @@ export default function Player() {
         nowPlayingMeta.album = parsedMeta.song.album.title
       }
       setNowPlaying(nowPlayingMeta)
+      setCanVote(true)
     } catch (error) {
       playerMeta = {
         title: metadata?.StreamTitle || ''
       }
       setNowPlaying(playerMeta.title)
+      setCanVote(false)
     }
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -167,7 +170,7 @@ export default function Player() {
       return (<>
         <p>Now Playing:</p>
         <p>
-          <Link href={`/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
+          <Link href={`/s/${streamId}/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/s/${streamId}/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
         </p>
       </>)
     }
@@ -220,6 +223,16 @@ export default function Player() {
         onClick={crankIt}
         className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
       >+</button>
+      {canVote && typeof nowPlaying != 'string' && <>
+        <LoveIt
+          streamId={streamId}
+          playId={nowPlaying.id}
+        />
+        <HateIt
+          streamId={streamId}
+          playId={nowPlaying.id}
+        />
+      </>}
     </div>
   </div>
 

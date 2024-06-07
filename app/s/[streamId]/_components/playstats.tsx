@@ -1,5 +1,5 @@
 import TimeAgo from './timeago'
-import { PlayStats } from '../_types/types'
+import { PlayStats } from '../../../_types/types'
 
 export default function PlayStats({ playStats }: { playStats: PlayStats}) {
   return <div className="w-80 shadow rounded bg-slate-200 p-3 float-right">
