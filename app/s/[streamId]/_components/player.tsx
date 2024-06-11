@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { Stream } from '../../../_types/types'
@@ -64,6 +64,8 @@ export default function Player(props: { streamId: number }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
+
+  useEffect(() => stopStream, [])
 
   const startStream = () => {
     setIsPlaying(true)
@@ -178,7 +180,7 @@ export default function Player(props: { streamId: number }) {
 
   return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200">
     <div>
-      <h2>Current stream: {stream?.name ?? 'None selected'}</h2>
+      <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
     <NowPlayingDisplay />
     <div className="flex space-x-1">
