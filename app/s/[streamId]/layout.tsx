@@ -1,8 +1,6 @@
 import dynamic from 'next/dynamic'
 
-const DynamicPlayer = dynamic(() => import('./_components/player'), {
-  ssr: false,
-})
+const DynamicPlayer = dynamic(() => import('./_components/player'))
 
 export default function StreamsLayout({
   children, params
@@ -18,4 +16,3 @@ export default function StreamsLayout({
     </div>
   </>)
 }
-

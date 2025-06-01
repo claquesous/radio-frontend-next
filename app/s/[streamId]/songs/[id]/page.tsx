@@ -13,8 +13,8 @@ async function getSong(streamId: number, id: number) {
   return res.json()
 }
 
-export default async function SongPage({ params }: { params: { streamId: number, id: number } }) {
-  const { streamId, id } = params
+export default async function SongPage({ params }: { params: Promise<{ streamId: number, id: number }> }) {
+  const { streamId, id } = await params
   const song = await getSong(streamId, id)
 
   return (<>
@@ -27,4 +27,3 @@ export default async function SongPage({ params }: { params: { streamId: number,
     <PlayStats playStats={song} />
   </>)
 }
-
