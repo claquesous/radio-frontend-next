@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-const DynamicRating = dynamic(() => import('../../_components/rating'))
+import ClientOnlyRatingWrapper from '../../_components/ClientOnlyRatingWrapper'
 import PlayStats from '../../_components/playstats'
 import Enqueue from '../../_components/enqueue'
 
@@ -24,7 +23,7 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
       streamId={streamId}
       songId={id}
     />
-    <DynamicRating rating={song.rating} />
+    <ClientOnlyRatingWrapper rating={song.rating} />
     <PlayStats playStats={song} />
   </>)
 }
