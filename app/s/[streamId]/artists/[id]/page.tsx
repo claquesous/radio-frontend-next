@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
-import Rating from '../../_components/rating'
+import dynamic from 'next/dynamic'
+const DynamicRating = dynamic(() => import('../../_components/rating'))
 import Enqueue from '../../_components/enqueue'
 import PlayStats from '../../_components/playstats'
 import { Song } from '../../../../_types/types'
@@ -33,7 +34,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
               songId={song.id}
             />
           </div>
-          <Rating rating={song.rating} />
+          <DynamicRating rating={song.rating} />
         </Fragment>
       ) }
     </div>
