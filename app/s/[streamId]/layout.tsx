@@ -1,16 +1,14 @@
 import dynamic from 'next/dynamic'
 
-const DynamicPlayer = dynamic(() => import('./_components/player'), {
-  ssr: false,
-})
+const DynamicPlayer = dynamic(() => import('./_components/player'))
 
-export default function StreamsLayout({
+export default async function StreamsLayout({
   children, params
 }: Readonly<{
   children: React.ReactNode,
-  params: { streamId: number },
+  params: Promise<{ streamId: number }>,
 }>) {
-  const { streamId } = params
+  const { streamId } = await params
   return (<>
     <DynamicPlayer streamId={streamId} />
     <div className="pt-2">
@@ -18,4 +16,3 @@ export default function StreamsLayout({
     </div>
   </>)
 }
-

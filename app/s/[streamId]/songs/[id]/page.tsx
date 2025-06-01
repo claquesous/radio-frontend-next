@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import Rating from '../../_components/rating'
+import dynamic from 'next/dynamic'
+const DynamicRating = dynamic(() => import('../../_components/rating'))
 import PlayStats from '../../_components/playstats'
 import Enqueue from '../../_components/enqueue'
 
@@ -13,8 +14,8 @@ async function getSong(streamId: number, id: number) {
   return res.json()
 }
 
-export default async function SongPage({ params }: { params: { streamId: number, id: number } }) {
-  const { streamId, id } = params
+export default async function SongPage({ params }: { params: Promise<{ streamId: number, id: number }> }) {
+  const { streamId, id } = await params
   const song = await getSong(streamId, id)
 
   return (<>
@@ -23,8 +24,7 @@ export default async function SongPage({ params }: { params: { streamId: number,
       streamId={streamId}
       songId={id}
     />
-    <Rating rating={song.rating} />
+    <DynamicRating rating={song.rating} />
     <PlayStats playStats={song} />
   </>)
 }
-
