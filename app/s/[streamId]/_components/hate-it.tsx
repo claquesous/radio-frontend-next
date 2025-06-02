@@ -9,7 +9,7 @@ export default function HateIt(props: { streamId: number, playId: number }) {
     try {
       const authToken = localStorage.getItem('authToken')
 
-      await axios.post(`http://localhost:3000/api/streams/${streamId}/ratings`, {
+      await axios.post(`/api/streams/${streamId}/ratings`, {
         rating: {
           up: false,
           play_id: playId,
