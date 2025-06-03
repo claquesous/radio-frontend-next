@@ -1,29 +1,27 @@
 'use client'
 
+import axios from 'axios'
+
 export default function LoveIt(props: { streamId: number, playId: number}) {
   const { streamId, playId } = props
 
   const rateUp = async () => {
     try {
-      const res = await fetch(`/api/streams/${streamId}/ratings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-//          'X-CSRF-Token': token,
-        },
-        body: JSON.stringify({ rating: {
+      const authToken = localStorage.getItem('authToken')
+
+      await axios.post(`/api/streams/${streamId}/ratings`, {
+        rating: {
           up: true,
           play_id: playId,
-        }}),
-      });
-
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await res.json();
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+        }
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authToken ? `Bearer ${authToken}` : '',
+        },
+      })
+    } catch (error: any) {
+      console.error('There was a problem with the rating:', error.response?.data || error.message)
     }
   }
 

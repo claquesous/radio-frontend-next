@@ -4,8 +4,8 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import { Stream } from '../../../_types/types'
 import IcecastMetadataPlayer from 'icecast-metadata-player'
-import LoveIt from './loveit'
-import HateIt from './hateit'
+import LoveIt from './love-it'
+import HateIt from './hate-it'
 
 const VOLUME_INCREMENTS = 10
 

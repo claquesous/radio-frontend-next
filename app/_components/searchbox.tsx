@@ -7,15 +7,11 @@ import CircularProgress from '@mui/material/CircularProgress'
 import debounce from 'debounce'
 import { Song } from '../_types/types'
 
-interface AbortController {
-  abort(): void
-}
-
 export default function Searchbar() {
   const [options, setOptions] = useState<readonly Song[]>([])
   const [toggle,setToggle] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
-  const previousController = useRef<AbortController>()
+  const previousController = useRef<AbortController | null>(null)
   const router = useRouter()
 
   const getData = async (searchTerm: string) => {
@@ -70,4 +66,3 @@ export default function Searchbar() {
     />
   )
 }
-

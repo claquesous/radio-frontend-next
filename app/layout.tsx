@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import dynamic from 'next/dynamic'
 import { Inter } from "next/font/google"
-import TopBar from './_components/topbar'
+import TopBar from './_components/top-bar'
 import Footer from './_components/footer'
 import "./globals.css";
 
