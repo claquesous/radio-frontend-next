@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import StreamForm from '../../../../components/StreamForm'
+import StreamForm from '../../_components/StreamForm'
 import { Stream } from '../../../_types/types'
 import api from '../../../../lib/api'
 

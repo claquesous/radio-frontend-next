@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 
-import { Chooser, ChooserFormData } from '../app/_types/types'
+import { Chooser, ChooserFormData } from '../../_types/types'
 
 interface ChooserFormProps {
   initialData?: ChooserFormData

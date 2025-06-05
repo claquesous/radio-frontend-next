@@ -8,33 +8,33 @@ import { Stream } from '../../../../_types/types'
 import api from '../../../../../lib/api'
 
 export default function EditStreamPage() {
-  const { id } = useParams()
+  const { streamId } = useParams()
   const router = useRouter()
   const [stream, setStream] = useState<Stream | null>(null)
   const [errors, setErrors] = useState<string[]>([])
 
   useEffect(() => {
-    if (id) {
+    if (streamId) {
       const fetchStream = async () => {
         try {
-          const response = await api.get<Stream>(`/streams/${id}`)
+          const response = await api.get<Stream>(`/streams/${streamId}`)
           setStream(response.data)
         } catch (error) {
-          console.error(`Failed to fetch stream ${id} for editing`, error)
+          console.error(`Failed to fetch stream ${streamId} for editing`, error)
           setErrors(['Failed to load stream for editing.'])
         }
       }
       fetchStream()
     }
-  }, [id])
+  }, [streamId])
 
   const handleSubmit = async (formData: any) => {
     try {
       // Send PUT/PATCH request to API to update stream
-      await api.put(`/streams/${id}`, formData)
-      router.push(`/admin/streams/${id}`) // Redirect to stream show page after update
+      await api.put(`/streams/${streamId}`, formData)
+      router.push(`/admin/streams/${streamId}`) // Redirect to stream show page after update
     } catch (error: any) {
-      console.error(`Failed to update stream ${id}`, error)
+      console.error(`Failed to update stream ${streamId}`, error)
       setErrors([error.message || 'Failed to update stream'])
     }
   }

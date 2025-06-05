@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Chooser, Song } from '../app/_types/types'
+import { Chooser, Song } from '../../_types/types'
 
 interface ChooserCardProps {
   chooser: Chooser

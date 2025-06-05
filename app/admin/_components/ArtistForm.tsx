@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Artist } from '../app/_types/types'
+import { Artist } from '../../_types/types'
 
 interface ArtistFormProps {
   initialData?: Artist

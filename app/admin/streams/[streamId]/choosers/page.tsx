@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import ChooserCard from '../../../../../components/ChooserCard'
+import ChooserCard from '../../../_components/ChooserCard'
 
 import { Chooser, Song } from '../../../../_types/types'
 import api from '../../../../../lib/api'

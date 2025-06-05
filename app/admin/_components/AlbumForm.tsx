@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Album } from '../app/_types/types'
+import { Album } from '../../_types/types'
 
 interface AlbumFormProps {
   initialData?: Album
