@@ -8,25 +8,25 @@ import { Stream } from '../../../_types/types'
 import api from '../../../../lib/api'
 
 export default function StreamShowPage() {
-  const { id } = useParams()
+  const { streamId } = useParams()
   const [stream, setStream] = useState<Stream | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   useEffect(() => {
-    if (id) {
+    if (streamId) {
       const fetchStream = async () => {
         try {
-          const response = await api.get<Stream>(`/streams/${id}`)
+          const response = await api.get<Stream>(`/streams/${streamId}`)
           setStream(response.data)
-          setNotice(`Stream ${id} loaded successfully!`)
+          setNotice(`Stream ${streamId} loaded successfully!`)
         } catch (error) {
-          console.error(`Failed to fetch stream ${id}`, error)
-          setNotice(`Failed to load stream ${id}.`)
+          console.error(`Failed to fetch stream ${streamId}`, error)
+          setNotice(`Failed to load stream ${streamId}.`)
         }
       }
       fetchStream()
     }
-  }, [id])
+  }, [streamId])
 
   if (!stream) {
     return <div>Loading stream...</div>

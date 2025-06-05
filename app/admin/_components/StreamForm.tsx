@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 
-import { Stream } from '../app/_types/types'
+import { Stream } from '../../_types/types'
 
 interface StreamFormProps {
   initialData?: Stream

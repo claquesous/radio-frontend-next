@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Stream } from '../app/_types/types'
+import { Stream } from '../../_types/types'
 
 interface StreamCardProps {
   stream: Stream

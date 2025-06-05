@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import ChooserForm from '../../../../../../../components/ChooserForm'
+import ChooserForm from '../../../../../_components/ChooserForm'
 import { Chooser } from '../../../../../../_types/types'
 import api from '../../../../../../../lib/api'
 

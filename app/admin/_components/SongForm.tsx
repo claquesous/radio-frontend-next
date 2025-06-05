@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Song } from '../app/_types/types'
+import { Song } from '../../_types/types'
 
 interface SongFormProps {
   initialData?: Song
