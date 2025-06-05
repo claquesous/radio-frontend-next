@@ -61,7 +61,6 @@ export default function PlaysIndexPage() {
             <tr key={play.id}>
               <td><Link href={`/admin/songs/${play.song.id}`}>{play.song.title}</Link></td>
               <td><Link href={`/admin/artists/${play.artist.id}`}>{play.artist.name}</Link></td>
-              <td><Link href={`/admin/streams/${play.stream.id}`}>{play.stream.name}</Link></td>
               <td><Link href={`/admin/plays/${play.id}`}>Show</Link></td>
               {index === 0 && (
                 <>
