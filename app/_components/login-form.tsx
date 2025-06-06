@@ -15,6 +15,10 @@ interface AuthResponse {
   user: User
 }
 
+function deleteCookie(name: string) {
+  document.cookie = `${name}=; Max-Age=0; path=/;`
+}
+
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -63,6 +67,7 @@ export default function LoginForm() {
   const handleLogout = () => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
+    deleteCookie('jwt')
     setCurrentUser(null)
     router.refresh()
   }
