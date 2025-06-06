@@ -5,26 +5,45 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import api from '../../../../lib/api'
 
+interface SongResponse {
+  id: number
+}
+
 export default function NewSongPage() {
   const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
   const [errors, setErrors] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setErrors([])
+    setLoading(true)
     if (!file) {
       setErrors(['Please select a file to upload'])
+      setLoading(false)
       return
     }
     const formData = new FormData()
     formData.append('song[file]', file)
     try {
-      const response = await api.post('/songs', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      router.push(`/admin/songs/${response.data.id}`)
+      const response = await api.post<SongResponse>('/songs', formData)
+      const data = response.data as SongResponse
+      if (data && typeof data.id === 'number') {
+        router.push(`/admin/songs/${data.id}`)
+      } else {
+        setErrors(['Upload succeeded but no song ID returned'])
+      }
     } catch (error: any) {
-      setErrors([error.message || 'Failed to upload song'])
+      if (error.response?.data?.error) {
+        setErrors([error.response.data.error])
+      } else if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors)
+      } else {
+        setErrors([error.message || 'Failed to upload song'])
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -36,7 +55,9 @@ export default function NewSongPage() {
           type="file"
           onChange={e => setFile(e.target.files?.[0] || null)}
         />
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Uploading...' : 'Upload'}
+        </button>
       </form>
       {errors.length > 0 && (
         <div style={{ color: 'red' }}>
