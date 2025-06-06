@@ -15,10 +15,6 @@ interface AuthResponse {
   user: User
 }
 
-function deleteCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-}
-
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -64,10 +60,14 @@ export default function LoginForm() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
-    deleteCookie('jwt')
+    try {
+      await axios.delete('/api/logout')
+    } catch (err) {
+      // Ignore errors, just ensure cookie is cleared server-side
+    }
     setCurrentUser(null)
     router.refresh()
   }
