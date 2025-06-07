@@ -27,7 +27,11 @@ export default function NewSongPage() {
     const formData = new FormData()
     formData.append('song[file]', file)
     try {
-      const response = await api.post<SongResponse>('/songs', formData)
+      const response = await api.post<SongResponse>('/songs', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       const data = response.data as SongResponse
       if (data && typeof data.id === 'number') {
         router.push(`/admin/songs/${data.id}`)
