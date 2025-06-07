@@ -9,7 +9,7 @@ permissions:
     owner: ubuntu
     group: ubuntu
 hooks:
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/deploy_setup.rb
       runas: ubuntu
 
