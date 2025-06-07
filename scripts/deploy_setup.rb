@@ -21,11 +21,18 @@ new_release_dir = File.join(RELEASES_DIR, timestamp)
 FileUtils.mkdir_p(new_release_dir)
 puts "Created new release directory: #{new_release_dir}"
 
-puts "Extracting tarball to release directory..."
-system("tar -xzf #{DEPLOY_DIR}/radio-frontend.tgz -C #{new_release_dir}")
-puts "Tarball extracted successfully"
+# Check if 'next' exists as a directory and copy its contents
+if File.exist?(NEXT_SYMLINK) && File.directory?(NEXT_SYMLINK) && !File.symlink?(NEXT_SYMLINK)
+  puts "Copying files from 'next' directory to timestamped release..."
+  system("cp -a #{NEXT_SYMLINK}/* #{new_release_dir}/")
+  puts "Files copied to #{new_release_dir}"
 
-# Now create the new symlink
+  # Remove the original 'next' directory
+  FileUtils.rm_rf(NEXT_SYMLINK)
+  puts "Removed original 'next' directory"
+end
+
+# Create the 'next' symlink pointing to the timestamped directory
 FileUtils.ln_s(new_release_dir, NEXT_SYMLINK)
 puts "Updated 'next' symlink to: #{new_release_dir}"
 
@@ -41,7 +48,7 @@ if File.exist?(CURRENT_SYMLINK)
   current_target = File.readlink(CURRENT_SYMLINK)
   FileUtils.ln_s(current_target, PREVIOUS_SYMLINK)
   puts "Created backup symlink: previous → #{current_target}"
-  
+
   FileUtils.rm(CURRENT_SYMLINK)
   puts "Removed existing 'current' symlink"
 end
@@ -86,7 +93,7 @@ all_dirs.each do |dir|
   full_path = File.join(RELEASES_DIR, dir)
   # Skip if already in keep_dirs
   next if keep_dirs.include?(full_path)
-  
+
   # Add to keep_dirs if we haven't reached the limit
   if keep_dirs.size < KEEP_RELEASES
     keep_dirs << full_path
