@@ -1,10 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /opt/claqradio/radio-frontend/next
+  - source: /radio-frontend.tgz
+    destination: /opt/claqradio/radio-frontend/
 permissions:
-  - object: /opt/claqradio/radio-frontend/next
+  - object: /opt/claqradio/radio-frontend
     pattern: "**"
     owner: ubuntu
     group: ubuntu

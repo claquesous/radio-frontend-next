@@ -21,9 +21,11 @@ new_release_dir = File.join(RELEASES_DIR, timestamp)
 FileUtils.mkdir_p(new_release_dir)
 puts "Created new release directory: #{new_release_dir}"
 
-if File.exist?(NEXT_SYMLINK)
-  FileUtils.rm(NEXT_SYMLINK)
-end
+puts "Extracting tarball to release directory..."
+system("tar -xzf #{DEPLOY_DIR}/radio-frontend.tgz -C #{new_release_dir}")
+puts "Tarball extracted successfully"
+
+# Now create the new symlink
 FileUtils.ln_s(new_release_dir, NEXT_SYMLINK)
 puts "Updated 'next' symlink to: #{new_release_dir}"
 
@@ -45,9 +47,8 @@ if File.exist?(CURRENT_SYMLINK)
 end
 
 # Set next as current
-next_target = File.readlink(NEXT_SYMLINK)
-FileUtils.ln_s(next_target, CURRENT_SYMLINK)
-puts "Created deployment symlink: current → #{next_target}"
+FileUtils.ln_s(new_release_dir, CURRENT_SYMLINK)
+puts "Created deployment symlink: current → #{new_release_dir}"
 
 # Restart the service
 puts "Restarting service..."
@@ -102,4 +103,3 @@ all_dirs.each do |dir|
 end
 
 puts "Final cleanup complete. Kept exactly #{keep_dirs.size} releases."
-
