@@ -33,6 +33,26 @@ body {
 input, textarea, select {
   color: rgb(var(--foreground-rgb));
   background-color: rgb(var(--background-end-rgb));
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  transition: border-color 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+  input, textarea, select {
+    border: 1px solid #666;
+    background-color: #222;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #8EF7FA;
+    outline: none;
+  }
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #2563eb; /* Tailwind blue-600 */
+  outline: none;
 }
 
 @layer utilities {
