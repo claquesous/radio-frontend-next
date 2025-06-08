@@ -30,6 +30,11 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+input, textarea, select {
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--background-end-rgb));
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -39,4 +44,3 @@ body {
 .primary-content {
     flex: 1;
 }
-
