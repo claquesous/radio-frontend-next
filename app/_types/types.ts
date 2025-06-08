@@ -1,7 +1,7 @@
 export type Artist = {
   id: number
   name: string
-  sort: number | null
+  sort: string | null
   slug: string | null
 }
 
@@ -9,7 +9,7 @@ export type Album = {
   id: number
   title: string
   artist: Artist // Add artist to Album type
-  sort: number | null
+  sort: string | null
   slug: string | null
   tracks: number | null
   id3_genre: string | null
@@ -23,7 +23,7 @@ export type Song = {
   artist: Artist
   album: Album | null
   artist_name_override: string | null
-  sort: number | null
+  sort: string | null
   slug: string | null
   track: number | null
   time: string | null
