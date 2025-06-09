@@ -43,7 +43,7 @@ export default function StreamsIndexPage() {
         ))}
       </div>
 
-      <Link href="/admin/streams/new">New stream</Link>
+      <Link href="/admin/streams/new" className="btn">New stream</Link>
     </div>
   )
 }

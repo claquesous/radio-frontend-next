@@ -72,7 +72,7 @@ export default function SongsIndexPage() {
 
       <br />
 
-      <Link href="/admin/songs/new">New Song</Link>
+      <Link href="/admin/songs/new" className="btn">New Song</Link>
     </div>
   )
 }

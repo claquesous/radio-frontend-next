@@ -64,7 +64,7 @@ export default function AlbumsIndexPage() {
 
       <br />
 
-      <Link href="/admin/albums/new">New Album</Link>
+      <Link href="/admin/albums/new" className="btn">New Album</Link>
     </div>
   )
 }

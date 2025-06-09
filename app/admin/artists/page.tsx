@@ -56,7 +56,7 @@ export default function ArtistsIndexPage() {
 
       <br />
 
-      <Link href="/admin/artists/new">New Artist</Link>
+      <Link href="/admin/artists/new" className="btn">New Artist</Link>
     </div>
   )
 }
