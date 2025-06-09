@@ -1,6 +1,19 @@
 export type Artist = {
   id: number
   name: string
+  sort: string | null
+  slug: string | null
+}
+
+export type Album = {
+  id: number
+  title: string
+  artist: Artist // Add artist to Album type
+  sort: string | null
+  slug: string | null
+  tracks: number | null
+  id3_genre: string | null
+  record_label: string | null
 }
 
 export type Song = {
@@ -8,12 +21,34 @@ export type Song = {
   title: string
   rating: number
   artist: Artist
+  album: Album | null
+  artist_name_override: string | null
+  sort: string | null
+  slug: string | null
+  track: number | null
+  time: string | null
+  live: boolean
+  remix: boolean
+  year: number | null
+}
+
+export type Stream = {
+  id: number
+  name: string
+  default_rating: number
+  default_featured: boolean
+  mastodon_url: string
+  mastodon_access_token: string
 }
 
 export type Play = {
   id: number
   artist: Artist
   song: Song
+  stream: Stream
+  ratings_count: number
+  playtime: string
+  tweet_id: string | null
 }
 
 export type PlayStats = {
@@ -25,7 +60,21 @@ export type PlayStats = {
   previous_played_at: string
 }
 
-export type Stream = {
-  name: string
+export type Chooser = {
+  id: number
+  song: Song
+  featured: boolean
+  rating: number
 }
 
+export type ChooserFormData = {
+  featured: boolean
+  rating: number
+}
+
+export type Request = {
+  id: number
+  song: Song
+  requested_at: string
+  played: boolean
+}

@@ -60,9 +60,14 @@ export default function LoginForm() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
+    try {
+      await axios.delete('/api/logout')
+    } catch (err) {
+      // Ignore errors, just ensure cookie is cleared server-side
+    }
     setCurrentUser(null)
     router.refresh()
   }
