@@ -80,7 +80,7 @@ export default function AlbumForm({ initialData, onSubmit, errors }: AlbumFormPr
           type="text"
           id="sort"
           value={sort}
-          onChange={(e) => setSort(Number(e.target.value))}
+          onChange={(e) => setSort(e.target.value)}
         />
       </div>
       <div className="field">

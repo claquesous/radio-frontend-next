@@ -59,7 +59,7 @@ export default function ArtistForm({ initialData, onSubmit, errors }: ArtistForm
           type="text"
           id="sort"
           value={sort}
-          onChange={(e) => setSort(Number(e.target.value))}
+          onChange={(e) => setSort(e.target.value)}
         />
       </div>
       <div className="field">
