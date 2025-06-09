@@ -55,6 +55,33 @@ input:focus, textarea:focus, select:focus {
   outline: none;
 }
 
+/* Button styling for both light and dark mode */
+button, .btn {
+  background-color: #2563eb; /* Tailwind blue-600 */
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+button:hover, .btn:hover {
+  background-color: #1d4ed8; /* Tailwind blue-700 */
+}
+
+@media (prefers-color-scheme: dark) {
+  button, .btn {
+    background-color: #8EF7FA;
+    color: #222;
+  }
+  button:hover, .btn:hover {
+    background-color: #5eead4; /* Tailwind teal-300 */
+    color: #222;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
