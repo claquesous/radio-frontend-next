@@ -48,6 +48,14 @@ input, textarea, select {
     border-color: #8EF7FA;
     outline: none;
   }
+  button, .btn {
+    background-color: #334155; /* Tailwind slate-800 */
+    color: #fff;
+  }
+  button:hover, .btn:hover {
+    background-color: #475569; /* Tailwind slate-700 */
+    color: #fff;
+  }
 }
 
 input:focus, textarea:focus, select:focus {
@@ -55,7 +63,7 @@ input:focus, textarea:focus, select:focus {
   outline: none;
 }
 
-/* Button styling for both light and dark mode */
+/* Button styling for light mode */
 button, .btn {
   background-color: #2563eb; /* Tailwind blue-600 */
   color: #fff;
@@ -69,17 +77,6 @@ button, .btn {
 
 button:hover, .btn:hover {
   background-color: #1d4ed8; /* Tailwind blue-700 */
-}
-
-@media (prefers-color-scheme: dark) {
-  button, .btn {
-    background-color: #8EF7FA;
-    color: #222;
-  }
-  button:hover, .btn:hover {
-    background-color: #5eead4; /* Tailwind teal-300 */
-    color: #222;
-  }
 }
 
 @layer utilities {
