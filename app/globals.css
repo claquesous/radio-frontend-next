@@ -39,25 +39,6 @@ input, textarea, select {
   transition: border-color 0.2s;
 }
 
-@media (prefers-color-scheme: dark) {
-  input, textarea, select {
-    border: 1px solid #666;
-    background-color: #222;
-  }
-  input:focus, textarea:focus, select:focus {
-    border-color: #8EF7FA;
-    outline: none;
-  }
-  button, .btn {
-    background-color: #334155; /* Tailwind slate-800 */
-    color: #fff;
-  }
-  button:hover, .btn:hover {
-    background-color: #475569; /* Tailwind slate-700 */
-    color: #fff;
-  }
-}
-
 input:focus, textarea:focus, select:focus {
   border-color: #2563eb; /* Tailwind blue-600 */
   outline: none;
@@ -77,6 +58,25 @@ button, .btn {
 
 button:hover, .btn:hover {
   background-color: #1d4ed8; /* Tailwind blue-700 */
+}
+
+@media (prefers-color-scheme: dark) {
+  input, textarea, select {
+    border: 1px solid #666;
+    background-color: #222;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: #8EF7FA;
+    outline: none;
+  }
+  button, .btn {
+    background-color: #334155; /* Tailwind slate-800 */
+    color: #fff;
+  }
+  button:hover, .btn:hover {
+    background-color: #475569; /* Tailwind slate-700 */
+    color: #fff;
+  }
 }
 
 @layer utilities {
