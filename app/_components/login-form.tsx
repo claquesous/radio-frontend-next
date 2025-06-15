@@ -94,7 +94,7 @@ export default function LoginForm() {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="p-1 mr-2 rounded text-black"
+        className="p-1 mr-2 rounded"
         required
       />
       <input
@@ -102,7 +102,7 @@ export default function LoginForm() {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="p-1 mr-2 rounded text-black"
+        className="p-1 mr-2 rounded"
         required
       />
       <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
