@@ -210,10 +210,10 @@ export default function Player(props: { streamId: number }) {
           </svg>
         )}
       </button>
-      <button
+      <div
         onClick={tooLoud}
-        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
-      >-</button>
+        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500 text-center cursor-pointer"
+      >-</div>
       {[...Array(VOLUME_INCREMENTS)].map((_, i) => (
         <div
           key={i}
@@ -221,10 +221,10 @@ export default function Player(props: { streamId: number }) {
           style={{backgroundColor: getVolumeColor(i)}}
         ></div>
       ))}
-      <button
+      <div
         onClick={crankIt}
-        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
-      >+</button>
+        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500 text-center cursor-pointer"
+      >+</div>
       {canVote && typeof nowPlaying != 'string' && <>
         <LoveIt
           streamId={streamId}
@@ -239,4 +239,3 @@ export default function Player(props: { streamId: number }) {
   </div>
 
 }
-
