@@ -88,3 +88,8 @@ button:hover, .btn:hover {
 .primary-content {
     flex: 1;
 }
+
+/* Disable pointer events on SVG desc elements to prevent cursor changes */
+svg desc {
+    pointer-events: none;
+}
