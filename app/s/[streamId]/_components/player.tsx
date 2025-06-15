@@ -69,8 +69,7 @@ export default function Player(props: { streamId: number }) {
 
   const startStream = () => {
     setIsPlaying(true)
-    
-    // Save this stream as the last played stream
+
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
     let player = new IcecastMetadataPlayer(`/streams/${stream.name}`, {

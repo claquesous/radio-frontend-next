@@ -52,8 +52,7 @@ export default function LoginForm() {
         setCurrentUser(response.data.user)
         setEmail('')
         setPassword('')
-        
-        // Check for last played stream and redirect to it
+
         const lastPlayedStream = localStorage.getItem('lastPlayedStream')
         if (lastPlayedStream) {
           router.push(`/s/${lastPlayedStream}`)
