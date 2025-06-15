@@ -11,9 +11,16 @@ export default function Home() {
     </div>
 
     <section className={styles.hero}>
-      <h1>Create Your Own Internet Radio Stream</h1>
-      <p>Select songs, rate them, and share your unique stream with the world.</p>
-      <a href="#" className="cta-button">Get Started</a>
+      <div className={styles.heroContent}>
+        <div className={styles.heroText}>
+          <h1>Create Your Own Internet Radio Stream</h1>
+          <p>Select songs, rate them, and share your unique stream with the world.</p>
+          <a href="#" className="cta-button">Get Started</a>
+        </div>
+        <div className={styles.heroLogo}>
+          <Image src="/logo.jpg" width="200" height="200" alt="Claq Radio Logo" />
+        </div>
+      </div>
     </section>
 
     <section id="features" className={styles.features}>
@@ -65,4 +72,3 @@ export default function Home() {
     </section>
   </div>)
 }
-
