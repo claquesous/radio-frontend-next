@@ -178,7 +178,7 @@ export default function Player(props: { streamId: number }) {
     }
   }
 
-  return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200">
+  return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200 dark:bg-slate-700 dark:text-white">
     <div>
       <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
