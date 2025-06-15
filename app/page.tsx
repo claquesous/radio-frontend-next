@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from './styles.module.css'
+import TestimonialsCarousel from './_components/testimonials-carousel'
 
 export default function Home() {
   return (<div>
@@ -59,16 +60,6 @@ export default function Home() {
       </div>
     </section>
 
-    <section id="testimonials" className={styles.testimonials}>
-      <h2>Testimonials</h2>
-      <div className="testimonial">
-        <p>&ldquo;I love how easy it is to create my own radio stream! The song recommendations get better the more I rate, and sharing my stream with friends is so much fun.&rdquo;</p>
-        <div className="author">- User 1</div>
-      </div>
-      <div className="testimonial">
-        <p>&ldquo;This platform has revolutionized how I listen to music. I can discover new tracks and enjoy my favorites all in one place. Highly recommend!&rdquo;</p>
-        <div className="author">- User 2</div>
-      </div>
-    </section>
+    <TestimonialsCarousel />
   </div>)
 }
