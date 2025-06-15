@@ -63,7 +63,7 @@ button:hover, .btn:hover {
 @media (prefers-color-scheme: dark) {
   input, textarea, select {
     border: 1px solid #666;
-    background-color: #222;
+    background-color: #4a5568; /* Lighter gray for better visibility */
   }
   input:focus, textarea:focus, select:focus {
     border-color: #8EF7FA;

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import styles from './styles.module.css'
+import TestimonialsCarousel from './_components/testimonials-carousel'
 
 export default function Home() {
   return (<div>
@@ -11,9 +12,16 @@ export default function Home() {
     </div>
 
     <section className={styles.hero}>
-      <h1>Create Your Own Internet Radio Stream</h1>
-      <p>Select songs, rate them, and share your unique stream with the world.</p>
-      <a href="#" className="cta-button">Get Started</a>
+      <div className={styles.heroContent}>
+        <div className={styles.heroText}>
+          <h1>Create Your Own Internet Radio Stream</h1>
+          <p>Select songs, rate them, and share your unique stream with the world.</p>
+          <a href="#" className="cta-button">Get Started</a>
+        </div>
+        <div className={styles.heroLogo}>
+          <Image src="/logo.jpg" width="200" height="200" alt="Claq Radio Logo" />
+        </div>
+      </div>
     </section>
 
     <section id="features" className={styles.features}>
@@ -52,17 +60,6 @@ export default function Home() {
       </div>
     </section>
 
-    <section id="testimonials" className={styles.testimonials}>
-      <h2>Testimonials</h2>
-      <div className="testimonial">
-        <p>&ldquo;I love how easy it is to create my own radio stream! The song recommendations get better the more I rate, and sharing my stream with friends is so much fun.&rdquo;</p>
-        <div className="author">- User 1</div>
-      </div>
-      <div className="testimonial">
-        <p>&ldquo;This platform has revolutionized how I listen to music. I can discover new tracks and enjoy my favorites all in one place. Highly recommend!&rdquo;</p>
-        <div className="author">- User 2</div>
-      </div>
-    </section>
+    <TestimonialsCarousel />
   </div>)
 }
-

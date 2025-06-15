@@ -69,6 +69,9 @@ export default function Player(props: { streamId: number }) {
 
   const startStream = () => {
     setIsPlaying(true)
+
+    localStorage.setItem('lastPlayedStream', streamId.toString())
+    
     let player = new IcecastMetadataPlayer(`/streams/${stream.name}`, {
       onMetadata,
       metadataTypes: ["icy"],
@@ -178,7 +181,7 @@ export default function Player(props: { streamId: number }) {
     }
   }
 
-  return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200">
+  return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200 dark:bg-slate-700 dark:text-white">
     <div>
       <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
@@ -210,10 +213,10 @@ export default function Player(props: { streamId: number }) {
           </svg>
         )}
       </button>
-      <button
+      <div
         onClick={tooLoud}
-        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
-      >-</button>
+        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500 text-center cursor-pointer"
+      >-</div>
       {[...Array(VOLUME_INCREMENTS)].map((_, i) => (
         <div
           key={i}
@@ -221,10 +224,10 @@ export default function Player(props: { streamId: number }) {
           style={{backgroundColor: getVolumeColor(i)}}
         ></div>
       ))}
-      <button
+      <div
         onClick={crankIt}
-        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500"
-      >+</button>
+        className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500 text-center cursor-pointer"
+      >+</div>
       {canVote && typeof nowPlaying != 'string' && <>
         <LoveIt
           streamId={streamId}
@@ -239,4 +242,3 @@ export default function Player(props: { streamId: number }) {
   </div>
 
 }
-
