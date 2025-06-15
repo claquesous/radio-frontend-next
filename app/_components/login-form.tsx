@@ -52,7 +52,14 @@ export default function LoginForm() {
         setCurrentUser(response.data.user)
         setEmail('')
         setPassword('')
-        router.refresh()
+        
+        // Check for last played stream and redirect to it
+        const lastPlayedStream = localStorage.getItem('lastPlayedStream')
+        if (lastPlayedStream) {
+          router.push(`/s/${lastPlayedStream}`)
+        } else {
+          router.refresh()
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed')
