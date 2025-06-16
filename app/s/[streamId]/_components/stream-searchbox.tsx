@@ -66,26 +66,47 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
       sx={{
         width: 300,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(10px)',
           '& fieldset': {
-            borderColor: 'rgba(255, 255, 255, 0.3)',
+            borderColor: 'rgba(0, 0, 0, 0.23)',
           },
           '&:hover fieldset': {
-            borderColor: 'rgba(255, 255, 255, 0.5)',
+            borderColor: 'rgba(0, 0, 0, 0.87)',
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#90caf9',
+            borderColor: '#1976d2',
+          },
+          '@media (prefers-color-scheme: dark)': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            '& fieldset': {
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+            },
+            '&:hover fieldset': {
+              borderColor: 'rgba(255, 255, 255, 0.5)',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#90caf9',
+            },
           },
         },
         '& .MuiInputLabel-root': {
-          color: 'rgba(255, 255, 255, 0.7)',
+          color: 'rgba(0, 0, 0, 0.6)',
           '&.Mui-focused': {
-            color: '#90caf9',
+            color: '#1976d2',
+          },
+          '@media (prefers-color-scheme: dark)': {
+            color: 'rgba(255, 255, 255, 0.7)',
+            '&.Mui-focused': {
+              color: '#90caf9',
+            },
           },
         },
         '& .MuiOutlinedInput-input': {
-          color: 'rgba(255, 255, 255, 0.9)',
+          color: 'rgba(0, 0, 0, 0.87)',
+          '@media (prefers-color-scheme: dark)': {
+            color: 'rgba(255, 255, 255, 0.9)',
+          },
         },
       }}
       renderInput={(params) => (
