@@ -13,6 +13,7 @@ interface StreamSearchboxProps {
 
 export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
   const [options, setOptions] = useState<readonly Song[]>([])
+  const [value, setValue] = useState<Song | null>(null)
   const [inputValue, setInputValue] = useState<string>('')
   const [toggle,setToggle] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
@@ -42,11 +43,12 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
     }
   }
 
-  const onChange = (_:any, value: Song | null) => {
+  const onChange = (_:any, newValue: Song | null) => {
+    setValue(null)
     setOptions([])
     setInputValue('')
-    if (value) {
-      router.push(`/s/${streamId}/songs/${value.id}`)
+    if (newValue) {
+      router.push(`/s/${streamId}/songs/${newValue.id}`)
       setToggle(!toggle)
     }
   }
@@ -54,6 +56,7 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
   return (
     <Autocomplete
       options={options}
+      value={value}
       inputValue={inputValue}
       onInputChange={onInputChange}
       onChange={debounce(onChange,1000)}
@@ -63,25 +66,26 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
       sx={{
         width: 300,
         '& .MuiOutlinedInput-root': {
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          backdropFilter: 'blur(10px)',
           '& fieldset': {
-            borderColor: 'rgba(0, 0, 0, 0.23)',
+            borderColor: 'rgba(255, 255, 255, 0.3)',
           },
           '&:hover fieldset': {
-            borderColor: 'rgba(0, 0, 0, 0.87)',
+            borderColor: 'rgba(255, 255, 255, 0.5)',
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#1976d2',
+            borderColor: '#90caf9',
           },
         },
         '& .MuiInputLabel-root': {
-          color: 'rgba(0, 0, 0, 0.6)',
+          color: 'rgba(255, 255, 255, 0.7)',
           '&.Mui-focused': {
-            color: '#1976d2',
+            color: '#90caf9',
           },
         },
         '& .MuiOutlinedInput-input': {
-          color: 'rgba(0, 0, 0, 0.87)',
+          color: 'rgba(255, 255, 255, 0.9)',
         },
       }}
       renderInput={(params) => (
