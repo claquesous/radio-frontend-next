@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Searchbox from './searchbox'
 import LoginForm from './login-form'
 
 export default function TopBar() {
@@ -11,7 +10,6 @@ export default function TopBar() {
         Claq Radio
       </Link>
       <div className="inline-block float-right">
-        <Searchbox />
         <LoginForm />
       </div>
     </>
