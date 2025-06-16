@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
-import { Play } from '../../../_types/types'
-import api from '../../../../lib/api'
+import { Play } from '../../../../../_types/types'
+import api from '../../../../../../lib/api'
 
 export default function PlayShowPage() {
   const { id } = useParams()
