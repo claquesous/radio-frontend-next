@@ -60,7 +60,7 @@ export default function TestimonialsCarousel() {
         <div className={styles.speechBubble}>
           <div className={styles.bubbleContent}>
             <p className={styles.quote}>
-              "{testimonials[currentIndex].quote}"
+              &ldquo;{testimonials[currentIndex].quote}&rdquo;
             </p>
             <div className={styles.author}>
               — {testimonials[currentIndex].author}
