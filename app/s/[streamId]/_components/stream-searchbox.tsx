@@ -13,6 +13,7 @@ interface StreamSearchboxProps {
 
 export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
   const [options, setOptions] = useState<readonly Song[]>([])
+  const [inputValue, setInputValue] = useState<string>('')
   const [toggle,setToggle] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
   const previousController = useRef<AbortController | null>(null)
@@ -33,6 +34,7 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
   }
 
   const onInputChange = (_:any, value:string, reason:string) => {
+    setInputValue(value)
     if (reason === 'input' && value.length > 0) {
       getData(value)
     } else {
@@ -42,6 +44,7 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
 
   const onChange = (_:any, value: Song | null) => {
     setOptions([])
+    setInputValue('')
     if (value) {
       router.push(`/s/${streamId}/songs/${value.id}`)
       setToggle(!toggle)
@@ -51,12 +54,13 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
   return (
     <Autocomplete
       options={options}
+      inputValue={inputValue}
       onInputChange={onInputChange}
       onChange={debounce(onChange,1000)}
       loading={loading}
       noOptionsText={'Type to search'}
       getOptionLabel={(option) => option ? `${option.artist.name} - ${option.title}` : ''}
-      sx={{ 
+      sx={{
         width: 300,
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
