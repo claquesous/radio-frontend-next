@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import axios from 'axios'
+import UserMenu from './user-menu'
 
 interface User {
   id: number
@@ -66,54 +68,60 @@ export default function LoginForm() {
     }
   }
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
-    try {
-      await axios.delete('/api/logout')
-    } catch (err) {
-      // Ignore errors, just ensure cookie is cleared server-side
-    }
     setCurrentUser(null)
     router.refresh()
   }
 
   if (currentUser) {
     return (
-      <div className="inline-block ml-4 text-white">
-        <span>Welcome, {currentUser.email}!</span>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
-        >
-          Logout
-        </button>
+      <div className="inline-block ml-4">
+        <UserMenu user={currentUser} onLogout={handleLogout} />
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleLogin} className="inline-block ml-4">
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="p-1 mr-2 rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="p-1 mr-2 rounded"
-        required
-      />
-      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
-        Login
-      </button>
-    </form>
+    <div className="inline-block ml-4">
+      <form onSubmit={handleLogin} className="inline-block">
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-2 rounded text-sm w-full sm:w-auto min-w-0 sm:min-w-[120px]"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-2 rounded text-sm w-full sm:w-auto min-w-0 sm:min-w-[120px]"
+            required
+          />
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button 
+              type="submit" 
+              className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-700 dark:bg-slate-600 dark:hover:bg-slate-500 
+                         text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200"
+            >
+              Login
+            </button>
+            <Link 
+              href="/signup"
+              className="flex-1 sm:flex-none bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500 
+                         text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200 text-center"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      </form>
+    </div>
   )
 }
