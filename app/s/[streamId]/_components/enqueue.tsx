@@ -61,7 +61,7 @@ export default function Enqueue(props: { streamId: number, songId: number }) {
   }
 
   return (
-    <>
+    <div className="flex items-center ml-2">
       <div className="cursor-cell" onClick={requestSong} title={getTitle()}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="Play-List-5--Streamline-Core" height="24" width="24" className={`${getIconColor()} cursor-cell ${status === 'loading' ? 'animate-pulse' : ''}`}>
           <rect width="24" height="24" fill="transparent" />
@@ -76,6 +76,6 @@ export default function Enqueue(props: { streamId: number, songId: number }) {
           Song requested!
         </span>
       )}
-    </>
+    </div>
   )
 }
