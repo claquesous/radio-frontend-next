@@ -21,10 +21,12 @@ export default function SongItem({ song, streamId, linkable = true }: SongItemPr
     <div className="grid grid-cols-2">
       <div className="flex items-center">
         {songTitleElement}
-        <Enqueue
-          streamId={streamId}
-          songId={song.id}
-        />
+        <div className="ml-2">
+          <Enqueue
+            streamId={streamId}
+            songId={song.id}
+          />
+        </div>
       </div>
       <DynamicRating rating={song.rating} />
     </div>
