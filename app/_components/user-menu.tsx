@@ -32,6 +32,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
     }
     onLogout()
     setIsOpen(false)
+    router.push('/')
   }
 
   // Close menu when clicking outside

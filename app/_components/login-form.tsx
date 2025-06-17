@@ -79,7 +79,7 @@ export default function LoginForm() {
       // Ignore errors, just ensure cookie is cleared server-side
     }
     setCurrentUser(null)
-    router.refresh()
+    router.push('/')
   }
 
   return (
