@@ -21,27 +21,28 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('authToken')
-      const storedUser = localStorage.getItem('user')
-      if (storedToken && storedUser) {
-        try {
-          return JSON.parse(storedUser)
-        } catch (e) {
-          console.error("Failed to parse stored user data:", e)
-          localStorage.removeItem('authToken')
-          localStorage.removeItem('user')
-        }
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isHydrated, setIsHydrated] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setIsHydrated(true)
+    const storedToken = localStorage.getItem('authToken')
+    const storedUser = localStorage.getItem('user')
+    if (storedToken && storedUser) {
+      try {
+        setCurrentUser(JSON.parse(storedUser))
+      } catch (e) {
+        console.error("Failed to parse stored user data:", e)
+        localStorage.removeItem('authToken')
+        localStorage.removeItem('user')
       }
     }
-    return null
-  })
-  const router = useRouter()
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('') // Clear previous errors
+    setError('')
 
     try {
       const response = await axios.post<AuthResponse>('/api/login', {
@@ -76,17 +77,20 @@ export default function LoginForm() {
     router.refresh()
   }
 
+  if (!isHydrated) {
+    return <div className="inline-block ml-4"></div>
+  }
 
   if (currentUser) {
     return (
-      <div className="flex items-center ml-4">
+      <div className="inline-block ml-4 align-middle">
         <UserMenu user={currentUser} onLogout={handleLogout} />
       </div>
     )
   }
 
   return (
-    <div className="flex items-center ml-4">
+    <div className="inline-block ml-4 align-middle">
       <form onSubmit={handleLogin} className="inline-block">
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
