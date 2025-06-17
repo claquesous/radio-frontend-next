@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import PlayStats from '../../_components/playstats'
 import SongItem from '../../_components/song-item'
 
@@ -16,8 +17,8 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
   const song = await getSong(streamId, id)
 
   return (<>
-    <div className="text-2xl font-bold mb-4">{song.artist.name}</div>
-    <SongItem song={song} streamId={streamId} linkTo="artist" />
+    <Link href={`/s/${streamId}/artists/${song.artist.id}`} className="text-2xl font-bold mb-4 block">{song.artist.name}</Link>
+    <SongItem song={song} streamId={streamId} linkTo="song" />
     <PlayStats playStats={song} />
   </>)
 }

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import PlayStats from '../../_components/playstats'
 import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
@@ -17,7 +18,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   const artist = await getArtist(streamId, id)
 
   return (<>
-    <div className="text-2xl font-bold mb-4">{artist.name}</div>
+    <Link href={`/s/${streamId}/artists/${id}`} className="text-2xl font-bold mb-4 block">{artist.name}</Link>
     { artist.songs.map((song: Song) =>
       <SongItem key={song.id} song={song} streamId={streamId} linkTo="song" />
     ) }
