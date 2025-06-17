@@ -23,7 +23,7 @@ export default function RootLayout({
         <header className="sticky top-0 py-1 w-full bg-slate-500 shadow-md z-50">
           <TopBar />
         </header>
-        <div className="primary-content">
+        <div className="primary-content pb-4">
           {children}
         </div>
         <Footer />
