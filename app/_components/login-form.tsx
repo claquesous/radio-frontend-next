@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import axios from 'axios'
@@ -17,26 +17,15 @@ interface AuthResponse {
   user: User
 }
 
-export default function LoginForm() {
+interface LoginFormProps {
+  initialUser?: User | null
+}
+
+export default function LoginForm({ initialUser = null }: LoginFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('authToken')
-      const storedUser = localStorage.getItem('user')
-      if (storedToken && storedUser) {
-        try {
-          return JSON.parse(storedUser)
-        } catch (e) {
-          console.error("Failed to parse stored user data:", e)
-          localStorage.removeItem('authToken')
-          localStorage.removeItem('user')
-        }
-      }
-    }
-    return null
-  })
+  const [currentUser, setCurrentUser] = useState<User | null>(initialUser)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -50,18 +39,10 @@ export default function LoginForm() {
       })
 
       if (response.data && response.data.token && response.data.user) {
-        localStorage.setItem('authToken', response.data.token)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
         setCurrentUser(response.data.user)
         setEmail('')
         setPassword('')
-
-        const lastPlayedStream = localStorage.getItem('lastPlayedStream')
-        if (lastPlayedStream) {
-          router.push(`/s/${lastPlayedStream}`)
-        } else {
-          router.refresh()
-        }
+        router.refresh()
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed')
@@ -69,15 +50,18 @@ export default function LoginForm() {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('user')
+  const handleLogout = async () => {
+    try {
+      await axios.delete('/api/logout')
+    } catch (err) {
+      console.error('Logout error:', err)
+    }
     setCurrentUser(null)
     router.refresh()
   }
 
   return (
-    <div className="ml-4" style={{ display: 'inline-flex', alignItems: 'center' }} suppressHydrationWarning>
+    <div className="ml-4" style={{ display: 'inline-flex', alignItems: 'center' }}>
       {currentUser ? (
         <UserMenu user={currentUser} onLogout={handleLogout} />
       ) : (
