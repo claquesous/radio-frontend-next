@@ -16,7 +16,7 @@ export default function Home() {
         <div className={styles.heroText}>
           <h1>Create Your Own Internet Radio Stream</h1>
           <p>Select songs, rate them, and share your unique stream with the world.</p>
-          <a href="#" className="cta-button">Get Started</a>
+          <Link href="/signup" className="cta-button">Get Started</Link>
         </div>
         <div className={styles.heroLogo}>
           <Image src="/logo.jpg" width="200" height="200" alt="Claq Radio Logo" />
