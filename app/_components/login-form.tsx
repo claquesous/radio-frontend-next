@@ -21,24 +21,23 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    setMounted(true)
-    const storedToken = localStorage.getItem('authToken')
-    const storedUser = localStorage.getItem('user')
-    if (storedToken && storedUser) {
-      try {
-        setCurrentUser(JSON.parse(storedUser))
-      } catch (e) {
-        console.error("Failed to parse stored user data:", e)
-        localStorage.removeItem('authToken')
-        localStorage.removeItem('user')
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('authToken')
+      const storedUser = localStorage.getItem('user')
+      if (storedToken && storedUser) {
+        try {
+          return JSON.parse(storedUser)
+        } catch (e) {
+          console.error("Failed to parse stored user data:", e)
+          localStorage.removeItem('authToken')
+          localStorage.removeItem('user')
+        }
       }
     }
-  }, [])
+    return null
+  })
+  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,20 +77,16 @@ export default function LoginForm() {
   }
 
 
-  if (!mounted) {
-    return null
-  }
-
   if (currentUser) {
     return (
-      <div className="inline-flex items-center ml-4">
+      <div className="flex items-center ml-4">
         <UserMenu user={currentUser} onLogout={handleLogout} />
       </div>
     )
   }
 
   return (
-    <div className="inline-flex items-center ml-4">
+    <div className="flex items-center ml-4">
       <form onSubmit={handleLogin} className="inline-block">
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
