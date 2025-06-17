@@ -1,8 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import axios from 'axios'
+
+interface User {
+  id: number
+  email: string
+  admin: boolean
+}
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -10,6 +17,30 @@ export default function SignupPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [errors, setErrors] = useState<string[]>([])
   const [success, setSuccess] = useState(false)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const storedToken = localStorage.getItem('authToken')
+    const storedUser = localStorage.getItem('user')
+    
+    if (storedToken && storedUser) {
+      try {
+        const user = JSON.parse(storedUser)
+        setCurrentUser(user)
+        // Redirect to manage page since they're already logged in
+        router.push('/manage')
+        return
+      } catch (e) {
+        // Invalid stored data, clear it
+        localStorage.removeItem('authToken')
+        localStorage.removeItem('user')
+      }
+    }
+    setIsLoading(false)
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,6 +73,25 @@ export default function SignupPage() {
         setErrors([error.message || 'Failed to create user'])
       }
     }
+  }
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render the form if user is logged in (they'll be redirected)
+  if (currentUser) {
+    return null
   }
 
   return (
