@@ -17,7 +17,7 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
 
   return (<>
     <div className="text-2xl font-bold mb-4">{song.artist.name}</div>
-    <SongItem song={song} streamId={streamId} linkTo="song" />
+    <SongItem song={song} streamId={streamId} linkTo="artist" />
     <PlayStats playStats={song} />
   </>)
 }
