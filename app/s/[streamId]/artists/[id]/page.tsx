@@ -1,9 +1,5 @@
-import { Fragment } from 'react'
-import Link from 'next/link'
-import dynamic from 'next/dynamic'
-const DynamicRating = dynamic(() => import('../../_components/rating'))
-import Enqueue from '../../_components/enqueue'
 import PlayStats from '../../_components/playstats'
+import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
 
 async function getArtist(streamId: number, id: number) {
@@ -21,23 +17,10 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   const artist = await getArtist(streamId, id)
 
   return (<>
-    {artist.name}
-    <div className="grid grid-cols-2">
-      { artist.songs.map((song: Song) =>
-        <Fragment key={song.id}>
-          <div>
-            <Link className="py-7 pl-3"
-              href={`/s/${streamId}/songs/${song.id}`}>{song.title}
-            </Link>
-            <Enqueue
-              streamId={streamId}
-              songId={song.id}
-            />
-          </div>
-          <DynamicRating rating={song.rating} />
-        </Fragment>
-      ) }
-    </div>
+    <div className="text-2xl font-bold mb-4 pl-3">{artist.name}</div>
+    { artist.songs.map((song: Song) =>
+      <SongItem key={song.id} song={song} streamId={streamId} />
+    ) }
     <PlayStats playStats={artist} />
   </>)
 }
