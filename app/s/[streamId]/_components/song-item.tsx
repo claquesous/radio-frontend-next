@@ -7,7 +7,7 @@ import { Song } from '../../../_types/types'
 interface SongItemProps {
   song: Song
   streamId: number
-  linkTo?: 'artist' | 'song'
+  linkTo?: 'artist' | 'song' | 'none'
 }
 
 export default function SongItem({ song, streamId, linkTo = 'song' }: SongItemProps) {
@@ -15,14 +15,16 @@ export default function SongItem({ song, streamId, linkTo = 'song' }: SongItemPr
     ? `/s/${streamId}/artists/${song.artist.id}`
     : `/s/${streamId}/songs/${song.id}`
   
-  const linkText = linkTo === 'artist' ? song.artist.name : song.title
+  const songTitleElement = linkTo === 'none' ? (
+    <span className="py-7 pl-3">{song.title}</span>
+  ) : (
+    <Link className="py-7 pl-3" href={linkHref}>{song.title}</Link>
+  )
 
   return (
     <div className="grid grid-cols-2">
       <div>
-        <Link className="py-7 pl-3"
-          href={linkHref}>{song.title}
-        </Link>
+        {songTitleElement}
         <Enqueue
           streamId={streamId}
           songId={song.id}

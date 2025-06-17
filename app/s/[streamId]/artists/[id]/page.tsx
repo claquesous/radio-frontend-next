@@ -18,7 +18,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   const artist = await getArtist(streamId, id)
 
   return (<>
-    <Link href={`/s/${streamId}/artists/${id}`} className="text-2xl font-bold mb-4 block">{artist.name}</Link>
+    <div className="text-2xl font-bold mb-4">{artist.name}</div>
     { artist.songs.map((song: Song) =>
       <SongItem key={song.id} song={song} streamId={streamId} linkTo="song" />
     ) }
