@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="sticky top-0 py-3 w-full bg-slate-500 shadow-md z-50">
+        <header className="sticky top-0 py-4 w-full bg-slate-500 shadow-md z-50">
           <TopBar />
         </header>
         <div className="primary-content p-4">
