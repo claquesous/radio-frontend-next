@@ -6,10 +6,10 @@ import LoginForm from './login-form'
 export default function TopBar() {
   return (
     <>
-      <Link className="py-4 ml-2 text-xl inline-block text-slate-200" href="/">
+      <Link className="ml-2 text-xl inline-block text-slate-200" href="/">
         Claq Radio
       </Link>
-      <div className="pt-2 inline-block float-right">
+      <div className="inline-block float-right">
         <LoginForm />
       </div>
     </>
