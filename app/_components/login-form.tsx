@@ -21,23 +21,24 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('authToken')
-      const storedUser = localStorage.getItem('user')
-      if (storedToken && storedUser) {
-        try {
-          return JSON.parse(storedUser)
-        } catch (e) {
-          console.error("Failed to parse stored user data:", e)
-          localStorage.removeItem('authToken')
-          localStorage.removeItem('user')
-        }
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+    const storedToken = localStorage.getItem('authToken')
+    const storedUser = localStorage.getItem('user')
+    if (storedToken && storedUser) {
+      try {
+        setCurrentUser(JSON.parse(storedUser))
+      } catch (e) {
+        console.error("Failed to parse stored user data:", e)
+        localStorage.removeItem('authToken')
+        localStorage.removeItem('user')
       }
     }
-    return null
-  })
-  const router = useRouter()
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -76,6 +77,10 @@ export default function LoginForm() {
     router.refresh()
   }
 
+
+  if (!mounted) {
+    return null
+  }
 
   if (currentUser) {
     return (
