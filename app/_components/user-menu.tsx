@@ -49,7 +49,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
   }, [])
 
   return (
-    <div className="relative inline-block pr-4" ref={menuRef}>
+    <div className="relative inline-flex items-center pr-2" ref={menuRef}>
       {/* Avatar Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
