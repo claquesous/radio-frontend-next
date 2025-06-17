@@ -20,7 +20,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   return (<>
     <div className="text-2xl font-bold mb-4">{artist.name}</div>
     { artist.songs.map((song: Song) =>
-      <SongItem key={song.id} song={song} streamId={streamId} linkTo="song" />
+      <SongItem key={song.id} song={song} streamId={streamId} />
     ) }
     <PlayStats playStats={artist} />
   </>)

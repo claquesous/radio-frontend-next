@@ -7,14 +7,14 @@ import { Song } from '../../../_types/types'
 interface SongItemProps {
   song: Song
   streamId: number
-  linkTo?: 'song' | 'none'
+  linkable?: boolean
 }
 
-export default function SongItem({ song, streamId, linkTo = 'song' }: SongItemProps) {
-  const songTitleElement = linkTo === 'none' ? (
-    <span className="py-7 pl-3">{song.title}</span>
-  ) : (
+export default function SongItem({ song, streamId, linkable = true }: SongItemProps) {
+  const songTitleElement = linkable ? (
     <Link className="py-7 pl-3" href={`/s/${streamId}/songs/${song.id}`}>{song.title}</Link>
+  ) : (
+    <span className="py-7 pl-3">{song.title}</span>
   )
 
   return (
