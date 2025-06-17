@@ -22,6 +22,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isReady, setIsReady] = useState(false)
   const router = useRouter()
 
   useLayoutEffect(() => {
@@ -36,6 +37,7 @@ export default function LoginForm() {
         localStorage.removeItem('user')
       }
     }
+    setIsReady(true)
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -81,7 +83,15 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="ml-4" style={{ display: 'inline-flex', alignItems: 'center' }}>
+    <div 
+      className="ml-4" 
+      style={{ 
+        display: 'inline-flex', 
+        alignItems: 'center',
+        opacity: isReady ? 1 : 0,
+        transition: 'opacity 150ms ease-in'
+      }}
+    >
       {currentUser ? (
         <UserMenu user={currentUser} onLogout={handleLogout} />
       ) : (
