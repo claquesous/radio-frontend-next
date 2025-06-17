@@ -22,6 +22,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function LoginForm() {
         localStorage.removeItem('user')
       }
     }
+    setIsLoading(false)
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -73,6 +75,14 @@ export default function LoginForm() {
     localStorage.removeItem('user')
     setCurrentUser(null)
     router.refresh()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="inline-block ml-4">
+        <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
+      </div>
+    )
   }
 
   if (currentUser) {
