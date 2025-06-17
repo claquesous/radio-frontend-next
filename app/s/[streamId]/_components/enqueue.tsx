@@ -72,9 +72,9 @@ export default function Enqueue(props: { streamId: number, songId: number }) {
         </svg>
       </div>
       {status === 'success' && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded shadow-lg z-50 animate-bounce">
+        <span className="ml-2 text-green-600 text-sm">
           Song requested!
-        </div>
+        </span>
       )}
     </>
   )
