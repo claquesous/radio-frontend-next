@@ -16,8 +16,8 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
   const song = await getSong(streamId, id)
 
   return (<>
-    {song.title}
-    <SongItem song={song} streamId={streamId} linkTo="artist" />
+    <div className="text-2xl font-bold mb-4">{song.artist.name}</div>
+    <SongItem song={song} streamId={streamId} linkTo="song" />
     <PlayStats playStats={song} />
   </>)
 }
