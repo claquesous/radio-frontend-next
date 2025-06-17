@@ -53,8 +53,8 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
       {/* Avatar Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500 
-                   text-white font-semibold text-lg flex items-center justify-center 
+        className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500
+                   text-white font-semibold text-lg flex items-center justify-center
                    transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-slate-400
                    shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150
                    sm:w-8 sm:h-8 sm:text-base md:w-10 md:h-10 md:text-lg"
@@ -66,7 +66,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg 
+        <div className="absolute -right-4 mt-2 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg
                         border border-gray-200 dark:border-slate-700 py-1 z-50
                         animate-in fade-in duration-200">
           {/* User Info */}
@@ -85,30 +85,36 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
                   router.push('/admin')
                   setIsOpen(false)
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 
-                           hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors duration-150"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300
+                           hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700
+                           transition-colors duration-150 bg-transparent border-none outline-none
+                           font-normal rounded-none shadow-none"
               >
                 Admin Panel
               </button>
             )}
-            
+
             <button
               onClick={() => {
                 router.push('/manage')
                 setIsOpen(false)
               }}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 
-                         hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors duration-150"
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300
+                         hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700
+                         transition-colors duration-150 bg-transparent border-none outline-none
+                         font-normal rounded-none shadow-none"
             >
               Manage Streams
             </button>
 
             <hr className="my-1 border-gray-200 dark:border-slate-700" />
-            
+
             <button
               onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 
-                         hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
+              className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400
+                         hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20
+                         transition-colors duration-150 bg-transparent border-none outline-none
+                         font-normal rounded-none shadow-none"
             >
               Logout
             </button>

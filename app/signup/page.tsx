@@ -100,8 +100,8 @@ export default function SignupPage() {
       <div className="text-center">
         <span className="text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{' '}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
           >
             Sign in here

@@ -105,16 +105,16 @@ export default function LoginForm() {
             required
           />
           <div className="flex gap-2 w-full sm:w-auto">
-            <button 
-              type="submit" 
-              className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-700 dark:bg-slate-600 dark:hover:bg-slate-500 
+            <button
+              type="submit"
+              className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-700 dark:bg-slate-600 dark:hover:bg-slate-500
                          text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200"
             >
               Login
             </button>
-            <Link 
+            <Link
               href="/signup"
-              className="flex-1 sm:flex-none bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500 
+              className="flex-1 sm:flex-none bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500
                          text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200 text-center"
             >
               Sign Up
