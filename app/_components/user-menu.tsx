@@ -49,7 +49,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
   }, [])
 
   return (
-    <div className="relative inline-block" ref={menuRef}>
+    <div className="relative inline-block pr-4" ref={menuRef}>
       {/* Avatar Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -68,7 +68,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-md shadow-lg
                         border border-gray-200 dark:border-slate-700 py-1 z-50
-                        animate-in fade-in duration-200 transform -translate-x-12">
+                        animate-in fade-in duration-200">
           {/* User Info */}
           <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-slate-700">
             <div className="font-medium truncate">{user.email}</div>
