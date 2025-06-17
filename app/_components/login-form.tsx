@@ -1,8 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import axios from 'axios'
+import UserMenu from './user-menu'
 
 interface User {
   id: number
@@ -20,9 +22,10 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [isReady, setIsReady] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const storedToken = localStorage.getItem('authToken')
     const storedUser = localStorage.getItem('user')
     if (storedToken && storedUser) {
@@ -34,11 +37,12 @@ export default function LoginForm() {
         localStorage.removeItem('user')
       }
     }
+    setIsReady(true)
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('') // Clear previous errors
+    setError('')
 
     try {
       const response = await axios.post<AuthResponse>('/api/login', {
@@ -75,45 +79,56 @@ export default function LoginForm() {
       // Ignore errors, just ensure cookie is cleared server-side
     }
     setCurrentUser(null)
-    router.refresh()
-  }
-
-  if (currentUser) {
-    return (
-      <div className="inline-block ml-4 text-white">
-        <span>Welcome, {currentUser.email}!</span>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
-        >
-          Logout
-        </button>
-      </div>
-    )
+    router.push('/')
   }
 
   return (
-    <form onSubmit={handleLogin} className="inline-block ml-4">
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="p-1 mr-2 rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="p-1 mr-2 rounded"
-        required
-      />
-      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
-        Login
-      </button>
-    </form>
+    <div 
+      className="ml-4" 
+      style={{ 
+        display: 'inline-flex', 
+        alignItems: 'center',
+        opacity: isReady ? 1 : 0,
+        transition: 'opacity 150ms ease-in'
+      }}
+    >
+      {currentUser ? (
+        <UserMenu user={currentUser} onLogout={handleLogout} />
+      ) : (
+        <form onSubmit={handleLogin} className="flex gap-2 items-center">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-2 rounded text-sm w-auto min-w-[120px]"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-2 rounded text-sm w-auto min-w-[120px]"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 dark:bg-slate-600 dark:hover:bg-slate-500
+                       text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200"
+          >
+            Login
+          </button>
+          <Link
+            href="/signup"
+            className="bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500
+                       text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200 text-center"
+          >
+            Sign Up
+          </Link>
+        </form>
+      )}
+    </div>
   )
 }

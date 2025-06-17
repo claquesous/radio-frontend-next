@@ -16,7 +16,15 @@ export default function Home() {
         <div className={styles.heroText}>
           <h1>Create Your Own Internet Radio Stream</h1>
           <p>Select songs, rate them, and share your unique stream with the world.</p>
-          <a href="#" className="cta-button">Get Started</a>
+          <Link 
+            href="/signup" 
+            className="inline-flex items-center px-8 py-4 text-xl font-bold text-white bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 rounded-full shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all duration-300 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 border-2 border-white/20 backdrop-blur-sm"
+          >
+            📻 Start Your Radio Journey Now!
+            <svg className="ml-2 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
         </div>
         <div className={styles.heroLogo}>
           <Image src="/logo.jpg" width="200" height="200" alt="Claq Radio Logo" />

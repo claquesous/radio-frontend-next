@@ -12,7 +12,7 @@ export default async function StreamsLayout({
   const { streamId } = await params
   return (<>
     <DynamicPlayer streamId={streamId} />
-    <div className="pt-2">
+    <div className="py-2">
       <div className="mb-4 flex justify-end">
         <StreamSearchbox streamId={streamId} />
       </div>
