@@ -78,23 +78,19 @@ export default function LoginForm() {
   }
 
   if (isLoading) {
-    return (
-      <div className="inline-block ml-4">
-        <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 animate-pulse"></div>
-      </div>
-    )
+    return null
   }
 
   if (currentUser) {
     return (
-      <div className="inline-block ml-4">
+      <div className="inline-flex items-center ml-4">
         <UserMenu user={currentUser} onLogout={handleLogout} />
       </div>
     )
   }
 
   return (
-    <div className="inline-block ml-4">
+    <div className="inline-flex items-center ml-4">
       <form onSubmit={handleLogin} className="inline-block">
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
