@@ -21,7 +21,7 @@ export default function SongItem({ song, streamId, linkTo = 'song' }: SongItemPr
     <div className="grid grid-cols-2">
       <div>
         <Link className="py-7 pl-3"
-          href={linkHref}>{linkText}
+          href={linkHref}>{song.title}
         </Link>
         <Enqueue
           streamId={streamId}
