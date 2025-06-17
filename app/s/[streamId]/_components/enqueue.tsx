@@ -1,11 +1,16 @@
 'use client'
 
 import axios from 'axios'
+import { useState } from 'react'
 
 export default function Enqueue(props: { streamId: number, songId: number }) {
   const { streamId, songId } = props
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const requestSong = async () => {
+    if (status === 'loading') return
+    
+    setStatus('loading')
     try {
       const authToken = localStorage.getItem('authToken')
 
@@ -19,13 +24,44 @@ export default function Enqueue(props: { streamId: number, songId: number }) {
           'Authorization': authToken ? `Bearer ${authToken}` : '',
         },
       })
+      
+      setStatus('success')
+      setTimeout(() => setStatus('idle'), 2000) // Reset after 2 seconds
     } catch (error: any) {
       console.error('There was a problem with the request:', error.response?.data || error.message)
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000) // Reset after 3 seconds
     }
   }
 
-  return <div className="cursor-cell" onClick={requestSong}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="Play-List-5--Streamline-Core" height="24" width="24" className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white cursor-cell">
+  const getIconColor = () => {
+    switch (status) {
+      case 'loading':
+        return 'text-blue-500'
+      case 'success':
+        return 'text-green-500'
+      case 'error':
+        return 'text-red-500'
+      default:
+        return 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+    }
+  }
+
+  const getTitle = () => {
+    switch (status) {
+      case 'loading':
+        return 'Requesting...'
+      case 'success':
+        return 'Song requested!'
+      case 'error':
+        return 'Request failed'
+      default:
+        return 'Add to queue'
+    }
+  }
+
+  return <div className="cursor-cell" onClick={requestSong} title={getTitle()}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="Play-List-5--Streamline-Core" height="24" width="24" className={`${getIconColor()} cursor-cell ${status === 'loading' ? 'animate-pulse' : ''}`}>
       <rect width="24" height="24" fill="transparent" />
       <desc>Play List 5 Streamline Icon: https://streamlinehq.com</desc>
       <g id="play-list-5--player-television-movies-slider-media-tv-players-video-stack-entertainment">
