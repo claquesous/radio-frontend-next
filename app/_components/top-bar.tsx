@@ -5,13 +5,13 @@ import LoginForm from './login-form'
 
 export default function TopBar() {
   return (
-    <>
-      <Link className="ml-2 text-xl inline-block text-slate-200" href="/">
+    <div className="flex items-center justify-between px-2 sm:px-4">
+      <Link className="text-xl text-slate-200 flex-shrink-0" href="/">
         Claq Radio
       </Link>
-      <div className="inline-block float-right">
+      <div className="flex-shrink-0">
         <LoginForm />
       </div>
-    </>
+    </div>
   )
 }
