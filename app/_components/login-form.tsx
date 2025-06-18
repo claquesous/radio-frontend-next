@@ -63,7 +63,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
                      text-white font-bold py-2 px-3 sm:px-4 rounded text-sm transition-colors duration-200 flex-1 sm:flex-none
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Logging in...' : 'Login'}
+          Login
         </button>
         <Link
           href="/signup"
