@@ -107,21 +107,24 @@ button:hover, .btn:hover {
 
   /* Scrolling text animation for mini player */
   .animate-scroll-text {
-    animation: scrollText 15s linear infinite;
+    animation: scrollText 8s ease-in-out infinite;
   }
 
   @keyframes scrollText {
     0% {
       transform: translateX(0%);
     }
-    20% {
+    15% {
       transform: translateX(0%);
     }
-    80% {
-      transform: translateX(-100%);
+    50% {
+      transform: translateX(calc(-100% + 12rem));
+    }
+    85% {
+      transform: translateX(calc(-100% + 12rem));
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateX(0%);
     }
   }
 
