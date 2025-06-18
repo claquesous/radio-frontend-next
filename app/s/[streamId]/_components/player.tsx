@@ -212,34 +212,33 @@ export default function Player(props: { streamId: number }) {
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
-    const updateCanvasSize = () => {
-      const rect = canvas.getBoundingClientRect()
-      const dpr = window.devicePixelRatio || 1
-      canvas.width = rect.width * dpr
-      canvas.height = rect.height * dpr
-      ctx.scale(dpr, dpr)
-      canvas.style.width = rect.width + 'px'
-      canvas.style.height = rect.height + 'px'
-    }
-    
-    updateCanvasSize()
+    // Wait for DOM to be ready, then size canvas to container
+    setTimeout(() => {
+      const container = canvas.parentElement
+      if (container) {
+        const containerStyle = window.getComputedStyle(container)
+        const containerWidth = container.clientWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.paddingRight)
+        const containerHeight = container.clientHeight - parseFloat(containerStyle.paddingTop) - parseFloat(containerStyle.paddingBottom)
+        
+        canvas.width = containerWidth
+        canvas.height = containerHeight
+        console.log('Canvas sized to:', containerWidth, 'x', containerHeight)
+      }
+    }, 10)
     
     const draw = () => {
       analyser.getByteFrequencyData(dataArray)
       
-      const displayWidth = canvas.width / (window.devicePixelRatio || 1)
-      const displayHeight = canvas.height / (window.devicePixelRatio || 1)
-      
-      ctx.clearRect(0, 0, displayWidth, displayHeight)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#111111'
-      ctx.fillRect(0, 0, displayWidth, displayHeight)
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
       
-      const barWidth = displayWidth / bufferLength
+      const barWidth = canvas.width / bufferLength
       let x = 0
       
       for (let i = 0; i < bufferLength; i++) {
         const normalizedValue = dataArray[i] / 255
-        const barHeight = Math.max(2, normalizedValue * displayHeight * 0.8)
+        const barHeight = Math.max(2, normalizedValue * canvas.height * 0.8)
         
         // Use theme colors: blue (low) to red (high) like volume bars
         let color
@@ -252,7 +251,7 @@ export default function Player(props: { streamId: number }) {
         }
         
         ctx.fillStyle = color
-        ctx.fillRect(x, displayHeight - barHeight, barWidth - 1, barHeight)
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight)
         
         x += barWidth
       }
