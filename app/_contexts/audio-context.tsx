@@ -149,6 +149,12 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       analyserRef.current = analyser
       dataArrayRef.current = dataArray
       
+      console.log('🎵 Analyser and data array refs set:', {
+        hasAnalyser: !!analyserRef.current,
+        hasDataArray: !!dataArrayRef.current,
+        bufferLength
+      })
+      
       if (audioContext.state === 'suspended') {
         audioContext.resume()
       }

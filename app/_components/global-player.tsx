@@ -44,8 +44,8 @@ export default function GlobalPlayer(props: { streamId: number }) {
   const collapseAnimationRef = useRef<number | null>(null)
   const lastBarHeightsRef = useRef<number[]>([])
 
-  // Check if this player is for the currently playing stream
-  const isCurrentStream = currentStreamId === streamId
+  // Check if this player is for the currently playing stream  
+  const isCurrentStream = currentStreamId === Number(streamId)
 
   // Debug logging
   useEffect(() => {
