@@ -46,7 +46,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
   const lastBarHeightsRef = useRef<number[]>([])
 
   // Check if this player is for the currently playing stream  
-  const isCurrentStream = currentStreamId === Number(streamId)
+  const isCurrentStream = currentStreamId === Number(streamId) || currentStreamId === streamId
 
   // Debug logging
   useEffect(() => {

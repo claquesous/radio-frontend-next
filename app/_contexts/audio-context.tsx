@@ -177,10 +177,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
 
     setIsPlaying(true)
-    setCurrentStreamId(streamId)
+    setCurrentStreamId(Number(streamId)) // Ensure it's stored as a number
     setCurrentStreamName(streamName)
     
-    console.log('🎵 Audio context state updated - isPlaying:', true, 'streamId:', streamId)
+    console.log('🎵 Audio context state updated - isPlaying:', true, 'streamId:', Number(streamId))
     
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
