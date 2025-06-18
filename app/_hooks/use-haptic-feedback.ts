@@ -6,8 +6,12 @@ type HapticFeedbackType = 'light' | 'medium' | 'heavy' | 'success' | 'error'
 
 export function useHapticFeedback() {
   const triggerHaptic = useCallback((type: HapticFeedbackType = 'light') => {
+    alert(`Haptic feedback triggered: ${type}`)
+    
     // Check if the device supports vibration API
     if ('vibrator' in navigator || 'vibrate' in navigator) {
+      alert('Vibration API is supported')
+      
       let pattern: number | number[]
 
       switch (type) {
@@ -31,11 +35,13 @@ export function useHapticFeedback() {
       }
 
       try {
-        navigator.vibrate(pattern)
+        const result = navigator.vibrate(pattern)
+        alert(`Vibration called with pattern: ${JSON.stringify(pattern)}, result: ${result}`)
       } catch (error) {
-        // Silently handle any vibration errors
-        console.debug('Haptic feedback not available:', error)
+        alert(`Vibration error: ${error}`)
       }
+    } else {
+      alert('Vibration API not supported on this device')
     }
   }, [])
 

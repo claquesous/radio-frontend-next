@@ -10,6 +10,8 @@ export default function LoveIt(props: { streamId: number, playId: number}) {
   const [isLoved, setIsLoved] = useState(false)
 
   const rateUp = async () => {
+    alert('Love it button clicked!')
+    
     // Trigger haptic feedback immediately
     triggerHaptic('success')
     
