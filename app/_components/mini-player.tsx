@@ -20,7 +20,7 @@ export default function MiniPlayer() {
   const isPlayerVisible = usePlayerVisibility()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
-  const { containerRef, textRef, shouldScroll } = useScrollText()
+  const { containerRef, textRef, shouldScroll } = useScrollText([currentStreamName, nowPlaying])
 
   const startVisualization = useCallback(() => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return

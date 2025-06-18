@@ -44,8 +44,8 @@ export default function GlobalPlayer(props: { streamId: number }) {
   const collapseAnimationRef = useRef<number | null>(null)
   const lastBarHeightsRef = useRef<number[]>([])
 
-  const streamNameScroll = useScrollText()
-  const nowPlayingScroll = useScrollText()
+  const streamNameScroll = useScrollText([stream?.name])
+  const nowPlayingScroll = useScrollText([nowPlaying])
 
   // Check if this player is for the currently playing stream
   const isCurrentStream = currentStreamId === Number(streamId) || currentStreamId === streamId

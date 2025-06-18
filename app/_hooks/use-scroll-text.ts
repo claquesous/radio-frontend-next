@@ -1,27 +1,32 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
-export function useScrollText() {
+export function useScrollText(dependencies: any[] = []) {
   const containerRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const [shouldScroll, setShouldScroll] = useState(false)
 
-  useEffect(() => {
-    const checkOverflow = () => {
-      if (containerRef.current && textRef.current) {
-        const containerWidth = containerRef.current.offsetWidth
-        const textWidth = textRef.current.scrollWidth
+  const checkOverflow = useCallback(() => {
+    if (containerRef.current && textRef.current) {
+      // Small delay to ensure the DOM is ready
+      requestAnimationFrame(() => {
+        if (containerRef.current && textRef.current) {
+          const containerWidth = containerRef.current.offsetWidth
+          const textWidth = textRef.current.scrollWidth
 
-        setShouldScroll(textWidth > containerWidth)
+          setShouldScroll(textWidth > containerWidth)
 
-        if (textWidth > containerWidth) {
-          textRef.current.style.setProperty('--container-width', `${containerWidth}px`)
+          if (textWidth > containerWidth) {
+            textRef.current.style.setProperty('--container-width', `${containerWidth}px`)
+          }
         }
-      }
+      })
     }
+  }, [])
 
-    // Check on mount and when content changes
-    checkOverflow()
+  useEffect(() => {
+    // Initial check with delay for component mounting
+    const initialCheck = setTimeout(checkOverflow, 50)
 
     const resizeObserver = new ResizeObserver(checkOverflow)
     const mutationObserver = new MutationObserver(checkOverflow)
@@ -38,15 +43,18 @@ export function useScrollText() {
       })
     }
 
-    // Also check when layout potentially changes
-    const timeoutId = setTimeout(checkOverflow, 100)
-
     return () => {
+      clearTimeout(initialCheck)
       resizeObserver.disconnect()
       mutationObserver.disconnect()
-      clearTimeout(timeoutId)
     }
-  })
+  }, [...dependencies])
+
+  // Also check when dependencies change
+  useEffect(() => {
+    const timeoutId = setTimeout(checkOverflow, 100)
+    return () => clearTimeout(timeoutId)
+  }, [...dependencies])
 
   return { containerRef, textRef, shouldScroll }
 }
