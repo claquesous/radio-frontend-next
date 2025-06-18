@@ -208,28 +208,38 @@ export default function Player(props: { streamId: number }) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     
-    // Set canvas size to match its display size
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width
-    canvas.height = rect.height
-    
     const analyser = analyserRef.current
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
+    const updateCanvasSize = () => {
+      const rect = canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      ctx.scale(dpr, dpr)
+      canvas.style.width = rect.width + 'px'
+      canvas.style.height = rect.height + 'px'
+    }
+    
+    updateCanvasSize()
+    
     const draw = () => {
       analyser.getByteFrequencyData(dataArray)
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.fillStyle = '#111111'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      const displayWidth = canvas.width / (window.devicePixelRatio || 1)
+      const displayHeight = canvas.height / (window.devicePixelRatio || 1)
       
-      const barWidth = Math.max(2, canvas.width / bufferLength)
+      ctx.clearRect(0, 0, displayWidth, displayHeight)
+      ctx.fillStyle = '#111111'
+      ctx.fillRect(0, 0, displayWidth, displayHeight)
+      
+      const barWidth = displayWidth / bufferLength
       let x = 0
       
       for (let i = 0; i < bufferLength; i++) {
         const normalizedValue = dataArray[i] / 255
-        const barHeight = Math.max(2, normalizedValue * canvas.height * 0.8)
+        const barHeight = Math.max(2, normalizedValue * displayHeight * 0.8)
         
         // Use theme colors: blue (low) to red (high) like volume bars
         let color
@@ -242,7 +252,7 @@ export default function Player(props: { streamId: number }) {
         }
         
         ctx.fillStyle = color
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight)
+        ctx.fillRect(x, displayHeight - barHeight, barWidth - 1, barHeight)
         
         x += barWidth
       }
