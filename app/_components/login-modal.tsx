@@ -79,7 +79,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
                      transition-colors duration-200"
           aria-label="Close login modal"
         >
-          <span className="w-5 h-5 block text-2xl leading-none pointer-events-none" aria-hidden="true">&times;</span>
+          <span className="w-5 h-5 flex items-center justify-center text-2xl leading-none pointer-events-none" aria-hidden="true">&times;</span>
         </button>
 
         {/* Modal header */}
