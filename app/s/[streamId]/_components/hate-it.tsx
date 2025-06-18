@@ -10,8 +10,6 @@ export default function HateIt(props: { streamId: number, playId: number }) {
   const [isHated, setIsHated] = useState(false)
 
   const rateDown = async () => {
-    alert('Hate it button clicked!')
-    
     // Trigger haptic feedback immediately
     triggerHaptic('error')
     
