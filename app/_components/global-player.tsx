@@ -36,7 +36,8 @@ export default function GlobalPlayer(props: { streamId: number }) {
     setVolume,
     audioContextRef,
     analyserRef,
-    dataArrayRef
+    dataArrayRef,
+    visualizationReady
   } = useAudio()
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -74,7 +75,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
     
-    if (isCurrentStream && isPlaying) {
+    if (isCurrentStream && isPlaying && visualizationReady) {
       // Check periodically for audio context to be ready
       const checkAndStartVisualization = () => {
         if (analyserRef.current && dataArrayRef.current) {
@@ -102,7 +103,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
         animationRef.current = null
       }
     }
-  }, [isCurrentStream, isPlaying])
+  }, [isCurrentStream, isPlaying, visualizationReady])
 
   const startCollapseAnimation = () => {
     if (!canvasRef.current || lastBarHeightsRef.current.length === 0) return

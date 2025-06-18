@@ -50,6 +50,7 @@ interface AudioContextType {
   canVote: boolean
   currentStreamId: number | null
   currentStreamName: string | null
+  visualizationReady: boolean
   startStream: (streamId: number, streamName: string) => void
   stopStream: () => void
   setVolume: (volume: number) => void
@@ -70,6 +71,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [canVote, setCanVote] = useState(false)
   const [currentStreamId, setCurrentStreamId] = useState<number | null>(null)
   const [currentStreamName, setCurrentStreamName] = useState<string | null>(null)
+  const [visualizationReady, setVisualizationReady] = useState(false)
   
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -155,6 +157,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         bufferLength
       })
       
+      // Set the state to trigger re-renders in components
+      setVisualizationReady(true)
+      
       if (audioContext.state === 'suspended') {
         audioContext.resume()
       }
@@ -220,6 +225,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setCanVote(false)
     setCurrentStreamId(null)
     setCurrentStreamName(null)
+    setVisualizationReady(false)
     
     if (playerRef.current) {
       playerRef.current.stop()
@@ -251,6 +257,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     canVote,
     currentStreamId,
     currentStreamName,
+    visualizationReady,
     startStream,
     stopStream,
     setVolume,

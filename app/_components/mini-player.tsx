@@ -12,7 +12,8 @@ export default function MiniPlayer() {
     currentStreamName,
     stopStream,
     analyserRef,
-    dataArrayRef
+    dataArrayRef,
+    visualizationReady
   } = useAudio()
 
   const isPlayerVisible = usePlayerVisibility()
@@ -34,7 +35,7 @@ export default function MiniPlayer() {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
     
-    if (isPlaying) {
+    if (isPlaying && visualizationReady) {
       // Check periodically for audio context to be ready
       const checkAndStartVisualization = () => {
         if (analyserRef.current && dataArrayRef.current) {
@@ -58,7 +59,7 @@ export default function MiniPlayer() {
         animationRef.current = null
       }
     }
-  }, [isPlaying])
+  }, [isPlaying, visualizationReady])
 
   const startVisualization = () => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
