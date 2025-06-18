@@ -47,11 +47,10 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
       {/* Avatar Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500
-                   text-white font-semibold text-lg flex items-center justify-center
+        className="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500
+                   text-white font-semibold text-sm flex items-center justify-center
                    transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-slate-400
                    shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
-        style={{ width: '2.5rem', height: '2.5rem', fontSize: '1.125rem' }}
         aria-label={`User menu for ${user.email}`}
         aria-expanded={isOpen}
       >
