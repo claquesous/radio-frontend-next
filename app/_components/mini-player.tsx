@@ -1,6 +1,7 @@
 'use client'
 import { useAudio } from '../_contexts/audio-context'
 import { usePlayerVisibility } from '../_hooks/use-player-visibility'
+import { useScrollText } from '../_hooks/use-scroll-text'
 import { useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 
@@ -19,6 +20,7 @@ export default function MiniPlayer() {
   const isPlayerVisible = usePlayerVisibility()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
+  const { containerRef, textRef, shouldScroll } = useScrollText()
 
   const startVisualization = useCallback(() => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
@@ -126,8 +128,14 @@ export default function MiniPlayer() {
     <div className="flex items-center space-x-1 sm:space-x-2 rounded px-1 sm:px-2 py-1 max-w-xs sm:max-w-md h-7 bg-slate-600">
       {/* Now Playing Info */}
       <div className="flex items-center min-w-0 flex-1 h-full">
-        <div className="text-xs text-slate-200 max-w-32 sm:max-w-48 overflow-hidden">
-          <div className="whitespace-nowrap animate-scroll-text">
+        <div
+          ref={containerRef}
+          className="text-xs text-slate-200 max-w-32 sm:max-w-48 overflow-hidden scroll-container"
+        >
+          <div
+            ref={textRef}
+            className={`scroll-text ${shouldScroll ? 'animate-scroll-text-fast' : ''}`}
+          >
             <Link
               href={`/s/${currentStreamId}`}
               className="hover:text-slate-100 text-slate-300"

@@ -105,23 +105,29 @@ button:hover, .btn:hover {
     }
   }
 
-  /* Scrolling text animation for mini player */
+  /* Scrolling text animation */
   .animate-scroll-text {
-    animation: scrollText 8s ease-in-out infinite;
+    animation: scrollText 10s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-scroll-text-fast {
+    animation: scrollText 6s ease-in-out infinite;
+    will-change: transform;
   }
 
   @keyframes scrollText {
     0% {
       transform: translateX(0%);
     }
-    15% {
+    20% {
       transform: translateX(0%);
     }
     50% {
-      transform: translateX(calc(-100% + 12rem));
+      transform: translateX(calc(-100% + var(--container-width, 100%)));
     }
-    85% {
-      transform: translateX(calc(-100% + 12rem));
+    80% {
+      transform: translateX(calc(-100% + var(--container-width, 100%)));
     }
     100% {
       transform: translateX(0%);
@@ -129,8 +135,20 @@ button:hover, .btn:hover {
   }
 
   /* Pause animation on hover */
-  .animate-scroll-text:hover {
+  .animate-scroll-text:hover,
+  .animate-scroll-text-fast:hover {
     animation-play-state: paused;
+  }
+
+  /* Scrolling container utility */
+  .scroll-container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .scroll-text {
+    white-space: nowrap;
+    display: inline-block;
   }
 }
 

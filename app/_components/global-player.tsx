@@ -3,6 +3,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { useAudio } from '../_contexts/audio-context'
+import { useScrollText } from '../_hooks/use-scroll-text'
 import LoveIt from '../s/[streamId]/_components/love-it'
 import HateIt from '../s/[streamId]/_components/hate-it'
 
@@ -42,6 +43,9 @@ export default function GlobalPlayer(props: { streamId: number }) {
   const animationRef = useRef<number | null>(null)
   const collapseAnimationRef = useRef<number | null>(null)
   const lastBarHeightsRef = useRef<number[]>([])
+
+  const streamNameScroll = useScrollText()
+  const nowPlayingScroll = useScrollText()
 
   // Check if this player is for the currently playing stream
   const isCurrentStream = currentStreamId === Number(streamId) || currentStreamId === streamId
@@ -254,21 +258,52 @@ export default function GlobalPlayer(props: { streamId: number }) {
 
   function NowPlayingDisplay() {
     if (typeof nowPlaying === 'string') {
-      return (<>
-        <p>{nowPlaying}</p>
-      </>)
+      return (
+        <div
+          ref={nowPlayingScroll.containerRef}
+          className="overflow-hidden scroll-container"
+        >
+          <div
+            ref={nowPlayingScroll.textRef}
+            className={`scroll-text ${nowPlayingScroll.shouldScroll ? 'animate-scroll-text' : ''}`}
+          >
+            {nowPlaying}
+          </div>
+        </div>
+      )
     } else {
-      return (<>
-        <p>
-          <Link href={`/s/${streamId}/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/s/${streamId}/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
-        </p>
-      </>)
+      return (
+        <div
+          ref={nowPlayingScroll.containerRef}
+          className="overflow-hidden scroll-container"
+        >
+          <div
+            ref={nowPlayingScroll.textRef}
+            className={`scroll-text ${nowPlayingScroll.shouldScroll ? 'animate-scroll-text' : ''}`}
+          >
+            <Link href={`/s/${streamId}/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/s/${streamId}/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
+          </div>
+        </div>
+      )
     }
   }
 
   return <div className="w-80 p-2 m-4 shadow rounded-lg bg-slate-200 dark:bg-slate-700 dark:text-white">
     <div>
-      <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
+      <h2 className="flex items-center">
+        Current stream:
+        <div
+          ref={streamNameScroll.containerRef}
+          className="ml-1 overflow-hidden scroll-container flex-1 min-w-0"
+        >
+          <div
+            ref={streamNameScroll.textRef}
+            className={`scroll-text ${streamNameScroll.shouldScroll ? 'animate-scroll-text' : ''}`}
+          >
+            <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link>
+          </div>
+        </div>
+      </h2>
     </div>
 
     {isCurrentStream ? <NowPlayingDisplay /> : <p>Not currently playing</p>}
