@@ -40,7 +40,7 @@ export default function ChoosersIndexPage() {
           <div key={chooser.id}>
             <ChooserCard chooser={chooser} streamId={Number(streamId)} />
             <p>
-              <Link href={`/admin/streams/${streamId}/choosers/${chooser.id}`}>Show this chooser</Link>
+              <Link href={`/manage/streams/${streamId}/choosers/${chooser.id}`}>Show this chooser</Link>
             </p>
           </div>
         ))}

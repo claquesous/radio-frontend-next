@@ -28,7 +28,7 @@ export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
     <div id={`chooser_${chooser.id}`} className="chooser-card">
       <p>
         <strong>Song:</strong>
-        <Link href={`/admin/songs/${chooser.song.id}`}>{chooser.song.title}</Link>
+        <Link href={`/s/${streamId}/songs/${chooser.song.id}`}>{chooser.song.title}</Link>
       </p>
 
       <p>

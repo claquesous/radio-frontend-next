@@ -20,14 +20,20 @@ export default function ManagePage() {
           <p className="text-gray-600 dark:text-gray-300">
             Manage your radio station content and settings.
           </p>
+          <Link
+              href={'/manage/streams'}
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Streams
+            </Link>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Last Played Stream
           </h3>
           {lastPlayedStreamId ? (
-            <Link 
+            <Link
               href={`/s/${lastPlayedStreamId}`}
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
@@ -39,7 +45,7 @@ export default function ManagePage() {
             </p>
           )}
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Quick Actions

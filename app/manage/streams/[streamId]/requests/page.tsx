@@ -48,12 +48,12 @@ export default function RequestsIndexPage() {
           {requests.map((request) => (
             <tr key={request.id}>
               <td>
-                <Link href={`/admin/songs/${request.song.id}`}>{request.song.title}</Link>
+                <Link href={`/s/${streamId}/songs/${request.song.id}`}>{request.song.title}</Link>
               </td>
               <td>{request.requested_at}</td>
               <td>{request.played ? 'Yes' : 'No'}</td>
               <td>
-                <Link href={`/admin/streams/${streamId}/requests/${request.id}`}>Show</Link>
+                <Link href={`/manage/streams/${streamId}/requests/${request.id}`}>Show</Link>
               </td>
             </tr>
           ))}

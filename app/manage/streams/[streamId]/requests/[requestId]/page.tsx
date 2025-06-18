@@ -38,7 +38,7 @@ export default function RequestShowPage() {
 
       <p>
         <strong>Song:</strong>
-        <Link href={`/admin/songs/${request.song.id}`}>{request.song.title}</Link>
+        <Link href={`/s/${streamId}/songs/${request.song.id}`}>{request.song.title}</Link>
       </p>
 
       <p>
@@ -51,7 +51,7 @@ export default function RequestShowPage() {
         {request.played ? 'Yes' : 'No'}
       </p>
 
-      <Link href={`/admin/streams/${streamId}/requests`}>Back</Link>
+      <Link href={`/manage/streams/${streamId}/requests`}>Back</Link>
     </div>
   )
 }

@@ -51,8 +51,8 @@ export default function EditChooserPage() {
 
       <br />
 
-      <Link href={`/admin/streams/${streamId}/choosers/${chooserId}`}>Show</Link> |{' '}
-      <Link href={`/admin/streams/${streamId}/choosers`}>Back</Link>
+      <Link href={`/manage/streams/${streamId}/choosers/${chooserId}`}>Show</Link> |{' '}
+      <Link href={`/manage/streams/${streamId}/choosers`}>Back</Link>
     </div>
   )
 }

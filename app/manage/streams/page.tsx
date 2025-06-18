@@ -37,13 +37,13 @@ export default function StreamsIndexPage() {
           <div key={stream.id}>
             <StreamCard stream={stream} />
             <p>
-              <Link href={`/admin/streams/${stream.id}`}>Show this stream</Link>
+              <Link href={`/manage/streams/${stream.id}`}>Show this stream</Link>
             </p>
           </div>
         ))}
       </div>
 
-      <Link href="/admin/streams/new" className="btn">New stream</Link>
+      <Link href="/manage/streams/new" className="btn">New stream</Link>
     </div>
   )
 }

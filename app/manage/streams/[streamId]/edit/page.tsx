@@ -51,8 +51,8 @@ export default function EditStreamPage() {
 
       <br />
 
-      <Link href={`/admin/streams/${stream.id}`}>Show</Link> |{' '}
-      <Link href="/admin/streams">Back</Link>
+      <Link href={`/manage/streams/${stream.id}`}>Show</Link> |{' '}
+      <Link href="/manage/streams">Back</Link>
     </div>
   )
 }

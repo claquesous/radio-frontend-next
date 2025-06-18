@@ -37,8 +37,8 @@ export default function StreamShowPage() {
       {notice && <p style={{ color: 'green' }}>{notice}</p>}
       <StreamCard stream={stream} />
       <br />
-      <Link href={`/admin/streams/${stream.id}/edit`}>Edit</Link> |{' '}
-      <Link href="/admin/streams">Back</Link>
+      <Link href={`/manage/streams/${stream.id}/edit`}>Edit</Link> |{' '}
+      <Link href="/manage/streams">Back</Link>
     </div>
   )
 }

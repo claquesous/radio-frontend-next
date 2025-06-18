@@ -38,17 +38,17 @@ export default function PlayShowPage() {
 
       <p>
         <strong>Song:</strong>
-        <Link href={`/admin/songs/${play.song.id}`}>{play.song.title}</Link>
+        <Link href={`/s/${play.stream.id}/songs/${play.song.id}`}>{play.song.title}</Link>
       </p>
 
       <p>
         <strong>Artist:</strong>
-        <Link href={`/admin/artists/${play.artist.id}`}>{play.artist.name}</Link>
+        <Link href={`/s/${play.stream.id}/artists/${play.artist.id}`}>{play.artist.name}</Link>
       </p>
 
       <p>
         <strong>Stream:</strong>
-        <Link href={`/admin/streams/${play.stream.id}`}>{play.stream.name}</Link>
+        <Link href={`/s/${play.stream.id}`}>{play.stream.name}</Link>
       </p>
 
       <p>
@@ -66,7 +66,7 @@ export default function PlayShowPage() {
         {play.tweet_id}
       </p>
 
-      <Link href="/admin/plays">Back</Link>
+      <Link href={`/manage/streams/${play.stream.id}/plays`}>Back</Link>
     </div>
   )
 }

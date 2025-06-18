@@ -41,7 +41,7 @@ export default function ChooserShowPage() {
 
       <br />
 
-      <Link href={`/admin/streams/${streamId}/choosers`}>Back</Link>
+      <Link href={`/manage/streams/${streamId}/choosers`}>Back</Link>
     </div>
   )
 }
