@@ -208,6 +208,11 @@ export default function Player(props: { streamId: number }) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     
+    // Set canvas size to match its display size
+    const rect = canvas.getBoundingClientRect()
+    canvas.width = rect.width
+    canvas.height = rect.height
+    
     const analyser = analyserRef.current
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
@@ -291,8 +296,6 @@ export default function Player(props: { streamId: number }) {
     <div className="my-4 p-2 bg-black rounded border-2 border-gray-600 relative" style={{height: '80px'}}>
       <canvas
         ref={canvasRef}
-        width={300}
-        height={60}
         className="w-full h-full"
         style={{
           imageRendering: 'pixelated', 
@@ -300,11 +303,6 @@ export default function Player(props: { streamId: number }) {
           backgroundColor: '#000000'
         }}
       />
-      {!isPlaying && (
-        <div className="flex items-center justify-center h-full text-slate-400 text-sm font-mono absolute inset-0 pointer-events-none bg-black bg-opacity-75">
-          ⏸ VISUALIZATION STOPPED
-        </div>
-      )}
     </div>
     
     <div className="flex space-x-1">
