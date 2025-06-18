@@ -25,7 +25,7 @@ export default function SignupPage() {
     // Check if user is already logged in
     const storedToken = localStorage.getItem('authToken')
     const storedUser = localStorage.getItem('user')
-    
+
     if (storedToken && storedUser) {
       try {
         const user = JSON.parse(storedUser)
@@ -100,7 +100,7 @@ export default function SignupPage() {
         <div>
           <h1 className="mt-6 text-center text-3xl font-extrabold">Sign Up</h1>
         </div>
-        
+
         {success && (
           <div className="rounded-md bg-green-50 p-4 border border-green-200">
             <div className="text-green-800">
@@ -108,7 +108,7 @@ export default function SignupPage() {
             </div>
           </div>
         )}
-        
+
         {errors.length > 0 && (
           <div className="rounded-md bg-red-50 p-4 border border-red-200">
             <div className="text-red-800">
@@ -121,7 +121,7 @@ export default function SignupPage() {
             </div>
           </div>
         )}
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
@@ -138,7 +138,7 @@ export default function SignupPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
@@ -153,7 +153,7 @@ export default function SignupPage() {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password_confirmation" className="block text-sm font-medium mb-2">
                 Password Confirmation
@@ -169,7 +169,7 @@ export default function SignupPage() {
               />
             </div>
           </div>
-          
+
           <div>
             <button
               type="submit"
@@ -179,16 +179,19 @@ export default function SignupPage() {
             </button>
           </div>
         </form>
-        
+
         <div className="text-center">
           <span className="text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
-            <Link
-              href="/"
+            <button
+              type="button"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium"
+              onClick={() => {
+                window.dispatchEvent(new Event('open-login-modal'))
+              }}
             >
-              Sign in here
-            </Link>
+              Login
+            </button>
           </span>
         </div>
       </div>

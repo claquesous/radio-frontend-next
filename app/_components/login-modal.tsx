@@ -58,7 +58,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -67,7 +67,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
       <div
         ref={modalRef}
         className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-lg shadow-xl p-6
-                   animate-in fade-in zoom-in-95 duration-200"
+                   animate-in fade-in zoom-in-95 duration-200 m-0"
         tabIndex={-1}
       >
         {/* Close button */}
@@ -79,7 +79,8 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
           aria-label="Close login modal"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="6" y1="18" x2="18" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         </button>
 

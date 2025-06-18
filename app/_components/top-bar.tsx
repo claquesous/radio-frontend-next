@@ -41,6 +41,11 @@ export default function TopBar() {
       }
     }
     setIsReady(true)
+
+    // Listen for global login modal open event
+    const openModal = () => setIsLoginModalOpen(true)
+    window.addEventListener('open-login-modal', openModal)
+    return () => window.removeEventListener('open-login-modal', openModal)
   }, [])
 
   const handleLogin = async (email: string, password: string) => {
