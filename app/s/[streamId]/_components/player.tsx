@@ -1,47 +1,13 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { Stream } from '../../../_types/types'
-import IcecastMetadataPlayer from 'icecast-metadata-player'
+import { useAudio } from '../../../_contexts/audio-context'
 import LoveIt from './love-it'
 import HateIt from './hate-it'
 
 const VOLUME_INCREMENTS = 10
-
-interface IcyMetadata {
-  StreamTitle?: string
-}
-
-interface SessionMeta {
-  title: string,
-  artist?: string,
-  album?: string,
-}
-
-interface NowPlayingMeta {
-  id: number,
-  title: string,
-  artist: string,
-  album?: string,
-  song_id: number,
-  artist_id: number,
-}
-
-interface ParsedMetadata {
-  id: number,
-  song : {
-    id: number,
-    title: string,
-    album?: {
-      title: string,
-    },
-  },
-  artist: {
-    id: number,
-    name: string,
-  }
-}
 
 function getStreams(url : string) {
   return fetch(url)
@@ -59,48 +25,75 @@ export default function Player(props: { streamId: number }) {
     revalidateOnFocus: false
   })
 
-  const [nowPlaying, setNowPlaying] = useState<NowPlayingMeta | string>('Press play to start the stream')
-  const [canVote, setCanVote] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [volume, setVolume] = useState(VOLUME_INCREMENTS)
-  const playerRef = useRef<IcecastMetadataPlayer | null>(null)
+  const {
+    isPlaying,
+    volume,
+    nowPlaying,
+    canVote,
+    currentStreamId,
+    startStream,
+    stopStream,
+    setVolume,
+    audioContextRef,
+    analyserRef,
+    dataArrayRef,
+    visualizationReady
+  } = useAudio()
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const analyserRef = useRef<AnalyserNode | null>(null)
-  const dataArrayRef = useRef<Uint8Array | null>(null)
   const collapseAnimationRef = useRef<number | null>(null)
   const lastBarHeightsRef = useRef<number[]>([])
 
-  useEffect(() => stopStream, [])
+  // Check if this player is for the currently playing stream  
+  const isCurrentStream = currentStreamId === Number(streamId)
 
-  const startStream = () => {
-    setIsPlaying(true)
-
-    // Cancel any running collapse animation
-    if (collapseAnimationRef.current) {
-      cancelAnimationFrame(collapseAnimationRef.current)
-      collapseAnimationRef.current = null
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+      if (collapseAnimationRef.current) {
+        cancelAnimationFrame(collapseAnimationRef.current)
+      }
     }
+  }, [])
 
-    localStorage.setItem('lastPlayedStream', streamId.toString())
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
     
-    let player = new IcecastMetadataPlayer(`/streams/${stream.name}`, {
-      onMetadata,
-      metadataTypes: ["icy"],
-    })
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler('pause', stopStream)
-      navigator.mediaSession.setActionHandler('stop', stopStream)
-      navigator.mediaSession.setActionHandler('play', startStream)
+    if (isCurrentStream && isPlaying && visualizationReady) {
+      const checkAndStartVisualization = () => {
+        if (analyserRef.current && dataArrayRef.current) {
+          startVisualization()
+        } else {
+          timeoutId = setTimeout(checkAndStartVisualization, 100)
+        }
+      }
+      checkAndStartVisualization()
+    } else {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      if (lastBarHeightsRef.current.length > 0) {
+        startCollapseAnimation()
+      }
     }
-    player.play()
-    playerRef.current = player
     
-    // Set up audio visualization
-    setTimeout(() => {
-      setupVisualization(player.audioElement)
-    }, 100)
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+    }
+  }, [isCurrentStream, isPlaying, visualizationReady])
+
+  const handleStartStream = () => {
+    if (stream) {
+      startStream(streamId, stream.name)
+    }
   }
 
   const startCollapseAnimation = () => {
@@ -111,7 +104,7 @@ export default function Player(props: { streamId: number }) {
     if (!ctx) return
     
     const startTime = Date.now()
-    const animationDuration = 300 // 300ms collapse animation
+    const animationDuration = 300
     const initialBarHeights = [...lastBarHeightsRef.current]
     const bufferLength = analyserRef.current?.frequencyBinCount || 64
     const usefulBins = Math.floor(bufferLength * 0.5)
@@ -120,7 +113,7 @@ export default function Player(props: { streamId: number }) {
     const collapseFrame = () => {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / animationDuration, 1)
-      const easeOutProgress = 1 - Math.pow(1 - progress, 3) // Ease out cubic
+      const easeOutProgress = 1 - Math.pow(1 - progress, 3)
       
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#111111'
@@ -131,7 +124,6 @@ export default function Player(props: { streamId: number }) {
         const initialHeight = initialBarHeights[i] || 1
         const barHeight = initialHeight * (1 - easeOutProgress)
         
-        // Use theme colors: blue (low) to red (high) like volume bars
         const intensity = i / usefulBins
         const blue = Math.floor(255 - (intensity * 255))
         const red = Math.floor(intensity * 255)
@@ -146,7 +138,6 @@ export default function Player(props: { streamId: number }) {
       if (progress < 1) {
         collapseAnimationRef.current = requestAnimationFrame(collapseFrame)
       } else {
-        // Clear the canvas completely when animation is done
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = '#111111'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -155,120 +146,6 @@ export default function Player(props: { streamId: number }) {
     }
     
     collapseFrame()
-  }
-
-  const stopStream = () => {
-    setIsPlaying(false)
-    setCanVote(false)
-    
-    // Stop the main visualization loop first
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current)
-      animationRef.current = null
-    }
-    
-    // Start collapse animation after stopping the main loop
-    startCollapseAnimation()
-    
-    if (playerRef.current) {
-      playerRef.current.stop()
-      playerRef.current.detachAudioElement()
-    }
-    
-    // Delay the audio context cleanup to allow animation to complete
-    setTimeout(() => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close()
-        audioContextRef.current = null
-      }
-    }, 350) // Slightly longer than animation duration
-  }
-
-  const crankIt = () => {
-    const newVolume = Math.min(volume + 1, VOLUME_INCREMENTS)
-    setVolume(newVolume)
-    if (playerRef.current) {
-      playerRef.current.audioElement.volume = newVolume / VOLUME_INCREMENTS
-    }
-  }
-
-  const tooLoud = () => {
-    const newVolume = Math.max(volume - 1, 0)
-    setVolume(newVolume)
-    if (playerRef.current) {
-      playerRef.current.audioElement.volume = newVolume / VOLUME_INCREMENTS
-    }
-  }
-
-  const onMetadata = (metadata: IcyMetadata) => {
-    let playerMeta: SessionMeta
-    try {
-      if (metadata.StreamTitle === undefined) {
-        throw new Error('StreamTitle is undefined');
-      }
-      const parsedMeta: ParsedMetadata = JSON.parse(metadata.StreamTitle)
-      playerMeta = {
-        title: parsedMeta.song.title,
-        artist: parsedMeta.artist.name,
-      }
-      const nowPlayingMeta: NowPlayingMeta = {
-        id: parsedMeta.id,
-        title: parsedMeta.song.title,
-        artist: parsedMeta.artist.name,
-        artist_id: parsedMeta.artist.id,
-        song_id: parsedMeta.song.id,
-      }
-      if (!!parsedMeta.song.album) {
-        playerMeta.album = parsedMeta.song.album.title
-        nowPlayingMeta.album = parsedMeta.song.album.title
-      }
-      setNowPlaying(nowPlayingMeta)
-      setCanVote(true)
-    } catch (error) {
-      playerMeta = {
-        title: metadata?.StreamTitle || ''
-      }
-      setNowPlaying(playerMeta.title)
-      setCanVote(false)
-    }
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        ...playerMeta,
-        artwork: [{
-          src: '/logo.jpg', sizes: '512x512', type: 'image/jpg'
-        }],
-      })
-    }
-  }
-
-  const setupVisualization = (audioElement: HTMLAudioElement) => {
-    if (!canvasRef.current || audioContextRef.current) return
-    
-    try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const source = audioContext.createMediaElementSource(audioElement)
-      const analyser = audioContext.createAnalyser()
-      
-      analyser.fftSize = 128
-      analyser.smoothingTimeConstant = 0.8
-      const bufferLength = analyser.frequencyBinCount
-      const dataArray = new Uint8Array(bufferLength)
-      
-      source.connect(analyser)
-      analyser.connect(audioContext.destination)
-      
-      audioContextRef.current = audioContext
-      analyserRef.current = analyser
-      dataArrayRef.current = dataArray
-      
-      if (audioContext.state === 'suspended') {
-        audioContext.resume().then(() => startVisualization())
-      } else {
-        startVisualization()
-      }
-    } catch (error) {
-      console.warn('Audio visualization not supported:', error)
-    }
   }
 
   const startVisualization = () => {
@@ -282,35 +159,34 @@ export default function Player(props: { streamId: number }) {
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
-    // Size canvas to fill container completely
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       canvas.width = rect.width
       canvas.height = rect.height
     }
     
-    // Initial sizing with a delay to ensure DOM is ready
     setTimeout(resizeCanvas, 50)
     
-    // Also handle window resize
     const handleResize = () => resizeCanvas()
     window.addEventListener('resize', handleResize)
     
-    // Cleanup resize listener when animation stops
-    const originalAnimationRef = animationRef.current
     const cleanup = () => {
       window.removeEventListener('resize', handleResize)
     }
     
     const draw = () => {
+      if (!isCurrentStream || !isPlaying) {
+        cleanup()
+        return
+      }
+      
       analyser.getByteFrequencyData(dataArray)
       
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#111111'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       
-      // Show fewer frequency bins for cleaner visualization
-      const usefulBins = Math.floor(bufferLength * 0.5) // Show first 50% of frequency spectrum
+      const usefulBins = Math.floor(bufferLength * 0.5)
       const barWidth = canvas.width / usefulBins
       let x = 0
       const currentBarHeights: number[] = []
@@ -320,8 +196,7 @@ export default function Player(props: { streamId: number }) {
         const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
         currentBarHeights.push(barHeight)
         
-        // Use theme colors: blue (low) to red (high) like volume bars
-        const intensity = i / usefulBins // Use position in useful range for color
+        const intensity = i / usefulBins
         const blue = Math.floor(255 - (intensity * 255))
         const red = Math.floor(intensity * 255)
         const color = `rgb(${red}, 0, ${blue})`
@@ -332,7 +207,6 @@ export default function Player(props: { streamId: number }) {
         x += barWidth
       }
       
-      // Store the current bar heights for potential collapse animation
       lastBarHeightsRef.current = currentBarHeights
       
       if (animationRef.current !== null) {
@@ -344,6 +218,16 @@ export default function Player(props: { streamId: number }) {
     
     animationRef.current = 1
     draw()
+  }
+
+  const crankIt = () => {
+    const newVolume = Math.min(volume + 1, VOLUME_INCREMENTS)
+    setVolume(newVolume)
+  }
+
+  const tooLoud = () => {
+    const newVolume = Math.max(volume - 1, 0)
+    setVolume(newVolume)
   }
 
   const getVolumeColor = (index: number) => {
@@ -380,7 +264,8 @@ export default function Player(props: { streamId: number }) {
     <div>
       <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
-    <NowPlayingDisplay />
+    
+    {isCurrentStream ? <NowPlayingDisplay /> : <p>Not currently playing</p>}
     
     {/* Audio Visualization */}
     <div className="my-4 p-2 bg-black rounded border-2 border-gray-600 relative" style={{height: '80px'}}>
@@ -397,10 +282,10 @@ export default function Player(props: { streamId: number }) {
     
     <div className="flex space-x-1">
       <button
-        onClick={isPlaying ? stopStream : startStream}
+        onClick={isCurrentStream && isPlaying ? stopStream : handleStartStream}
         className="px-4 py-2 bg-gray-400 rounded-lg hover:bg-gray-500"
       >
-        {isPlaying ? (
+        {isCurrentStream && isPlaying ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -437,7 +322,7 @@ export default function Player(props: { streamId: number }) {
         onClick={crankIt}
         className="w-4 h-6 bg-gray-400 rounded-lg hover:bg-gray-500 text-center cursor-pointer"
       >+</div>
-      {canVote && typeof nowPlaying != 'string' && <>
+      {canVote && isCurrentStream && typeof nowPlaying != 'string' && <>
         <LoveIt
           streamId={streamId}
           playId={nowPlaying.id}
