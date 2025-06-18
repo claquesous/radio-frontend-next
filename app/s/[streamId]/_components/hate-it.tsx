@@ -12,6 +12,10 @@ export default function HateIt(props: { streamId: number, playId: number }) {
   const rateDown = async () => {
     triggerHaptic('error')
     setIsHated(true)
+
+    setTimeout(() => {
+      setIsHated(false)
+    }, 300)
     try {
       const authToken = localStorage.getItem('authToken')
 

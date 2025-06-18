@@ -12,6 +12,10 @@ export default function LoveIt(props: { streamId: number, playId: number}) {
   const rateUp = async () => {
     triggerHaptic('success')
     setIsLoved(true)
+
+    setTimeout(() => {
+      setIsLoved(false)
+    }, 300)
     try {
       const authToken = localStorage.getItem('authToken')
 
