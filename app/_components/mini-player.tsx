@@ -20,17 +20,6 @@ export default function MiniPlayer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
 
-  // Debug logging
-  useEffect(() => {
-    console.log('🎵 Mini Player - Context update:', {
-      isPlaying,
-      currentStreamId,
-      currentStreamName,
-      nowPlaying: typeof nowPlaying === 'string' ? nowPlaying : `${nowPlaying.artist} - ${nowPlaying.title}`,
-      hasAnalyser: !!analyserRef.current,
-      hasDataArray: !!dataArrayRef.current
-    })
-  }, [isPlaying, currentStreamId, currentStreamName, nowPlaying])
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
@@ -137,7 +126,6 @@ export default function MiniPlayer() {
         </div>
       )
     } else {
-      const fullText = `${nowPlaying.artist} - ${nowPlaying.title}`
       return (
         <div className="text-sm text-slate-200 max-w-48 overflow-hidden">
           <div className="whitespace-nowrap animate-scroll-text">

@@ -1,8 +1,7 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
-import { Stream } from '../_types/types'
 import { useAudio } from '../_contexts/audio-context'
 import LoveIt from '../s/[streamId]/_components/love-it'
 import HateIt from '../s/[streamId]/_components/hate-it'
@@ -34,7 +33,6 @@ export default function GlobalPlayer(props: { streamId: number }) {
     startStream,
     stopStream,
     setVolume,
-    audioContextRef,
     analyserRef,
     dataArrayRef,
     visualizationReady
@@ -48,18 +46,6 @@ export default function GlobalPlayer(props: { streamId: number }) {
   // Check if this player is for the currently playing stream  
   const isCurrentStream = currentStreamId === Number(streamId) || currentStreamId === streamId
 
-  // Debug logging
-  useEffect(() => {
-    console.log('🎵 Global Player - Context update:', {
-      streamId,
-      isPlaying,
-      currentStreamId,
-      isCurrentStream,
-      nowPlaying: typeof nowPlaying === 'string' ? nowPlaying : `${nowPlaying.artist} - ${nowPlaying.title}`,
-      hasAnalyser: !!analyserRef.current,
-      hasDataArray: !!dataArrayRef.current
-    })
-  }, [isPlaying, currentStreamId, nowPlaying])
 
   useEffect(() => {
     return () => {
@@ -238,12 +224,8 @@ export default function GlobalPlayer(props: { streamId: number }) {
   }
 
   const handleStartStream = () => {
-    console.log('🎵 Global Player - handleStartStream called:', { streamId, streamName: stream?.name })
     if (stream) {
-      console.log('🎵 Global Player - About to call startStream with:', streamId, stream.name)
       startStream(streamId, stream.name)
-    } else {
-      console.error('🎵 Global Player - No stream data available')
     }
   }
 
