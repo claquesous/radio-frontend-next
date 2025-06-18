@@ -158,6 +158,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }
 
   const startStream = async (streamId: number, streamName: string) => {
+    console.log('🎵 Starting stream:', streamId, streamName)
+    
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
@@ -166,6 +168,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setIsPlaying(true)
     setCurrentStreamId(streamId)
     setCurrentStreamName(streamName)
+    
+    console.log('🎵 Audio context state updated - isPlaying:', true, 'streamId:', streamId)
     
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
@@ -187,12 +191,15 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       await player.play()
       playerRef.current = player
       
+      console.log('🎵 Player created and playing')
+      
       // Set initial volume
       player.audioElement.volume = volume / VOLUME_INCREMENTS
       
       // Set up audio visualization
       setTimeout(() => {
         setupVisualization(player.audioElement)
+        console.log('🎵 Visualization setup complete')
       }, 100)
     } catch (error) {
       console.error('Failed to load audio player:', error)

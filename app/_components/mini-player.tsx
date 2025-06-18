@@ -19,6 +19,18 @@ export default function MiniPlayer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
 
+  // Debug logging
+  useEffect(() => {
+    console.log('🎵 Mini Player - Context update:', {
+      isPlaying,
+      currentStreamId,
+      currentStreamName,
+      nowPlaying: typeof nowPlaying === 'string' ? nowPlaying : `${nowPlaying.artist} - ${nowPlaying.title}`,
+      hasAnalyser: !!analyserRef.current,
+      hasDataArray: !!dataArrayRef.current
+    })
+  }, [isPlaying, currentStreamId, currentStreamName, nowPlaying])
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
     

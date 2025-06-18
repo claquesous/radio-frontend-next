@@ -47,6 +47,19 @@ export default function GlobalPlayer(props: { streamId: number }) {
   // Check if this player is for the currently playing stream
   const isCurrentStream = currentStreamId === streamId
 
+  // Debug logging
+  useEffect(() => {
+    console.log('🎵 Global Player - Context update:', {
+      streamId,
+      isPlaying,
+      currentStreamId,
+      isCurrentStream,
+      nowPlaying: typeof nowPlaying === 'string' ? nowPlaying : `${nowPlaying.artist} - ${nowPlaying.title}`,
+      hasAnalyser: !!analyserRef.current,
+      hasDataArray: !!dataArrayRef.current
+    })
+  }, [isPlaying, currentStreamId, nowPlaying])
+
   useEffect(() => {
     return () => {
       if (animationRef.current) {
