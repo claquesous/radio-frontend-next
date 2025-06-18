@@ -172,16 +172,30 @@ export default function Player(props: { streamId: number }) {
   }
 
   const setupVisualization = (audioElement: HTMLAudioElement) => {
-    if (!canvasRef.current || audioContextRef.current) return
+    console.log('Setting up visualization...', { canvasRef: !!canvasRef.current, audioContextRef: !!audioContextRef.current })
+    
+    if (!canvasRef.current) {
+      console.error('Canvas ref not available')
+      return
+    }
+    
+    if (audioContextRef.current) {
+      console.log('Audio context already exists')
+      return
+    }
     
     try {
+      console.log('Creating audio context...')
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
       const source = audioContext.createMediaElementSource(audioElement)
       const analyser = audioContext.createAnalyser()
       
-      analyser.fftSize = 64
+      analyser.fftSize = 128
+      analyser.smoothingTimeConstant = 0.8
       const bufferLength = analyser.frequencyBinCount
       const dataArray = new Uint8Array(bufferLength)
+      
+      console.log('Audio context setup:', { bufferLength, state: audioContext.state })
       
       source.connect(analyser)
       analyser.connect(audioContext.destination)
@@ -190,45 +204,88 @@ export default function Player(props: { streamId: number }) {
       analyserRef.current = analyser
       dataArrayRef.current = dataArray
       
-      startVisualization()
+      // Resume audio context if needed
+      if (audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+          console.log('Audio context resumed')
+          startVisualization()
+        })
+      } else {
+        startVisualization()
+      }
     } catch (error) {
-      console.warn('Audio visualization not supported:', error)
+      console.error('Audio visualization setup failed:', error)
     }
   }
 
   const startVisualization = () => {
-    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
+    console.log('Starting visualization...', { 
+      canvas: !!canvasRef.current, 
+      analyser: !!analyserRef.current, 
+      dataArray: !!dataArrayRef.current,
+      isPlaying 
+    })
+    
+    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) {
+      console.error('Missing visualization components')
+      return
+    }
     
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    if (!ctx) {
+      console.error('Could not get canvas context')
+      return
+    }
     
     const analyser = analyserRef.current
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
+    console.log('Visualization started with buffer length:', bufferLength)
+    
+    let frameCount = 0
+    
     const draw = () => {
-      if (!isPlaying) return
+      if (!isPlaying) {
+        console.log('Stopping visualization - not playing')
+        return
+      }
       
       analyser.getByteFrequencyData(dataArray)
       
+      // Log first few frames for debugging
+      if (frameCount < 5) {
+        console.log(`Frame ${frameCount}:`, Array.from(dataArray.slice(0, 10)))
+        frameCount++
+      }
+      
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
-      const barWidth = canvas.width / bufferLength
+      // Add a background to make sure canvas is working
+      ctx.fillStyle = '#111111'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      
+      const barWidth = Math.max(2, canvas.width / bufferLength)
       let x = 0
       
       for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height
+        const normalizedValue = dataArray[i] / 255
+        const barHeight = Math.max(2, normalizedValue * canvas.height * 0.8)
         
         // Create gradient colors like classic Winamp
-        const intensity = dataArray[i] / 255
         let color
-        if (intensity < 0.3) {
-          color = `rgb(0, ${Math.floor(intensity * 255 * 3)}, 0)`
-        } else if (intensity < 0.6) {
-          color = `rgb(${Math.floor((intensity - 0.3) * 255 * 3)}, 255, 0)`
+        if (normalizedValue < 0.3) {
+          color = `rgb(0, ${Math.floor(normalizedValue * 255 * 3)}, 0)`
+        } else if (normalizedValue < 0.6) {
+          color = `rgb(${Math.floor((normalizedValue - 0.3) * 255 * 3)}, 255, 0)`
         } else {
-          color = `rgb(255, ${Math.floor(255 - (intensity - 0.6) * 255 * 2.5)}, 0)`
+          color = `rgb(255, ${Math.floor(255 - (normalizedValue - 0.6) * 255 * 2.5)}, 0)`
+        }
+        
+        // Fallback to ensure bars are visible even with no audio
+        if (normalizedValue === 0) {
+          color = '#004400'  // Dark green for empty bars
         }
         
         ctx.fillStyle = color
@@ -285,12 +342,21 @@ export default function Player(props: { streamId: number }) {
         ref={canvasRef}
         width={300}
         height={60}
-        className="w-full h-full"
-        style={{imageRendering: 'pixelated', display: isPlaying ? 'block' : 'none'}}
+        className="w-full h-full border border-green-500"
+        style={{
+          imageRendering: 'pixelated', 
+          display: 'block',
+          backgroundColor: '#000000'
+        }}
       />
       {!isPlaying && (
-        <div className="flex items-center justify-center h-full text-green-400 text-sm font-mono absolute inset-0">
+        <div className="flex items-center justify-center h-full text-green-400 text-sm font-mono absolute inset-0 pointer-events-none bg-black bg-opacity-75">
           ⏸ VISUALIZATION STOPPED
+        </div>
+      )}
+      {isPlaying && (
+        <div className="absolute top-1 left-1 text-green-400 text-xs font-mono pointer-events-none">
+          VIZ ACTIVE
         </div>
       )}
     </div>
