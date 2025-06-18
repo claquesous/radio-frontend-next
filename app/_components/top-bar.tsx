@@ -2,16 +2,19 @@
 
 import Link from 'next/link'
 import LoginForm from './login-form'
+import MiniPlayer from './mini-player'
 
 export default function TopBar() {
   return (
-    <>
-      <Link className="ml-2 text-xl inline-block text-slate-200" href="/">
+    <div className="flex items-center justify-between w-full px-2">
+      <Link className="text-xl text-slate-200" href="/">
         Claq Radio
       </Link>
-      <div className="inline-block float-right">
+      
+      <div className="flex items-center space-x-4">
+        <MiniPlayer />
         <LoginForm />
       </div>
-    </>
+    </div>
   )
 }

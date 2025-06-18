@@ -2,13 +2,25 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styles from './styles.module.css'
 import TestimonialsCarousel from './_components/testimonials-carousel'
+import StreamPlayButton from './_components/stream-play-button'
 
 export default function Home() {
   return (<div>
     Welcome to My Claqradio Rocks!
 
-    <div>
-      <Link href='/s/1'>Listen Now!</Link>
+    <div className="flex items-center space-x-4 my-4">
+      <StreamPlayButton 
+        streamId={1} 
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Listen Now!
+      </StreamPlayButton>
+      <Link 
+        href='/s/1'
+        className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+      >
+        Go to Stream Page
+      </Link>
     </div>
 
     <section className={styles.hero}>
