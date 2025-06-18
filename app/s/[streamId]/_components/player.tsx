@@ -69,6 +69,8 @@ export default function Player(props: { streamId: number }) {
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const dataArrayRef = useRef<Uint8Array | null>(null)
+  const collapseAnimationRef = useRef<number | null>(null)
+  const lastBarHeightsRef = useRef<number[]>([])
 
   useEffect(() => stopStream, [])
 
@@ -95,9 +97,67 @@ export default function Player(props: { streamId: number }) {
     }, 100)
   }
 
+  const startCollapseAnimation = () => {
+    if (!canvasRef.current || lastBarHeightsRef.current.length === 0) return
+    
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    
+    const startTime = Date.now()
+    const animationDuration = 300 // 300ms collapse animation
+    const initialBarHeights = [...lastBarHeightsRef.current]
+    const bufferLength = analyserRef.current?.frequencyBinCount || 64
+    const usefulBins = Math.floor(bufferLength * 0.5)
+    const barWidth = canvas.width / usefulBins
+    
+    const collapseFrame = () => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / animationDuration, 1)
+      const easeOutProgress = 1 - Math.pow(1 - progress, 3) // Ease out cubic
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = '#111111'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      
+      let x = 0
+      for (let i = 0; i < usefulBins; i++) {
+        const initialHeight = initialBarHeights[i] || 1
+        const barHeight = initialHeight * (1 - easeOutProgress)
+        
+        // Use theme colors: blue (low) to red (high) like volume bars
+        const intensity = i / usefulBins
+        const blue = Math.floor(255 - (intensity * 255))
+        const red = Math.floor(intensity * 255)
+        const color = `rgb(${red}, 0, ${blue})`
+        
+        ctx.fillStyle = color
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
+        
+        x += barWidth
+      }
+      
+      if (progress < 1) {
+        collapseAnimationRef.current = requestAnimationFrame(collapseFrame)
+      } else {
+        // Clear the canvas completely when animation is done
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = '#111111'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        collapseAnimationRef.current = null
+      }
+    }
+    
+    collapseFrame()
+  }
+
   const stopStream = () => {
     setIsPlaying(false)
     setCanVote(false)
+    
+    // Start collapse animation before stopping everything
+    startCollapseAnimation()
+    
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
@@ -108,6 +168,13 @@ export default function Player(props: { streamId: number }) {
       cancelAnimationFrame(animationRef.current)
       animationRef.current = null
     }
+    
+    // Clean up collapse animation if it's running
+    if (collapseAnimationRef.current) {
+      cancelAnimationFrame(collapseAnimationRef.current)
+      collapseAnimationRef.current = null
+    }
+    
     if (audioContextRef.current) {
       audioContextRef.current.close()
       audioContextRef.current = null
@@ -243,10 +310,12 @@ export default function Player(props: { streamId: number }) {
       const usefulBins = Math.floor(bufferLength * 0.5) // Show first 50% of frequency spectrum
       const barWidth = canvas.width / usefulBins
       let x = 0
+      const currentBarHeights: number[] = []
       
       for (let i = 0; i < usefulBins; i++) {
         const normalizedValue = dataArray[i] / 255
         const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
+        currentBarHeights.push(barHeight)
         
         // Use theme colors: blue (low) to red (high) like volume bars
         const intensity = i / usefulBins // Use position in useful range for color
@@ -259,6 +328,9 @@ export default function Player(props: { streamId: number }) {
         
         x += barWidth
       }
+      
+      // Store the current bar heights for potential collapse animation
+      lastBarHeightsRef.current = currentBarHeights
       
       if (animationRef.current !== null) {
         animationRef.current = requestAnimationFrame(draw)
