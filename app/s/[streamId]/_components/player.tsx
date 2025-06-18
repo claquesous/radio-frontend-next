@@ -64,6 +64,11 @@ export default function Player(props: { streamId: number }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const animationRef = useRef<number | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const dataArrayRef = useRef<Uint8Array | null>(null)
 
   useEffect(() => stopStream, [])
 
@@ -83,6 +88,11 @@ export default function Player(props: { streamId: number }) {
     }
     player.play()
     playerRef.current = player
+    
+    // Set up audio visualization
+    setTimeout(() => {
+      setupVisualization(player.audioElement)
+    }, 100)
   }
 
   const stopStream = () => {
@@ -91,6 +101,16 @@ export default function Player(props: { streamId: number }) {
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
+    }
+    
+    // Clean up visualization
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+      animationRef.current = null
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close()
+      audioContextRef.current = null
     }
   }
 
@@ -151,6 +171,78 @@ export default function Player(props: { streamId: number }) {
     }
   }
 
+  const setupVisualization = (audioElement: HTMLAudioElement) => {
+    if (!canvasRef.current || audioContextRef.current) return
+    
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const source = audioContext.createMediaElementSource(audioElement)
+      const analyser = audioContext.createAnalyser()
+      
+      analyser.fftSize = 64
+      const bufferLength = analyser.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
+      
+      source.connect(analyser)
+      analyser.connect(audioContext.destination)
+      
+      audioContextRef.current = audioContext
+      analyserRef.current = analyser
+      dataArrayRef.current = dataArray
+      
+      startVisualization()
+    } catch (error) {
+      console.warn('Audio visualization not supported:', error)
+    }
+  }
+
+  const startVisualization = () => {
+    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
+    
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    
+    const analyser = analyserRef.current
+    const dataArray = dataArrayRef.current
+    const bufferLength = analyser.frequencyBinCount
+    
+    const draw = () => {
+      if (!isPlaying) return
+      
+      analyser.getByteFrequencyData(dataArray)
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      const barWidth = canvas.width / bufferLength
+      let x = 0
+      
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = (dataArray[i] / 255) * canvas.height
+        
+        // Create gradient colors like classic Winamp
+        const intensity = dataArray[i] / 255
+        let color
+        if (intensity < 0.3) {
+          color = `rgb(0, ${Math.floor(intensity * 255 * 3)}, 0)`
+        } else if (intensity < 0.6) {
+          color = `rgb(${Math.floor((intensity - 0.3) * 255 * 3)}, 255, 0)`
+        } else {
+          color = `rgb(255, ${Math.floor(255 - (intensity - 0.6) * 255 * 2.5)}, 0)`
+        }
+        
+        ctx.fillStyle = color
+        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight)
+        
+        x += barWidth
+      }
+      
+      animationRef.current = requestAnimationFrame(draw)
+    }
+    
+    draw()
+  }
+
   const getVolumeColor = (index: number) => {
     if (index>=volume) {
       return 'rgb(75, 85, 99)'
@@ -186,6 +278,23 @@ export default function Player(props: { streamId: number }) {
       <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
     <NowPlayingDisplay />
+    
+    {/* Audio Visualization */}
+    <div className="my-4 p-2 bg-black rounded border-2 border-gray-600 relative" style={{height: '80px'}}>
+      <canvas
+        ref={canvasRef}
+        width={300}
+        height={60}
+        className="w-full h-full"
+        style={{imageRendering: 'pixelated', display: isPlaying ? 'block' : 'none'}}
+      />
+      {!isPlaying && (
+        <div className="flex items-center justify-center h-full text-green-400 text-sm font-mono absolute inset-0">
+          ⏸ VISUALIZATION STOPPED
+        </div>
+      )}
+    </div>
+    
     <div className="flex space-x-1">
       <button
         onClick={isPlaying ? stopStream : startStream}
