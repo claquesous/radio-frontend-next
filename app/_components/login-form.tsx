@@ -83,10 +83,10 @@ export default function LoginForm() {
   }
 
   return (
-    <div
-      className="ml-4"
-      style={{
-        display: 'inline-flex',
+    <div 
+      className="ml-4" 
+      style={{ 
+        display: 'inline-flex', 
         alignItems: 'center',
         opacity: isReady ? 1 : 0,
         transition: 'opacity 150ms ease-in'
