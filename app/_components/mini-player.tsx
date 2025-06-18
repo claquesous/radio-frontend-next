@@ -19,11 +19,6 @@ export default function MiniPlayer() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
 
-  // Don't show the mini player if nothing is playing or the main player is visible
-  if (!isPlaying || !currentStreamId || isPlayerVisible) {
-    return null
-  }
-
   useEffect(() => {
     if (isPlaying && analyserRef.current && dataArrayRef.current) {
       startVisualization()
@@ -131,6 +126,11 @@ export default function MiniPlayer() {
         </div>
       )
     }
+  }
+
+  // Don't show the mini player if nothing is playing or the main player is visible
+  if (!isPlaying || !currentStreamId || isPlayerVisible) {
+    return null
   }
 
   return (
