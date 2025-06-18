@@ -240,22 +240,20 @@ export default function Player(props: { streamId: number }) {
       ctx.fillStyle = '#111111'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       
-      const barWidth = canvas.width / bufferLength
+      // Only show lower frequency bins that typically have music content
+      const usefulBins = Math.floor(bufferLength * 0.6) // Show first 60% of frequency spectrum
+      const barWidth = canvas.width / usefulBins
       let x = 0
       
-      for (let i = 0; i < bufferLength; i++) {
+      for (let i = 0; i < usefulBins; i++) {
         const normalizedValue = dataArray[i] / 255
         const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
         
         // Use theme colors: blue (low) to red (high) like volume bars
-        let color
-        if (normalizedValue === 0) {
-          color = '#1e293b'  // Dark slate for empty bars
-        } else {
-          const blue = Math.floor(255 - (normalizedValue * 255))
-          const red = Math.floor(normalizedValue * 255)
-          color = `rgb(${red}, 0, ${blue})`
-        }
+        const intensity = i / usefulBins // Use position in useful range for color
+        const blue = Math.floor(255 - (intensity * 255))
+        const red = Math.floor(intensity * 255)
+        const color = `rgb(${red}, 0, ${blue})`
         
         ctx.fillStyle = color
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
