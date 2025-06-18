@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import useSWR from 'swr'
 import { useAudio } from '../_contexts/audio-context'
@@ -46,60 +46,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
   // Check if this player is for the currently playing stream
   const isCurrentStream = currentStreamId === Number(streamId) || currentStreamId === streamId
 
-
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-      if (collapseAnimationRef.current) {
-        cancelAnimationFrame(collapseAnimationRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout
-
-    if (isCurrentStream && isPlaying && visualizationReady) {
-      // Stop any existing animation first
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
-      }
-
-      // Check periodically for audio context to be ready
-      const checkAndStartVisualization = () => {
-        if (analyserRef.current && dataArrayRef.current && canvasRef.current) {
-          startVisualization()
-        } else {
-          timeoutId = setTimeout(checkAndStartVisualization, 100)
-        }
-      }
-
-      // Add a small delay to ensure DOM is ready when switching views
-      timeoutId = setTimeout(checkAndStartVisualization, 50)
-    } else {
-      // Stop visualization and start collapse animation
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
-      }
-      if (lastBarHeightsRef.current.length > 0) {
-        startCollapseAnimation()
-      }
-    }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
-      }
-    }
-  }, [isCurrentStream, isPlaying, visualizationReady, analyserRef.current, dataArrayRef.current])
-
-  const startCollapseAnimation = () => {
+  const startCollapseAnimation = useCallback(() => {
     if (!canvasRef.current || lastBarHeightsRef.current.length === 0) return
 
     const canvas = canvasRef.current
@@ -149,9 +96,9 @@ export default function GlobalPlayer(props: { streamId: number }) {
     }
 
     collapseFrame()
-  }
+  }, [analyserRef])
 
-  const startVisualization = () => {
+  const startVisualization = useCallback(() => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
 
     const canvas = canvasRef.current
@@ -221,7 +168,59 @@ export default function GlobalPlayer(props: { streamId: number }) {
 
     animationRef.current = 1
     draw()
-  }
+  }, [isCurrentStream, isPlaying, analyserRef, dataArrayRef])
+
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+      if (collapseAnimationRef.current) {
+        cancelAnimationFrame(collapseAnimationRef.current)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+
+    if (isCurrentStream && isPlaying && visualizationReady) {
+      // Stop any existing animation first
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+
+      // Check periodically for audio context to be ready
+      const checkAndStartVisualization = () => {
+        if (analyserRef.current && dataArrayRef.current && canvasRef.current) {
+          startVisualization()
+        } else {
+          timeoutId = setTimeout(checkAndStartVisualization, 100)
+        }
+      }
+
+      // Add a small delay to ensure DOM is ready when switching views
+      timeoutId = setTimeout(checkAndStartVisualization, 50)
+    } else {
+      // Stop visualization and start collapse animation
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      if (lastBarHeightsRef.current.length > 0) {
+        startCollapseAnimation()
+      }
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+    }
+  }, [isCurrentStream, isPlaying, visualizationReady, startCollapseAnimation, startVisualization])
 
   const handleStartStream = () => {
     if (stream) {
