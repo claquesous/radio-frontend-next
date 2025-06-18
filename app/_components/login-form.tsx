@@ -31,48 +31,58 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 sm:gap-2 items-stretch sm:items-center">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <div className="text-red-500 text-xs sm:text-sm order-first sm:order-none whitespace-nowrap">
+        <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-md border border-red-200 dark:border-red-800">
           {error}
         </div>
       )}
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="p-2 rounded text-sm w-full sm:w-auto sm:min-w-[100px] lg:min-w-[120px]"
-        required
-        disabled={isLoading}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="p-2 rounded text-sm w-full sm:w-auto sm:min-w-[100px] lg:min-w-[120px]"
-        required
-        disabled={isLoading}
-      />
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-blue-500 hover:bg-blue-700 dark:bg-slate-600 dark:hover:bg-slate-500
-                     text-white font-bold py-2 px-3 sm:px-4 rounded text-sm transition-colors duration-200 flex-1 sm:flex-none
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-slate-700 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Login
-        </button>
-        <Link
-          href="/signup"
-          className="bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500
-                     text-white font-bold py-2 px-3 sm:px-4 rounded text-sm transition-colors duration-200 text-center flex-1 sm:flex-none"
-        >
-          Sign Up
-        </Link>
+          required
+          disabled={isLoading}
+        />
       </div>
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 rounded-md border border-gray-300 dark:border-gray-600
+                     bg-white dark:bg-slate-700 text-gray-900 dark:text-white
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                     disabled:opacity-50 disabled:cursor-not-allowed"
+          required
+          disabled={isLoading}
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600
+                   text-white font-semibold py-3 px-4 rounded-md text-sm transition-colors duration-200
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
+      >
+        Login
+      </button>
     </form>
   )
 }
