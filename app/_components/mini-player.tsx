@@ -113,7 +113,7 @@ export default function MiniPlayer() {
         animationRef.current = null
       }
     }
-  }, [isPlaying, visualizationReady, isPlayerVisible, startVisualization])
+  }, [isPlaying, visualizationReady, isPlayerVisible, startVisualization, analyserRef, dataArrayRef])
 
   // Hide the mini player content but maintain layout space
   const shouldShow = isPlaying && currentStreamId && !isPlayerVisible

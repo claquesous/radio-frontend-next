@@ -220,7 +220,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
         animationRef.current = null
       }
     }
-  }, [isCurrentStream, isPlaying, visualizationReady, startCollapseAnimation, startVisualization])
+  }, [isCurrentStream, isPlaying, visualizationReady, startCollapseAnimation, startVisualization, analyserRef, dataArrayRef])
 
   const handleStartStream = () => {
     if (stream) {
