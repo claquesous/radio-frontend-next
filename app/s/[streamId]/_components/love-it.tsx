@@ -10,17 +10,12 @@ export default function LoveIt(props: { streamId: number, playId: number}) {
   const [isLoved, setIsLoved] = useState(false)
 
   const rateUp = async () => {
-    // Trigger haptic feedback immediately
     triggerHaptic('success')
-    
-    // Set visual feedback
     setIsLoved(true)
-    
-    // Reset the visual state after 300ms
+
     setTimeout(() => {
       setIsLoved(false)
     }, 300)
-    
     try {
       const authToken = localStorage.getItem('authToken')
 
