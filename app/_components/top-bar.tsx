@@ -91,8 +91,8 @@ export default function TopBar() {
         Claq Radio
       </Link>
 
-      <div className="flex items-center space-x-4">
-        {isReady && (
+      <div className="flex items-center space-x-4 min-h-[2.5rem]">
+        {isReady ? (
           currentUser ? (
             <>
               <MiniPlayer />
@@ -101,6 +101,8 @@ export default function TopBar() {
           ) : (
             <LoginForm onLogin={handleLogin} />
           )
+        ) : (
+          <div className="h-10 w-64"></div>
         )}
       </div>
     </div>
