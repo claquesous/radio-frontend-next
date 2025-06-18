@@ -2,7 +2,8 @@
 
 import { useState, useLayoutEffect } from 'react'
 import Link from 'next/link'
-import LoginForm from './login-form'
+import LoginModal from './login-modal'
+import LoginButton from './login-button'
 import MiniPlayer from './mini-player'
 import UserMenu from './user-menu'
 import { useAudio } from '../_contexts/audio-context'
@@ -23,6 +24,7 @@ interface AuthResponse {
 export default function TopBar() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const { stopStream } = useAudio()
   const router = useRouter()
 
@@ -39,6 +41,11 @@ export default function TopBar() {
       }
     }
     setIsReady(true)
+
+    // Listen for global login modal open event
+    const openModal = () => setIsLoginModalOpen(true)
+    window.addEventListener('open-login-modal', openModal)
+    return () => window.removeEventListener('open-login-modal', openModal)
   }, [])
 
   const handleLogin = async (email: string, password: string) => {
@@ -99,7 +106,14 @@ export default function TopBar() {
               <UserMenu user={currentUser} onLogout={handleLogout} />
             </>
           ) : (
-            <LoginForm onLogin={handleLogin} />
+            <>
+              <LoginButton onClick={() => setIsLoginModalOpen(true)} />
+              <LoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLogin={handleLogin}
+              />
+            </>
           )
         ) : (
           <div className="h-10 w-64"></div>
