@@ -247,11 +247,6 @@ export default function Player(props: { streamId: number }) {
     let frameCount = 0
     
     const draw = () => {
-      if (!isPlaying) {
-        console.log('Stopping visualization - not playing')
-        return
-      }
-      
       analyser.getByteFrequencyData(dataArray)
       
       // Log first few frames for debugging
@@ -294,9 +289,14 @@ export default function Player(props: { streamId: number }) {
         x += barWidth
       }
       
-      animationRef.current = requestAnimationFrame(draw)
+      // Only continue if we haven't been cancelled
+      if (animationRef.current !== null) {
+        animationRef.current = requestAnimationFrame(draw)
+      }
     }
     
+    // Start with a dummy value to indicate animation is running
+    animationRef.current = 1
     draw()
   }
 
