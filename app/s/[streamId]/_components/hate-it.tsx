@@ -1,11 +1,14 @@
 'use client'
 
 import axios from 'axios'
+import { useHapticFeedback } from '../../../_hooks/use-haptic-feedback'
 
 export default function HateIt(props: { streamId: number, playId: number }) {
   const { streamId, playId } = props
+  const { triggerHaptic } = useHapticFeedback()
 
   const rateDown = async () => {
+    triggerHaptic('error')
     try {
       const authToken = localStorage.getItem('authToken')
 
