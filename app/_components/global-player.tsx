@@ -76,15 +76,23 @@ export default function GlobalPlayer(props: { streamId: number }) {
     let timeoutId: NodeJS.Timeout
     
     if (isCurrentStream && isPlaying && visualizationReady) {
+      // Stop any existing animation first
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      
       // Check periodically for audio context to be ready
       const checkAndStartVisualization = () => {
-        if (analyserRef.current && dataArrayRef.current) {
+        if (analyserRef.current && dataArrayRef.current && canvasRef.current) {
           startVisualization()
         } else {
           timeoutId = setTimeout(checkAndStartVisualization, 100)
         }
       }
-      checkAndStartVisualization()
+      
+      // Add a small delay to ensure DOM is ready when switching views
+      timeoutId = setTimeout(checkAndStartVisualization, 50)
     } else {
       // Stop visualization and start collapse animation
       if (animationRef.current) {
@@ -103,7 +111,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
         animationRef.current = null
       }
     }
-  }, [isCurrentStream, isPlaying, visualizationReady])
+  }, [isCurrentStream, isPlaying, visualizationReady, analyserRef.current, dataArrayRef.current])
 
   const startCollapseAnimation = () => {
     if (!canvasRef.current || lastBarHeightsRef.current.length === 0) return

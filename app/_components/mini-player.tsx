@@ -35,16 +35,24 @@ export default function MiniPlayer() {
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
     
-    if (isPlaying && visualizationReady) {
+    if (isPlaying && visualizationReady && !isPlayerVisible) {
+      // Stop any existing animation first
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      
       // Check periodically for audio context to be ready
       const checkAndStartVisualization = () => {
-        if (analyserRef.current && dataArrayRef.current) {
+        if (analyserRef.current && dataArrayRef.current && canvasRef.current) {
           startVisualization()
         } else {
           timeoutId = setTimeout(checkAndStartVisualization, 100)
         }
       }
-      checkAndStartVisualization()
+      
+      // Add a small delay to ensure DOM is ready when switching views
+      timeoutId = setTimeout(checkAndStartVisualization, 50)
     } else {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
@@ -59,7 +67,7 @@ export default function MiniPlayer() {
         animationRef.current = null
       }
     }
-  }, [isPlaying, visualizationReady])
+  }, [isPlaying, visualizationReady, isPlayerVisible, analyserRef.current, dataArrayRef.current])
 
   const startVisualization = () => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
