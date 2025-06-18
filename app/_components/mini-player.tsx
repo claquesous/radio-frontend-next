@@ -20,8 +20,18 @@ export default function MiniPlayer() {
   const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
-    if (isPlaying && analyserRef.current && dataArrayRef.current) {
-      startVisualization()
+    let timeoutId: NodeJS.Timeout
+    
+    if (isPlaying) {
+      // Check periodically for audio context to be ready
+      const checkAndStartVisualization = () => {
+        if (analyserRef.current && dataArrayRef.current) {
+          startVisualization()
+        } else {
+          timeoutId = setTimeout(checkAndStartVisualization, 100)
+        }
+      }
+      checkAndStartVisualization()
     } else {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
@@ -30,6 +40,7 @@ export default function MiniPlayer() {
     }
 
     return () => {
+      if (timeoutId) clearTimeout(timeoutId)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
         animationRef.current = null

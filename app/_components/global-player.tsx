@@ -59,11 +59,18 @@ export default function GlobalPlayer(props: { streamId: number }) {
   }, [])
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    
     if (isCurrentStream && isPlaying) {
-      // Start visualization for this player
-      setTimeout(() => {
-        startVisualization()
-      }, 100)
+      // Check periodically for audio context to be ready
+      const checkAndStartVisualization = () => {
+        if (analyserRef.current && dataArrayRef.current) {
+          startVisualization()
+        } else {
+          timeoutId = setTimeout(checkAndStartVisualization, 100)
+        }
+      }
+      checkAndStartVisualization()
     } else {
       // Stop visualization and start collapse animation
       if (animationRef.current) {
@@ -76,6 +83,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
     }
     
     return () => {
+      if (timeoutId) clearTimeout(timeoutId)
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
         animationRef.current = null
