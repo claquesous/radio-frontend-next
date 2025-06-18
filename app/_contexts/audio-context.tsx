@@ -122,11 +122,28 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setCanVote(false)
     }
     if ("mediaSession" in navigator) {
+      const absoluteLogoUrl = `${window.location.origin}/logo.jpg`
       navigator.mediaSession.metadata = new MediaMetadata({
-        ...playerMeta,
-        artwork: [{
-          src: '/logo.jpg', sizes: '512x512', type: 'image/jpg'
-        }],
+        title: playerMeta.title,
+        artist: playerMeta.artist || currentStreamName || 'Claq Radio',
+        album: playerMeta.album || currentStreamName || 'Claq Radio',
+        artwork: [
+          {
+            src: absoluteLogoUrl,
+            sizes: '512x512',
+            type: 'image/jpeg'
+          },
+          {
+            src: absoluteLogoUrl,
+            sizes: '256x256',
+            type: 'image/jpeg'
+          },
+          {
+            src: absoluteLogoUrl,
+            sizes: '128x128',
+            type: 'image/jpeg'
+          }
+        ],
       })
     }
   }
