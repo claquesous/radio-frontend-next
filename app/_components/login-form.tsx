@@ -83,16 +83,10 @@ export default function LoginForm() {
   }
 
   return (
-    <div 
-      className="relative"
-      style={{ 
-        opacity: isReady ? 1 : 0,
-        transition: 'opacity 150ms ease-in'
-      }}
-    >
-      {currentUser ? (
+    <div className="relative">
+      {isReady && currentUser ? (
         <UserMenu user={currentUser} onLogout={handleLogout} />
-      ) : (
+      ) : isReady ? (
         <form onSubmit={handleLogin} className="flex flex-col sm:flex-row gap-2 sm:gap-2 items-stretch sm:items-center">
           {error && (
             <div className="text-red-500 text-xs sm:text-sm order-first sm:order-none whitespace-nowrap">
@@ -132,7 +126,7 @@ export default function LoginForm() {
             </Link>
           </div>
         </form>
-      )}
+      ) : null}
     </div>
   )
 }

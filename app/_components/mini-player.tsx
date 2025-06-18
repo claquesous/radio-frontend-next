@@ -118,8 +118,12 @@ export default function MiniPlayer() {
   // Hide the mini player content but maintain layout space
   const shouldShow = isPlaying && currentStreamId && !isPlayerVisible
 
+  if (!shouldShow) {
+    return null
+  }
+
   return (
-    <div className={`flex items-center space-x-1 sm:space-x-2 rounded px-1 sm:px-2 py-1 max-w-xs sm:max-w-md h-7 ${shouldShow ? 'bg-slate-600' : 'bg-transparent'}`} style={{ visibility: shouldShow ? 'visible' : 'hidden' }}>
+    <div className="flex items-center space-x-1 sm:space-x-2 rounded px-1 sm:px-2 py-1 max-w-xs sm:max-w-md h-7 bg-slate-600">
       {/* Now Playing Info */}
       <div className="flex items-center min-w-0 flex-1 h-full">
         <div className="text-xs text-slate-200 max-w-32 sm:max-w-48 overflow-hidden">
