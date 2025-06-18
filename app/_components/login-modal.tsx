@@ -99,7 +99,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
 
         {/* Sign up link */}
         <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a
             href="/signup"
             className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-medium"
