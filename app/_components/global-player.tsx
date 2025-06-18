@@ -256,12 +256,10 @@ export default function GlobalPlayer(props: { streamId: number }) {
   function NowPlayingDisplay() {
     if (typeof nowPlaying === 'string') {
       return (<>
-        <p>Now Playing:</p>
         <p>{nowPlaying}</p>
       </>)
     } else {
       return (<>
-        <p>Now Playing:</p>
         <p>
           <Link href={`/s/${streamId}/artists/${nowPlaying.artist_id}`}>{nowPlaying.artist}</Link> - <Link href={`/s/${streamId}/songs/${nowPlaying.song_id}`}>{nowPlaying.title}</Link>
         </p>

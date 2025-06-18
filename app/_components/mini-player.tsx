@@ -116,56 +116,44 @@ export default function MiniPlayer() {
     draw()
   }
 
-  function NowPlayingDisplay() {
-    if (typeof nowPlaying === 'string') {
-      return (
-        <div className="text-sm text-slate-200 max-w-48 overflow-hidden">
-          <div className="whitespace-nowrap animate-scroll-text">
-            {nowPlaying}
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className="text-sm text-slate-200 max-w-48 overflow-hidden">
-          <div className="whitespace-nowrap animate-scroll-text">
-            <Link 
-              href={`/s/${currentStreamId}/artists/${nowPlaying.artist_id}`}
-              className="hover:text-slate-100"
-            >
-              {nowPlaying.artist}
-            </Link>
-            {' - '}
-            <Link 
-              href={`/s/${currentStreamId}/songs/${nowPlaying.song_id}`}
-              className="hover:text-slate-100"
-            >
-              {nowPlaying.title}
-            </Link>
-          </div>
-        </div>
-      )
-    }
-  }
-
   // Don't show the mini player if nothing is playing or the main player is visible
   if (!isPlaying || !currentStreamId || isPlayerVisible) {
     return null
   }
 
   return (
-    <div className="flex items-center space-x-2 bg-slate-600 rounded px-3 py-1 max-w-md">
+    <div className="flex items-center space-x-2 bg-slate-600 rounded px-2 py-1 max-w-md h-7">
       {/* Now Playing Info */}
-      <div className="flex flex-col min-w-0 flex-1">
-        <div className="text-xs text-slate-300">
-          <Link 
-            href={`/s/${currentStreamId}`}
-            className="hover:text-slate-100"
-          >
-            {currentStreamName}
-          </Link>
+      <div className="flex items-center min-w-0 flex-1 h-full">
+        <div className="text-xs text-slate-200 max-w-48 overflow-hidden">
+          <div className="whitespace-nowrap animate-scroll-text">
+            <Link 
+              href={`/s/${currentStreamId}`}
+              className="hover:text-slate-100 text-slate-300"
+            >
+              {currentStreamName}
+            </Link>
+            {typeof nowPlaying !== 'string' && (
+              <>
+                {' • '}
+                <Link 
+                  href={`/s/${currentStreamId}/artists/${nowPlaying.artist_id}`}
+                  className="hover:text-slate-100"
+                >
+                  {nowPlaying.artist}
+                </Link>
+                {' - '}
+                <Link 
+                  href={`/s/${currentStreamId}/songs/${nowPlaying.song_id}`}
+                  className="hover:text-slate-100"
+                >
+                  {nowPlaying.title}
+                </Link>
+              </>
+            )}
+            {typeof nowPlaying === 'string' && ` • ${nowPlaying}`}
+          </div>
         </div>
-        <NowPlayingDisplay />
       </div>
       
       {/* Audio Visualization */}
