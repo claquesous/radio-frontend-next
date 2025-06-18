@@ -92,15 +92,16 @@ export default function TopBar() {
       </Link>
 
       <div className="flex items-center space-x-4">
-        {isReady && currentUser ? (
-          <>
-            <MiniPlayer />
-            <UserMenu user={currentUser} onLogout={handleLogout} />
-          </>
+        {isReady && (
+          currentUser ? (
+            <>
+              <MiniPlayer />
+              <UserMenu user={currentUser} onLogout={handleLogout} />
+            </>
           ) : (
             <LoginForm onLogin={handleLogin} />
           )
-        }
+        )}
       </div>
     </div>
   )
