@@ -35,7 +35,7 @@ export default function MiniPlayer() {
         animationRef.current = null
       }
     }
-  }, [isPlaying, analyserRef.current, dataArrayRef.current])
+  }, [isPlaying])
 
   const startVisualization = () => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
