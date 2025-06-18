@@ -183,15 +183,21 @@ export default function SignupPage() {
         <div className="text-center">
           <span className="text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
-            <button
-              type="button"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium"
+            <span
+              role="button"
+              tabIndex={0}
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium cursor-pointer"
               onClick={() => {
                 window.dispatchEvent(new Event('open-login-modal'))
               }}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  window.dispatchEvent(new Event('open-login-modal'))
+                }
+              }}
             >
               Login
-            </button>
+            </span>
           </span>
         </div>
       </div>
