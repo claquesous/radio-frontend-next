@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import axios from 'axios'
 import UserMenu from './user-menu'
+import { useAudio } from '../_contexts/audio-context'
 
 interface User {
   id: number
@@ -24,6 +25,7 @@ export default function LoginForm() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
   const router = useRouter()
+  const { stopStream } = useAudio()
 
   useLayoutEffect(() => {
     const storedToken = localStorage.getItem('authToken')
@@ -71,6 +73,9 @@ export default function LoginForm() {
   }
 
   const handleLogout = async () => {
+    // Stop any playing stream when logging out
+    stopStream()
+
     localStorage.removeItem('authToken')
     localStorage.removeItem('user')
     try {

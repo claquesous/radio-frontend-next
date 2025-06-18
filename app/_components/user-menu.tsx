@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 
 interface User {
   id: number
@@ -24,15 +23,9 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
     return email.charAt(0).toUpperCase()
   }
 
-  const handleLogout = async () => {
-    try {
-      await axios.delete('/api/logout')
-    } catch (err) {
-      // Ignore errors, just ensure cookie is cleared server-side
-    }
+  const handleLogout = () => {
     onLogout()
     setIsOpen(false)
-    router.push('/')
   }
 
   // Close menu when clicking outside
