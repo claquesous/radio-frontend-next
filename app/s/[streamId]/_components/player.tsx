@@ -243,11 +243,9 @@ export default function Player(props: { streamId: number }) {
       const barWidth = canvas.width / bufferLength
       let x = 0
       
-      console.log('Drawing bars:', { canvasWidth: canvas.width, bufferLength, barWidth, totalWidth: barWidth * bufferLength })
-      
       for (let i = 0; i < bufferLength; i++) {
         const normalizedValue = dataArray[i] / 255
-        const barHeight = Math.max(2, normalizedValue * canvas.height * 0.8)
+        const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
         
         // Use theme colors: blue (low) to red (high) like volume bars
         let color
