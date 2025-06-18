@@ -120,14 +120,17 @@ button:hover, .btn:hover {
     0% {
       transform: translateX(0%);
     }
-    20% {
+    25% {
       transform: translateX(0%);
     }
-    50% {
+    40% {
+      transform: translateX(calc(-100% + var(--container-width, 100%)));
+    }
+    65% {
       transform: translateX(calc(-100% + var(--container-width, 100%)));
     }
     80% {
-      transform: translateX(calc(-100% + var(--container-width, 100%)));
+      transform: translateX(0%);
     }
     100% {
       transform: translateX(0%);
