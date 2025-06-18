@@ -1,6 +1,5 @@
 'use client'
 import { createContext, useContext, useRef, useState, useEffect, ReactNode } from 'react'
-import IcecastMetadataPlayer from 'icecast-metadata-player'
 
 interface IcyMetadata {
   StreamTitle?: string
@@ -34,6 +33,14 @@ interface ParsedMetadata {
     id: number,
     name: string,
   }
+}
+
+// Type definition for IcecastMetadataPlayer
+interface IcecastMetadataPlayer {
+  play(): Promise<void>
+  stop(): void
+  detachAudioElement(): void
+  audioElement: HTMLAudioElement
 }
 
 interface AudioContextType {
@@ -162,27 +169,37 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
-    let player = new IcecastMetadataPlayer(`/streams/${streamName}`, {
-      onMetadata,
-      metadataTypes: ["icy"],
-    })
-    
-    if ("mediaSession" in navigator) {
-      navigator.mediaSession.setActionHandler('pause', stopStream)
-      navigator.mediaSession.setActionHandler('stop', stopStream)
-      navigator.mediaSession.setActionHandler('play', () => startStream(streamId, streamName))
+    try {
+      // Dynamically import the player to avoid SSR issues
+      const { default: IcecastMetadataPlayer } = await import('icecast-metadata-player')
+      
+      let player = new IcecastMetadataPlayer(`/streams/${streamName}`, {
+        onMetadata,
+        metadataTypes: ["icy"],
+      }) as IcecastMetadataPlayer
+      
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.setActionHandler('pause', stopStream)
+        navigator.mediaSession.setActionHandler('stop', stopStream)
+        navigator.mediaSession.setActionHandler('play', () => startStream(streamId, streamName))
+      }
+      
+      await player.play()
+      playerRef.current = player
+      
+      // Set initial volume
+      player.audioElement.volume = volume / VOLUME_INCREMENTS
+      
+      // Set up audio visualization
+      setTimeout(() => {
+        setupVisualization(player.audioElement)
+      }, 100)
+    } catch (error) {
+      console.error('Failed to load audio player:', error)
+      setIsPlaying(false)
+      setCurrentStreamId(null)
+      setCurrentStreamName(null)
     }
-    
-    await player.play()
-    playerRef.current = player
-    
-    // Set initial volume
-    player.audioElement.volume = volume / VOLUME_INCREMENTS
-    
-    // Set up audio visualization
-    setTimeout(() => {
-      setupVisualization(player.audioElement)
-    }, 100)
   }
 
   const stopStream = () => {
