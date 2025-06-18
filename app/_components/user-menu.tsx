@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 
 interface User {
   id: number
@@ -24,15 +23,9 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
     return email.charAt(0).toUpperCase()
   }
 
-  const handleLogout = async () => {
-    try {
-      await axios.delete('/api/logout')
-    } catch (err) {
-      // Ignore errors, just ensure cookie is cleared server-side
-    }
+  const handleLogout = () => {
     onLogout()
     setIsOpen(false)
-    router.push('/')
   }
 
   // Close menu when clicking outside
@@ -54,11 +47,10 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
       {/* Avatar Circle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500
-                   text-white font-semibold text-lg flex items-center justify-center
+        className="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 dark:bg-slate-600 dark:hover:bg-slate-500
+                   text-white font-semibold text-sm flex items-center justify-center
                    transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-slate-400
-                   shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150
-                   sm:w-8 sm:h-8 sm:text-base md:w-10 md:h-10 md:text-lg"
+                   shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
         aria-label={`User menu for ${user.email}`}
         aria-expanded={isOpen}
       >

@@ -104,6 +104,55 @@ button:hover, .btn:hover {
       transform: scale(1);
     }
   }
+
+  /* Scrolling text animation */
+  .animate-scroll-text {
+    animation: scrollText 10s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-scroll-text-fast {
+    animation: scrollText 6s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes scrollText {
+    0% {
+      transform: translateX(0%);
+    }
+    25% {
+      transform: translateX(0%);
+    }
+    40% {
+      transform: translateX(calc(-100% + var(--container-width, 100%)));
+    }
+    65% {
+      transform: translateX(calc(-100% + var(--container-width, 100%)));
+    }
+    80% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  /* Pause animation on hover */
+  .animate-scroll-text:hover,
+  .animate-scroll-text-fast:hover {
+    animation-play-state: paused;
+  }
+
+  /* Scrolling container utility */
+  .scroll-container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .scroll-text {
+    white-space: nowrap;
+    display: inline-block;
+  }
 }
 
 .primary-content {
