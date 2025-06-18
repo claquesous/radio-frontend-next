@@ -79,10 +79,7 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
                      transition-colors duration-200"
           aria-label="Close login modal"
         >
-          <svg className="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <line x1="6" y1="6" x2="18" y2="18" />
-            <line x1="18" y1="6" x2="6" y2="18" />
-          </svg>
+          <span className="w-5 h-5 block text-2xl leading-none pointer-events-none" aria-hidden="true">&times;</span>
         </button>
 
         {/* Modal header */}
