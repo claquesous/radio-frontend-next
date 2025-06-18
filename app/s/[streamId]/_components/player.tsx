@@ -217,7 +217,6 @@ export default function Player(props: { streamId: number }) {
       const rect = canvas.getBoundingClientRect()
       canvas.width = rect.width
       canvas.height = rect.height
-      console.log('Canvas sized to:', rect.width, 'x', rect.height, 'from getBoundingClientRect')
     }
     
     // Initial sizing with a delay to ensure DOM is ready
@@ -240,8 +239,8 @@ export default function Player(props: { streamId: number }) {
       ctx.fillStyle = '#111111'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       
-      // Only show lower frequency bins that typically have music content
-      const usefulBins = Math.floor(bufferLength * 0.6) // Show first 60% of frequency spectrum
+      // Show fewer frequency bins for cleaner visualization
+      const usefulBins = Math.floor(bufferLength * 0.5) // Show first 50% of frequency spectrum
       const barWidth = canvas.width / usefulBins
       let x = 0
       
