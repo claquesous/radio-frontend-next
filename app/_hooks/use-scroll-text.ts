@@ -1,61 +1,38 @@
 'use client'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-export function useScrollText(key?: string) {
+export function useScrollText() {
   const containerRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const [shouldScroll, setShouldScroll] = useState(false)
 
-  const checkOverflow = useCallback(() => {
-    if (containerRef.current && textRef.current) {
-      const containerWidth = containerRef.current.offsetWidth
-      const textWidth = textRef.current.scrollWidth
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current && textRef.current) {
+        const containerWidth = containerRef.current.offsetWidth
+        const textWidth = textRef.current.scrollWidth
 
-      const needsScroll = textWidth > containerWidth
-      setShouldScroll(needsScroll)
+        const needsScroll = textWidth > containerWidth
+        setShouldScroll(needsScroll)
 
-      if (needsScroll) {
-        textRef.current.style.setProperty('--container-width', `${containerWidth}px`)
+        if (needsScroll) {
+          textRef.current.style.setProperty('--container-width', `${containerWidth}px`)
+        }
       }
     }
-  }, [])
 
-  useEffect(() => {
-    // Reset state when key changes
-    setShouldScroll(false)
+    // Force multiple checks
+    const checkTimes = [0, 50, 100, 200, 500, 1000]
+    const timeouts = checkTimes.map(delay => setTimeout(checkOverflow, delay))
 
-    // Multiple checks to ensure we catch the content when it's ready
-    const timeouts = [
-      setTimeout(checkOverflow, 0),
-      setTimeout(checkOverflow, 50),
-      setTimeout(checkOverflow, 100),
-      setTimeout(checkOverflow, 200)
-    ]
-
-    const resizeObserver = new ResizeObserver(checkOverflow)
-    const mutationObserver = new MutationObserver(() => {
-      // Delay the check slightly after mutation
-      setTimeout(checkOverflow, 10)
-    })
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current)
-    }
-
-    if (textRef.current) {
-      mutationObserver.observe(textRef.current, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      })
-    }
+    // Also check on resize
+    window.addEventListener('resize', checkOverflow)
 
     return () => {
       timeouts.forEach(clearTimeout)
-      resizeObserver.disconnect()
-      mutationObserver.disconnect()
+      window.removeEventListener('resize', checkOverflow)
     }
-  }, [key, checkOverflow])
+  }) // No dependencies - run on every render
 
   return { containerRef, textRef, shouldScroll }
 }
