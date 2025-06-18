@@ -104,6 +104,31 @@ button:hover, .btn:hover {
       transform: scale(1);
     }
   }
+
+  /* Scrolling text animation for mini player */
+  .animate-scroll-text {
+    animation: scrollText 15s linear infinite;
+  }
+
+  @keyframes scrollText {
+    0% {
+      transform: translateX(0%);
+    }
+    20% {
+      transform: translateX(0%);
+    }
+    80% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Pause animation on hover */
+  .animate-scroll-text:hover {
+    animation-play-state: paused;
+  }
 }
 
 .primary-content {
