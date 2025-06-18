@@ -122,10 +122,10 @@ export default function MiniPlayer() {
   }
 
   return (
-    <div className="flex items-center space-x-2 bg-slate-600 rounded px-2 py-1 max-w-md h-7">
+    <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-600 rounded px-1 sm:px-2 py-1 max-w-xs sm:max-w-md h-7">
       {/* Now Playing Info */}
       <div className="flex items-center min-w-0 flex-1 h-full">
-        <div className="text-xs text-slate-200 max-w-48 overflow-hidden">
+        <div className="text-xs text-slate-200 max-w-32 sm:max-w-48 overflow-hidden">
           <div className="whitespace-nowrap animate-scroll-text">
             <Link 
               href={`/s/${currentStreamId}`}
@@ -156,8 +156,8 @@ export default function MiniPlayer() {
         </div>
       </div>
       
-      {/* Audio Visualization */}
-      <div className="w-24 h-6 bg-slate-700 rounded border border-slate-500 overflow-hidden">
+      {/* Audio Visualization - hidden on very small screens */}
+      <div className="hidden sm:block w-16 sm:w-24 h-6 bg-slate-700 rounded border border-slate-500 overflow-hidden">
         <canvas
           ref={canvasRef}
           className="w-full h-full"
@@ -171,7 +171,7 @@ export default function MiniPlayer() {
       {/* Stop Button */}
       <button
         onClick={stopStream}
-        className="p-1 bg-slate-500 rounded hover:bg-slate-400 transition-colors"
+        className="p-1 bg-slate-500 rounded hover:bg-slate-400 transition-colors flex-shrink-0"
         title="Stop"
       >
         <svg
@@ -179,7 +179,7 @@ export default function MiniPlayer() {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          className="w-4 h-4 text-slate-200"
+          className="w-3 sm:w-4 h-3 sm:h-4 text-slate-200"
         >
           <rect x="6" y="6" width="12" height="12" fill="currentColor" />
         </svg>
