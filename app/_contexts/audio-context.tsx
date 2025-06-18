@@ -72,7 +72,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [currentStreamId, setCurrentStreamId] = useState<number | null>(null)
   const [currentStreamName, setCurrentStreamName] = useState<string | null>(null)
   const [visualizationReady, setVisualizationReady] = useState(false)
-  
+
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
@@ -150,28 +150,27 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   const setupVisualization = (audioElement: HTMLAudioElement) => {
     if (audioContextRef.current) return
-    
+
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
       const source = audioContext.createMediaElementSource(audioElement)
       const analyser = audioContext.createAnalyser()
-      
+
       analyser.fftSize = 128
       analyser.smoothingTimeConstant = 0.8
       const bufferLength = analyser.frequencyBinCount
       const dataArray = new Uint8Array(bufferLength)
-      
+
       source.connect(analyser)
       analyser.connect(audioContext.destination)
-      
+
       audioContextRef.current = audioContext
       analyserRef.current = analyser
       dataArrayRef.current = dataArray
-      
-      
+
       // Set the state to trigger re-renders in components
       setVisualizationReady(true)
-      
+
       if (audioContext.state === 'suspended') {
         audioContext.resume()
       }
@@ -189,30 +188,30 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setIsPlaying(true)
     setCurrentStreamId(Number(streamId)) // Ensure it's stored as a number
     setCurrentStreamName(streamName)
-    
+
     localStorage.setItem('lastPlayedStream', streamId.toString())
-    
+
     try {
       // Dynamically import the player to avoid SSR issues
       const { default: IcecastMetadataPlayer } = await import('icecast-metadata-player')
-      
+
       let player = new IcecastMetadataPlayer(`/streams/${streamName}`, {
         onMetadata,
         metadataTypes: ["icy"],
       }) as IcecastMetadataPlayer
-      
+
       if ("mediaSession" in navigator) {
         navigator.mediaSession.setActionHandler('pause', stopStream)
         navigator.mediaSession.setActionHandler('stop', stopStream)
         navigator.mediaSession.setActionHandler('play', () => startStream(streamId, streamName))
       }
-      
+
       await player.play()
       playerRef.current = player
-      
+
       // Set initial volume
       player.audioElement.volume = volume / VOLUME_INCREMENTS
-      
+
       // Set up audio visualization
       setTimeout(() => {
         setupVisualization(player.audioElement)
@@ -231,18 +230,18 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setCurrentStreamId(null)
     setCurrentStreamName(null)
     setVisualizationReady(false)
-    
+
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
       playerRef.current = null
     }
-    
+
     if (audioContextRef.current) {
       audioContextRef.current.close()
       audioContextRef.current = null
     }
-    
+
     analyserRef.current = null
     dataArrayRef.current = null
   }

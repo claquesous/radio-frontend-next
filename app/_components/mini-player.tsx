@@ -5,9 +5,9 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 export default function MiniPlayer() {
-  const { 
-    isPlaying, 
-    nowPlaying, 
+  const {
+    isPlaying,
+    nowPlaying,
     currentStreamId,
     currentStreamName,
     stopStream,
@@ -23,14 +23,14 @@ export default function MiniPlayer() {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout
-    
+
     if (isPlaying && visualizationReady && !isPlayerVisible) {
       // Stop any existing animation first
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
         animationRef.current = null
       }
-      
+
       // Check periodically for audio context to be ready
       const checkAndStartVisualization = () => {
         if (analyserRef.current && dataArrayRef.current && canvasRef.current) {
@@ -39,7 +39,7 @@ export default function MiniPlayer() {
           timeoutId = setTimeout(checkAndStartVisualization, 100)
         }
       }
-      
+
       // Add a small delay to ensure DOM is ready when switching views
       timeoutId = setTimeout(checkAndStartVisualization, 50)
     } else {
@@ -60,58 +60,58 @@ export default function MiniPlayer() {
 
   const startVisualization = () => {
     if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
-    
+
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    
+
     const analyser = analyserRef.current
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
-    
+
     const resizeCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       canvas.width = rect.width
       canvas.height = rect.height
     }
-    
+
     resizeCanvas()
-    
+
     const draw = () => {
       if (!isPlaying) return
-      
+
       analyser.getByteFrequencyData(dataArray)
-      
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = 'rgb(71, 85, 105)' // slate-600 background
       ctx.fillRect(0, 0, canvas.width, canvas.height)
-      
+
       // Show fewer frequency bins for mini visualization
       const usefulBins = Math.floor(bufferLength * 0.3) // Even fewer bins for mini view
       const barWidth = canvas.width / usefulBins
       let x = 0
-      
+
       for (let i = 0; i < usefulBins; i++) {
         const normalizedValue = dataArray[i] / 255
         const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
-        
+
         // Use theme colors: blue (low) to red (high)
         const intensity = i / usefulBins
         const blue = Math.floor(200 - (intensity * 150)) // Start from lighter blue
         const red = Math.floor(intensity * 200)
         const color = `rgb(${red}, 50, ${blue})`
-        
+
         ctx.fillStyle = color
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
-        
+
         x += barWidth
       }
-      
+
       if (animationRef.current !== null) {
         animationRef.current = requestAnimationFrame(draw)
       }
     }
-    
+
     animationRef.current = 1
     draw()
   }
@@ -125,7 +125,7 @@ export default function MiniPlayer() {
       <div className="flex items-center min-w-0 flex-1 h-full">
         <div className="text-xs text-slate-200 max-w-32 sm:max-w-48 overflow-hidden">
           <div className="whitespace-nowrap animate-scroll-text">
-            <Link 
+            <Link
               href={`/s/${currentStreamId}`}
               className="hover:text-slate-100 text-slate-300"
             >
@@ -134,14 +134,14 @@ export default function MiniPlayer() {
             {typeof nowPlaying !== 'string' && (
               <>
                 {' • '}
-                <Link 
+                <Link
                   href={`/s/${currentStreamId}/artists/${nowPlaying.artist_id}`}
                   className="hover:text-slate-100"
                 >
                   {nowPlaying.artist}
                 </Link>
                 {' - '}
-                <Link 
+                <Link
                   href={`/s/${currentStreamId}/songs/${nowPlaying.song_id}`}
                   className="hover:text-slate-100"
                 >
@@ -153,7 +153,7 @@ export default function MiniPlayer() {
           </div>
         </div>
       </div>
-      
+
       {/* Audio Visualization - hidden on very small screens */}
       <div className="hidden sm:block w-16 sm:w-24 h-6 bg-slate-700 rounded border border-slate-500 overflow-hidden">
         <canvas
@@ -165,7 +165,7 @@ export default function MiniPlayer() {
           }}
         />
       </div>
-      
+
       {/* Stop Button */}
       <button
         onClick={stopStream}

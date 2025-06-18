@@ -23,11 +23,11 @@ export default function StreamPlayButton({ streamId, className = '', children }:
     revalidateOnFocus: false
   })
 
-  const { 
-    isPlaying, 
-    currentStreamId, 
-    startStream, 
-    stopStream 
+  const {
+    isPlaying,
+    currentStreamId,
+    startStream,
+    stopStream
   } = useAudio()
 
   const isCurrentStream = currentStreamId === streamId

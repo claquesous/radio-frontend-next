@@ -10,7 +10,7 @@ export default function TopBar() {
       <Link className="text-xl text-slate-200" href="/">
         Claq Radio
       </Link>
-      
+
       <div className="flex items-center space-x-4">
         <MiniPlayer />
         <LoginForm />
