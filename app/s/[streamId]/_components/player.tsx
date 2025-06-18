@@ -77,6 +77,12 @@ export default function Player(props: { streamId: number }) {
   const startStream = () => {
     setIsPlaying(true)
 
+    // Cancel any running collapse animation
+    if (collapseAnimationRef.current) {
+      cancelAnimationFrame(collapseAnimationRef.current)
+      collapseAnimationRef.current = null
+    }
+
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
     let player = new IcecastMetadataPlayer(`/streams/${stream.name}`, {
@@ -155,7 +161,13 @@ export default function Player(props: { streamId: number }) {
     setIsPlaying(false)
     setCanVote(false)
     
-    // Start collapse animation before stopping everything
+    // Stop the main visualization loop first
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+      animationRef.current = null
+    }
+    
+    // Start collapse animation after stopping the main loop
     startCollapseAnimation()
     
     if (playerRef.current) {
@@ -163,22 +175,13 @@ export default function Player(props: { streamId: number }) {
       playerRef.current.detachAudioElement()
     }
     
-    // Clean up visualization
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current)
-      animationRef.current = null
-    }
-    
-    // Clean up collapse animation if it's running
-    if (collapseAnimationRef.current) {
-      cancelAnimationFrame(collapseAnimationRef.current)
-      collapseAnimationRef.current = null
-    }
-    
-    if (audioContextRef.current) {
-      audioContextRef.current.close()
-      audioContextRef.current = null
-    }
+    // Delay the audio context cleanup to allow animation to complete
+    setTimeout(() => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
+        audioContextRef.current = null
+      }
+    }, 350) // Slightly longer than animation duration
   }
 
   const crankIt = () => {
