@@ -172,20 +172,9 @@ export default function Player(props: { streamId: number }) {
   }
 
   const setupVisualization = (audioElement: HTMLAudioElement) => {
-    console.log('Setting up visualization...', { canvasRef: !!canvasRef.current, audioContextRef: !!audioContextRef.current })
-    
-    if (!canvasRef.current) {
-      console.error('Canvas ref not available')
-      return
-    }
-    
-    if (audioContextRef.current) {
-      console.log('Audio context already exists')
-      return
-    }
+    if (!canvasRef.current || audioContextRef.current) return
     
     try {
-      console.log('Creating audio context...')
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
       const source = audioContext.createMediaElementSource(audioElement)
       const analyser = audioContext.createAnalyser()
@@ -195,8 +184,6 @@ export default function Player(props: { streamId: number }) {
       const bufferLength = analyser.frequencyBinCount
       const dataArray = new Uint8Array(bufferLength)
       
-      console.log('Audio context setup:', { bufferLength, state: audioContext.state })
-      
       source.connect(analyser)
       analyser.connect(audioContext.destination)
       
@@ -204,60 +191,31 @@ export default function Player(props: { streamId: number }) {
       analyserRef.current = analyser
       dataArrayRef.current = dataArray
       
-      // Resume audio context if needed
       if (audioContext.state === 'suspended') {
-        audioContext.resume().then(() => {
-          console.log('Audio context resumed')
-          startVisualization()
-        })
+        audioContext.resume().then(() => startVisualization())
       } else {
         startVisualization()
       }
     } catch (error) {
-      console.error('Audio visualization setup failed:', error)
+      console.warn('Audio visualization not supported:', error)
     }
   }
 
   const startVisualization = () => {
-    console.log('Starting visualization...', { 
-      canvas: !!canvasRef.current, 
-      analyser: !!analyserRef.current, 
-      dataArray: !!dataArrayRef.current,
-      isPlaying 
-    })
-    
-    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) {
-      console.error('Missing visualization components')
-      return
-    }
+    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
     
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      console.error('Could not get canvas context')
-      return
-    }
+    if (!ctx) return
     
     const analyser = analyserRef.current
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
-    console.log('Visualization started with buffer length:', bufferLength)
-    
-    let frameCount = 0
-    
     const draw = () => {
       analyser.getByteFrequencyData(dataArray)
       
-      // Log first few frames for debugging
-      if (frameCount < 5) {
-        console.log(`Frame ${frameCount}:`, Array.from(dataArray.slice(0, 10)))
-        frameCount++
-      }
-      
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
-      // Add a background to make sure canvas is working
       ctx.fillStyle = '#111111'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       
@@ -268,19 +226,14 @@ export default function Player(props: { streamId: number }) {
         const normalizedValue = dataArray[i] / 255
         const barHeight = Math.max(2, normalizedValue * canvas.height * 0.8)
         
-        // Create gradient colors like classic Winamp
+        // Use theme colors: blue (low) to red (high) like volume bars
         let color
-        if (normalizedValue < 0.3) {
-          color = `rgb(0, ${Math.floor(normalizedValue * 255 * 3)}, 0)`
-        } else if (normalizedValue < 0.6) {
-          color = `rgb(${Math.floor((normalizedValue - 0.3) * 255 * 3)}, 255, 0)`
-        } else {
-          color = `rgb(255, ${Math.floor(255 - (normalizedValue - 0.6) * 255 * 2.5)}, 0)`
-        }
-        
-        // Fallback to ensure bars are visible even with no audio
         if (normalizedValue === 0) {
-          color = '#004400'  // Dark green for empty bars
+          color = '#1e293b'  // Dark slate for empty bars
+        } else {
+          const blue = Math.floor(255 - (normalizedValue * 255))
+          const red = Math.floor(normalizedValue * 255)
+          color = `rgb(${red}, 0, ${blue})`
         }
         
         ctx.fillStyle = color
@@ -289,13 +242,11 @@ export default function Player(props: { streamId: number }) {
         x += barWidth
       }
       
-      // Only continue if we haven't been cancelled
       if (animationRef.current !== null) {
         animationRef.current = requestAnimationFrame(draw)
       }
     }
     
-    // Start with a dummy value to indicate animation is running
     animationRef.current = 1
     draw()
   }
@@ -342,7 +293,7 @@ export default function Player(props: { streamId: number }) {
         ref={canvasRef}
         width={300}
         height={60}
-        className="w-full h-full border border-green-500"
+        className="w-full h-full"
         style={{
           imageRendering: 'pixelated', 
           display: 'block',
@@ -350,13 +301,8 @@ export default function Player(props: { streamId: number }) {
         }}
       />
       {!isPlaying && (
-        <div className="flex items-center justify-center h-full text-green-400 text-sm font-mono absolute inset-0 pointer-events-none bg-black bg-opacity-75">
+        <div className="flex items-center justify-center h-full text-slate-400 text-sm font-mono absolute inset-0 pointer-events-none bg-black bg-opacity-75">
           ⏸ VISUALIZATION STOPPED
-        </div>
-      )}
-      {isPlaying && (
-        <div className="absolute top-1 left-1 text-green-400 text-xs font-mono pointer-events-none">
-          VIZ ACTIVE
         </div>
       )}
     </div>
