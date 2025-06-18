@@ -10,12 +10,17 @@ export default function HateIt(props: { streamId: number, playId: number }) {
   const [isHated, setIsHated] = useState(false)
 
   const rateDown = async () => {
+    // Trigger haptic feedback immediately
     triggerHaptic('error')
+    
+    // Set visual feedback
     setIsHated(true)
-
+    
+    // Reset the visual state after 1 second (longer to test if it's working)
     setTimeout(() => {
       setIsHated(false)
-    }, 300)
+    }, 1000)
+    
     try {
       const authToken = localStorage.getItem('authToken')
 
