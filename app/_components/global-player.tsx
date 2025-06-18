@@ -230,8 +230,12 @@ export default function GlobalPlayer(props: { streamId: number }) {
   }
 
   const handleStartStream = () => {
+    console.log('🎵 Global Player - handleStartStream called:', { streamId, streamName: stream?.name })
     if (stream) {
+      console.log('🎵 Global Player - About to call startStream with:', streamId, stream.name)
       startStream(streamId, stream.name)
+    } else {
+      console.error('🎵 Global Player - No stream data available')
     }
   }
 
@@ -299,6 +303,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
       <button
         onClick={isCurrentStream && isPlaying ? stopStream : handleStartStream}
         className="px-4 py-2 bg-gray-400 rounded-lg hover:bg-gray-500"
+        style={{ backgroundColor: isCurrentStream && isPlaying ? '#ef4444' : '#10b981' }}
       >
         {isCurrentStream && isPlaying ? (
           <svg
