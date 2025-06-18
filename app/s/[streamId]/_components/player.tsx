@@ -212,19 +212,26 @@ export default function Player(props: { streamId: number }) {
     const dataArray = dataArrayRef.current
     const bufferLength = analyser.frequencyBinCount
     
-    // Wait for DOM to be ready, then size canvas to container
-    setTimeout(() => {
-      const container = canvas.parentElement
-      if (container) {
-        const containerStyle = window.getComputedStyle(container)
-        const containerWidth = container.clientWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.paddingRight)
-        const containerHeight = container.clientHeight - parseFloat(containerStyle.paddingTop) - parseFloat(containerStyle.paddingBottom)
-        
-        canvas.width = containerWidth
-        canvas.height = containerHeight
-        console.log('Canvas sized to:', containerWidth, 'x', containerHeight)
-      }
-    }, 10)
+    // Size canvas to fill container completely
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width
+      canvas.height = rect.height
+      console.log('Canvas sized to:', rect.width, 'x', rect.height, 'from getBoundingClientRect')
+    }
+    
+    // Initial sizing with a delay to ensure DOM is ready
+    setTimeout(resizeCanvas, 50)
+    
+    // Also handle window resize
+    const handleResize = () => resizeCanvas()
+    window.addEventListener('resize', handleResize)
+    
+    // Cleanup resize listener when animation stops
+    const originalAnimationRef = animationRef.current
+    const cleanup = () => {
+      window.removeEventListener('resize', handleResize)
+    }
     
     const draw = () => {
       analyser.getByteFrequencyData(dataArray)
@@ -235,6 +242,8 @@ export default function Player(props: { streamId: number }) {
       
       const barWidth = canvas.width / bufferLength
       let x = 0
+      
+      console.log('Drawing bars:', { canvasWidth: canvas.width, bufferLength, barWidth, totalWidth: barWidth * bufferLength })
       
       for (let i = 0; i < bufferLength; i++) {
         const normalizedValue = dataArray[i] / 255
@@ -251,13 +260,15 @@ export default function Player(props: { streamId: number }) {
         }
         
         ctx.fillStyle = color
-        ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight)
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
         
         x += barWidth
       }
       
       if (animationRef.current !== null) {
         animationRef.current = requestAnimationFrame(draw)
+      } else {
+        cleanup()
       }
     }
     
