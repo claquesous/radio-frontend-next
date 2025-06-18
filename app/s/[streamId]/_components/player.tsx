@@ -64,11 +64,24 @@ export default function Player(props: { streamId: number }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(VOLUME_INCREMENTS)
   const playerRef = useRef<IcecastMetadataPlayer | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const animationRef = useRef<number | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const dataArrayRef = useRef<Uint8Array | null>(null)
+  const collapseAnimationRef = useRef<number | null>(null)
+  const lastBarHeightsRef = useRef<number[]>([])
 
   useEffect(() => stopStream, [])
 
   const startStream = () => {
     setIsPlaying(true)
+
+    // Cancel any running collapse animation
+    if (collapseAnimationRef.current) {
+      cancelAnimationFrame(collapseAnimationRef.current)
+      collapseAnimationRef.current = null
+    }
 
     localStorage.setItem('lastPlayedStream', streamId.toString())
     
@@ -83,15 +96,92 @@ export default function Player(props: { streamId: number }) {
     }
     player.play()
     playerRef.current = player
+    
+    // Set up audio visualization
+    setTimeout(() => {
+      setupVisualization(player.audioElement)
+    }, 100)
+  }
+
+  const startCollapseAnimation = () => {
+    if (!canvasRef.current || lastBarHeightsRef.current.length === 0) return
+    
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    
+    const startTime = Date.now()
+    const animationDuration = 300 // 300ms collapse animation
+    const initialBarHeights = [...lastBarHeightsRef.current]
+    const bufferLength = analyserRef.current?.frequencyBinCount || 64
+    const usefulBins = Math.floor(bufferLength * 0.5)
+    const barWidth = canvas.width / usefulBins
+    
+    const collapseFrame = () => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / animationDuration, 1)
+      const easeOutProgress = 1 - Math.pow(1 - progress, 3) // Ease out cubic
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = '#111111'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      
+      let x = 0
+      for (let i = 0; i < usefulBins; i++) {
+        const initialHeight = initialBarHeights[i] || 1
+        const barHeight = initialHeight * (1 - easeOutProgress)
+        
+        // Use theme colors: blue (low) to red (high) like volume bars
+        const intensity = i / usefulBins
+        const blue = Math.floor(255 - (intensity * 255))
+        const red = Math.floor(intensity * 255)
+        const color = `rgb(${red}, 0, ${blue})`
+        
+        ctx.fillStyle = color
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
+        
+        x += barWidth
+      }
+      
+      if (progress < 1) {
+        collapseAnimationRef.current = requestAnimationFrame(collapseFrame)
+      } else {
+        // Clear the canvas completely when animation is done
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.fillStyle = '#111111'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        collapseAnimationRef.current = null
+      }
+    }
+    
+    collapseFrame()
   }
 
   const stopStream = () => {
     setIsPlaying(false)
     setCanVote(false)
+    
+    // Stop the main visualization loop first
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current)
+      animationRef.current = null
+    }
+    
+    // Start collapse animation after stopping the main loop
+    startCollapseAnimation()
+    
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
     }
+    
+    // Delay the audio context cleanup to allow animation to complete
+    setTimeout(() => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
+        audioContextRef.current = null
+      }
+    }, 350) // Slightly longer than animation duration
   }
 
   const crankIt = () => {
@@ -151,6 +241,111 @@ export default function Player(props: { streamId: number }) {
     }
   }
 
+  const setupVisualization = (audioElement: HTMLAudioElement) => {
+    if (!canvasRef.current || audioContextRef.current) return
+    
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const source = audioContext.createMediaElementSource(audioElement)
+      const analyser = audioContext.createAnalyser()
+      
+      analyser.fftSize = 128
+      analyser.smoothingTimeConstant = 0.8
+      const bufferLength = analyser.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
+      
+      source.connect(analyser)
+      analyser.connect(audioContext.destination)
+      
+      audioContextRef.current = audioContext
+      analyserRef.current = analyser
+      dataArrayRef.current = dataArray
+      
+      if (audioContext.state === 'suspended') {
+        audioContext.resume().then(() => startVisualization())
+      } else {
+        startVisualization()
+      }
+    } catch (error) {
+      console.warn('Audio visualization not supported:', error)
+    }
+  }
+
+  const startVisualization = () => {
+    if (!canvasRef.current || !analyserRef.current || !dataArrayRef.current) return
+    
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    
+    const analyser = analyserRef.current
+    const dataArray = dataArrayRef.current
+    const bufferLength = analyser.frequencyBinCount
+    
+    // Size canvas to fill container completely
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect()
+      canvas.width = rect.width
+      canvas.height = rect.height
+    }
+    
+    // Initial sizing with a delay to ensure DOM is ready
+    setTimeout(resizeCanvas, 50)
+    
+    // Also handle window resize
+    const handleResize = () => resizeCanvas()
+    window.addEventListener('resize', handleResize)
+    
+    // Cleanup resize listener when animation stops
+    const originalAnimationRef = animationRef.current
+    const cleanup = () => {
+      window.removeEventListener('resize', handleResize)
+    }
+    
+    const draw = () => {
+      analyser.getByteFrequencyData(dataArray)
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = '#111111'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      
+      // Show fewer frequency bins for cleaner visualization
+      const usefulBins = Math.floor(bufferLength * 0.5) // Show first 50% of frequency spectrum
+      const barWidth = canvas.width / usefulBins
+      let x = 0
+      const currentBarHeights: number[] = []
+      
+      for (let i = 0; i < usefulBins; i++) {
+        const normalizedValue = dataArray[i] / 255
+        const barHeight = Math.max(1, normalizedValue * canvas.height * 0.8)
+        currentBarHeights.push(barHeight)
+        
+        // Use theme colors: blue (low) to red (high) like volume bars
+        const intensity = i / usefulBins // Use position in useful range for color
+        const blue = Math.floor(255 - (intensity * 255))
+        const red = Math.floor(intensity * 255)
+        const color = `rgb(${red}, 0, ${blue})`
+        
+        ctx.fillStyle = color
+        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight)
+        
+        x += barWidth
+      }
+      
+      // Store the current bar heights for potential collapse animation
+      lastBarHeightsRef.current = currentBarHeights
+      
+      if (animationRef.current !== null) {
+        animationRef.current = requestAnimationFrame(draw)
+      } else {
+        cleanup()
+      }
+    }
+    
+    animationRef.current = 1
+    draw()
+  }
+
   const getVolumeColor = (index: number) => {
     if (index>=volume) {
       return 'rgb(75, 85, 99)'
@@ -186,6 +381,20 @@ export default function Player(props: { streamId: number }) {
       <h2>Current stream: <Link href={`/s/${streamId}`}>{stream?.name ?? 'None selected'}</Link></h2>
     </div>
     <NowPlayingDisplay />
+    
+    {/* Audio Visualization */}
+    <div className="my-4 p-2 bg-black rounded border-2 border-gray-600 relative" style={{height: '80px'}}>
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full"
+        style={{
+          imageRendering: 'pixelated', 
+          display: 'block',
+          backgroundColor: '#000000'
+        }}
+      />
+    </div>
+    
     <div className="flex space-x-1">
       <button
         onClick={isPlaying ? stopStream : startStream}
