@@ -94,6 +94,9 @@ export default function ChoosersIndexPage() {
   const [choosers, setChoosers] = useState<Chooser[]>([])
   const [notice, setNotice] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('featured')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalChoosers, setTotalChoosers] = useState(0)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -151,11 +154,11 @@ export default function ChoosersIndexPage() {
       console.error(`Failed to update chooser ${draggedChooser.id}`, error)
       setNotice(`Failed to update playlist order.`)
       // Revert the change on error
-      fetchChoosers(activeTab)
+      fetchChoosers(activeTab, currentPage)
     }
   }
 
-  const fetchChoosers = async (tab: TabType) => {
+  const fetchChoosers = async (tab: TabType, page: number = 1) => {
     if (!streamId) return
 
     try {
@@ -165,9 +168,13 @@ export default function ChoosersIndexPage() {
       switch (tab) {
         case 'featured':
           params.append('featured', 'true')
+          params.append('limit', '50')
+          params.append('offset', ((page - 1) * 50).toString())
           break
         case 'non-featured':
           params.append('featured', 'false')
+          params.append('limit', '50')
+          params.append('offset', ((page - 1) * 50).toString())
           break
         case 'newest':
           params.append('sort', 'created_at')
@@ -179,8 +186,21 @@ export default function ChoosersIndexPage() {
         url += `?${params.toString()}`
       }
 
-      const response = await api.get<Chooser[]>(url)
-      setChoosers(response.data)
+      const response = await api.get<any>(url)
+
+      // Handle both paginated and non-paginated responses
+      if (response.data.choosers) {
+        // Paginated response
+        setChoosers(response.data.choosers)
+        setTotalPages(response.data.total_pages || 1)
+        setTotalChoosers(response.data.total || 0)
+      } else {
+        // Non-paginated response (for newest tab)
+        setChoosers(response.data)
+        setTotalPages(1)
+        setTotalChoosers(response.data.length)
+      }
+
       setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
     } catch (error) {
       console.error(`Failed to fetch playlist for stream ${streamId}`, error)
@@ -189,11 +209,23 @@ export default function ChoosersIndexPage() {
   }
 
   useEffect(() => {
-    fetchChoosers(activeTab)
+    setCurrentPage(1)
+    fetchChoosers(activeTab, 1)
   }, [streamId, activeTab])
+
+  useEffect(() => {
+    if (activeTab !== 'newest') {
+      fetchChoosers(activeTab, currentPage)
+    }
+  }, [currentPage])
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab)
+    setCurrentPage(1)
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
   }
 
   const handleDelete = async (chooserId: number) => {
@@ -204,7 +236,7 @@ export default function ChoosersIndexPage() {
         chooser: { featured: false }
       })
       // Refresh the current tab data
-      fetchChoosers(activeTab)
+      fetchChoosers(activeTab, currentPage)
       setNotice(`Removed from playlist successfully!`)
     } catch (error) {
       console.error(`Failed to remove playlist chooser ${chooserId}`, error)
@@ -220,12 +252,87 @@ export default function ChoosersIndexPage() {
         chooser: { featured: true }
       })
       // Refresh the current tab data
-      fetchChoosers(activeTab)
+      fetchChoosers(activeTab, currentPage)
       setNotice(`Added to playlist successfully!`)
     } catch (error) {
       console.error(`Failed to add playlist chooser ${chooserId}`, error)
       setNotice(`Failed to add playlist chooser.`)
     }
+  }
+
+  const renderPagination = () => {
+    if (activeTab === 'newest' || totalPages <= 1) return null
+
+    const pageNumbers = []
+    const maxVisiblePages = 5
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1)
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i)
+    }
+
+    return (
+      <div className="flex items-center justify-center gap-2 mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+
+        {startPage > 1 && (
+          <>
+            <button
+              onClick={() => handlePageChange(1)}
+              className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+            >
+              1
+            </button>
+            {startPage > 2 && <span className="px-2">...</span>}
+          </>
+        )}
+
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            className={`px-3 py-2 rounded ${
+              currentPage === page
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && <span className="px-2">...</span>}
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -266,6 +373,13 @@ export default function ChoosersIndexPage() {
           New
         </button>
       </div>
+
+      {(activeTab === 'featured' || activeTab === 'non-featured') && (
+        <div className="mb-4 text-sm text-gray-600">
+          Showing {choosers.length} of {totalChoosers} choosers
+          {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+        </div>
+      )}
 
       <div id="choosers">
         {activeTab === 'featured' ? (
@@ -321,6 +435,8 @@ export default function ChoosersIndexPage() {
           ))
         )}
       </div>
+
+      {renderPagination()}
     </div>
   )
 }
