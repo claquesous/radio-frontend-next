@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Chooser, Song } from '../../_types/types'
+import { Chooser } from '../../_types/types'
 
 interface ChooserCardProps {
   chooser: Chooser
@@ -11,39 +11,16 @@ interface ChooserCardProps {
 }
 
 export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
-  const handleRequest = async () => {
-    // TODO: Send request to API to request this song for the stream
-    console.log(`Requesting song ${chooser.song.title} (ID: ${chooser.song.id}) for stream ${streamId}`)
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 300))
-      alert(`Song "${chooser.song.title}" requested successfully!`)
-    } catch (error) {
-      console.error('Failed to request song', error)
-      alert('Failed to request song.')
-    }
-  }
-
   return (
-    <div id={`chooser_${chooser.id}`} className="chooser-card">
-      <p>
-        <strong>Song:</strong>
-        <Link href={`/s/${streamId}/songs/${chooser.song.id}`}>{chooser.song.title}</Link>
-      </p>
-
-      <p>
-        <strong>Featured:</strong>
-        {chooser.featured ? 'Yes' : 'No'}
-      </p>
-
-      <p>
-        <strong>Rating:</strong>
-        {chooser.rating}
-      </p>
-
-      <div className="actions">
-        <button onClick={handleRequest}>Request</button>
-      </div>
+    <div id={`chooser_${chooser.id}`} className="chooser-card flex items-center gap-3 p-3">
+      <Link href={`/s/${streamId}/artists/${chooser.artist.id}`} className="text-blue-600 hover:text-blue-800">
+        {chooser.artist.name}
+      </Link>
+       -
+      <Link href={`/s/${streamId}/songs/${chooser.song.id}`} className="text-blue-600 hover:text-blue-800">
+        {chooser.song.title}
+      </Link>
+      <span className="text-gray-600">({chooser.rating.toFixed(2)})</span>
     </div>
   )
 }

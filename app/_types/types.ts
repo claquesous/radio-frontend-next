@@ -63,6 +63,7 @@ export type PlayStats = {
 export type Chooser = {
   id: number
   song: Song
+  artist: Artist
   featured: boolean
   rating: number
 }

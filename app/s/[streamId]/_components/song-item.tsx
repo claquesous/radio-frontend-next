@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 const DynamicRating = dynamic(() => import('./rating'))
-import Enqueue from './enqueue'
+import Enqueue from '../../../_components/enqueue'
 import { Song } from '../../../_types/types'
 
 interface SongItemProps {
