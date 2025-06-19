@@ -108,6 +108,12 @@ export default function TopBar() {
           ) : (
             <>
               <LoginButton onClick={() => setIsLoginModalOpen(true)} />
+              <Link
+                href="/signup"
+                className="ml-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
+              >
+                Sign Up
+              </Link>
               <LoginModal
                 isOpen={isLoginModalOpen}
                 onClose={() => setIsLoginModalOpen(false)}
