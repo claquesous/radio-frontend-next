@@ -13,25 +13,12 @@ interface ChooserCardProps {
 
 export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
   return (
-    <div id={`chooser_${chooser.id}`} className="chooser-card">
-      <p>
-        <strong>Song:</strong>
-        <Link href={`/s/${streamId}/songs/${chooser.song.id}`}>{chooser.song.title}</Link>
-      </p>
-
-      <p>
-        <strong>Featured:</strong>
-        {chooser.featured ? 'Yes' : 'No'}
-      </p>
-
-      <p>
-        <strong>Rating:</strong>
-        {chooser.rating}
-      </p>
-
-      <div className="actions">
-        <Enqueue streamId={streamId} songId={chooser.song.id} />
-      </div>
+    <div id={`chooser_${chooser.id}`} className="chooser-card flex items-center gap-3">
+      <Link href={`/s/${streamId}/songs/${chooser.song.id}`} className="text-blue-600 hover:text-blue-800">
+        {chooser.song.title}
+      </Link>
+      <Enqueue streamId={streamId} songId={chooser.song.id} />
+      <span className="text-gray-600">({chooser.rating.toFixed(2)})</span>
     </div>
   )
 }

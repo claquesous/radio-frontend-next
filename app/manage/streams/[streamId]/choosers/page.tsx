@@ -123,13 +123,15 @@ export default function ChoosersIndexPage() {
     let newRating: number
 
     if (newIndex === 0) {
-      // If moved to top, set rating higher than the next item
+      // If moved to top, set rating halfway between the highest rating and 100
       const nextChooser = newChoosers[1]
-      newRating = nextChooser ? (nextChooser.rating || 0) + 10 : 100
+      const highestRating = nextChooser?.rating || 0
+      newRating = (highestRating + 100) / 2
     } else if (newIndex === newChoosers.length - 1) {
-      // If moved to bottom, set rating lower than the previous item
+      // If moved to bottom, set rating halfway between 0 and the lowest rating
       const prevChooser = newChoosers[newIndex - 1]
-      newRating = prevChooser ? Math.max((prevChooser.rating || 0) - 10, 1) : 1
+      const lowestRating = prevChooser?.rating || 100
+      newRating = (0 + lowestRating) / 2
     } else {
       // If moved to middle, set rating as halfway between adjacent items
       const prevChooser = newChoosers[newIndex - 1]
