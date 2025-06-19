@@ -135,9 +135,12 @@ export default function ChoosersIndexPage() {
         const highestRating = nextChooser?.rating || 0.01
         newRating = (highestRating + 100) / 2
       } else {
-        // Moving to top of other pages - match the highest rating on the page
+        // Moving to top of other pages - take lesser of (highest + 1) and average of (highest and 100)
         const nextChooser = newChoosers[1]
-        newRating = nextChooser?.rating || 99.99
+        const highestRating = nextChooser?.rating || 99.99
+        const option1 = highestRating + 1
+        const option2 = (highestRating + 100) / 2
+        newRating = Math.min(option1, option2)
       }
     } else if (newIndex === newChoosers.length - 1) {
       if (isLastPage) {
@@ -146,9 +149,12 @@ export default function ChoosersIndexPage() {
         const lowestRating = prevChooser?.rating || 99.99
         newRating = (0 + lowestRating) / 2
       } else {
-        // Moving to bottom of other pages - match the lowest rating on the page
+        // Moving to bottom of other pages - take greater of (lowest - 1) and average of (lowest and 0)
         const prevChooser = newChoosers[newIndex - 1]
-        newRating = prevChooser?.rating || 0.01
+        const lowestRating = prevChooser?.rating || 0.01
+        const option1 = lowestRating - 1
+        const option2 = lowestRating / 2
+        newRating = Math.max(option1, option2)
       }
     } else {
       // If moved to middle, set rating as halfway between adjacent items
