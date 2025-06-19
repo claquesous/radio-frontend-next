@@ -125,16 +125,31 @@ export default function ChoosersIndexPage() {
     const draggedChooser = newChoosers[newIndex]
     let newRating: number
 
+    const isFirstPage = currentPage === 1
+    const isLastPage = currentPage === totalPages
+
     if (newIndex === 0) {
-      // If moved to top, set rating halfway between the highest rating and 100
-      const nextChooser = newChoosers[1]
-      const highestRating = nextChooser?.rating || 0
-      newRating = (highestRating + 100) / 2
+      if (isFirstPage) {
+        // Moving to top of first page - set rating halfway between highest rating and 100
+        const nextChooser = newChoosers[1]
+        const highestRating = nextChooser?.rating || 0.01
+        newRating = (highestRating + 100) / 2
+      } else {
+        // Moving to top of other pages - match the highest rating on the page
+        const nextChooser = newChoosers[1]
+        newRating = nextChooser?.rating || 99.99
+      }
     } else if (newIndex === newChoosers.length - 1) {
-      // If moved to bottom, set rating halfway between 0 and the lowest rating
-      const prevChooser = newChoosers[newIndex - 1]
-      const lowestRating = prevChooser?.rating || 100
-      newRating = (0 + lowestRating) / 2
+      if (isLastPage) {
+        // Moving to bottom of last page - set rating halfway between 0 and lowest rating
+        const prevChooser = newChoosers[newIndex - 1]
+        const lowestRating = prevChooser?.rating || 99.99
+        newRating = (0 + lowestRating) / 2
+      } else {
+        // Moving to bottom of other pages - match the lowest rating on the page
+        const prevChooser = newChoosers[newIndex - 1]
+        newRating = prevChooser?.rating || 0.01
+      }
     } else {
       // If moved to middle, set rating as halfway between adjacent items
       const prevChooser = newChoosers[newIndex - 1]
