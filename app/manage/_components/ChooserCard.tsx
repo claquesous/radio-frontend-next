@@ -14,7 +14,7 @@ interface ChooserCardProps {
 export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
   return (
     <div id={`chooser_${chooser.id}`} className="chooser-card flex items-center gap-3 p-3">
-      <Link href={`/s/${streamId}/songs/${chooser.artist.id}`} className="text-blue-600 hover:text-blue-800">
+      <Link href={`/s/${streamId}/artists/${chooser.artist.id}`} className="text-blue-600 hover:text-blue-800">
         {chooser.artist.name}
       </Link>
        -
