@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Link from 'next/link'
-import Enqueue from '../../_components/enqueue'
 
 import { Chooser } from '../../_types/types'
 
@@ -21,7 +20,6 @@ export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
       <Link href={`/s/${streamId}/songs/${chooser.song.id}`} className="text-blue-600 hover:text-blue-800">
         {chooser.song.title}
       </Link>
-      <Enqueue streamId={streamId} songId={chooser.song.id} />
       <span className="text-gray-600">({chooser.rating.toFixed(2)})</span>
     </div>
   )
