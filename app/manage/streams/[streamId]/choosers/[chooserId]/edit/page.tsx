@@ -45,7 +45,7 @@ export default function EditChooserPage() {
 
   return (
     <div>
-      <h1>Editing Chooser</h1>
+      <h1>Editing Playlist chooser</h1>
 
       <ChooserForm initialData={chooser} onSubmit={handleSubmit} errors={errors} />
 
