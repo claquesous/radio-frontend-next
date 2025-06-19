@@ -19,10 +19,10 @@ export default function ChoosersIndexPage() {
         try {
           const response = await api.get<Chooser[]>(`/streams/${streamId}/choosers`)
           setChoosers(response.data)
-          setNotice(`Choosers for Stream ${streamId} loaded successfully!`)
+          setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
         } catch (error) {
           console.error(`Failed to fetch choosers for stream ${streamId}`, error)
-          setNotice(`Failed to load choosers for stream ${streamId}.`)
+          setNotice(`Failed to load playlist for stream ${streamId}.`)
         }
       }
       fetchChoosers()
@@ -33,14 +33,14 @@ export default function ChoosersIndexPage() {
     <div>
       {notice && <p style={{ color: 'green' }}>{notice}</p>}
 
-      <h1>Choosers for Stream {streamId}</h1>
+      <h1>Playlist for Stream {streamId}</h1>
 
       <div id="choosers">
         {choosers.map((chooser) => (
           <div key={chooser.id}>
             <ChooserCard chooser={chooser} streamId={Number(streamId)} />
             <p>
-              <Link href={`/manage/streams/${streamId}/choosers/${chooser.id}`}>Show this chooser</Link>
+              <Link href={`/manage/streams/${streamId}/choosers/${chooser.id}`}>Show this playlist chooser</Link>
             </p>
           </div>
         ))}

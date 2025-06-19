@@ -19,10 +19,10 @@ export default function ChooserShowPage() {
         try {
           const response = await api.get<Chooser>(`/streams/${streamId}/choosers/${chooserId}`)
           setChooser(response.data)
-          setNotice(`Chooser ${chooserId} for Stream ${streamId} loaded successfully!`)
+          setNotice(`Playlist chooser ${chooserId} for Stream ${streamId} loaded successfully!`)
         } catch (error) {
           console.error(`Failed to fetch chooser ${chooserId} for stream ${streamId}`, error)
-          setNotice(`Failed to load chooser ${chooserId} for stream ${streamId}.`)
+          setNotice(`Failed to load playlist chooser ${chooserId} for stream ${streamId}.`)
         }
       }
       fetchChooser()
