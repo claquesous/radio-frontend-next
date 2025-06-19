@@ -2,8 +2,9 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Enqueue from '../../_components/enqueue'
 
-import { Chooser, Song } from '../../_types/types'
+import { Chooser } from '../../_types/types'
 
 interface ChooserCardProps {
   chooser: Chooser
@@ -11,19 +12,6 @@ interface ChooserCardProps {
 }
 
 export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
-  const handleRequest = async () => {
-    // TODO: Send request to API to request this song for the stream
-    console.log(`Requesting song ${chooser.song.title} (ID: ${chooser.song.id}) for stream ${streamId}`)
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 300))
-      alert(`Song "${chooser.song.title}" requested successfully!`)
-    } catch (error) {
-      console.error('Failed to request song', error)
-      alert('Failed to request song.')
-    }
-  }
-
   return (
     <div id={`chooser_${chooser.id}`} className="chooser-card">
       <p>
@@ -42,7 +30,7 @@ export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
       </p>
 
       <div className="actions">
-        <button onClick={handleRequest}>Request</button>
+        <Enqueue streamId={streamId} songId={chooser.song.id} />
       </div>
     </div>
   )
