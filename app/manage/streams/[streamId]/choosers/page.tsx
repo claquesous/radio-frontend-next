@@ -63,7 +63,12 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
       <ChooserCard chooser={chooser} streamId={streamId} />
       {chooser.featured ? (
         <button
-          onClick={() => onDelete(chooser.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete(chooser.id)
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded"
           title="Remove from playlist"
         >
@@ -76,7 +81,12 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
         </button>
       ) : (
         <button
-          onClick={() => onAdd(chooser.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onAdd(chooser.id)
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
           className="absolute top-2 right-2 p-2 bg-green-500 hover:bg-green-600 text-white rounded"
           title="Add to playlist"
         >
