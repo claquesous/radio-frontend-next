@@ -16,6 +16,10 @@ export default function StreamForm({ initialData, onSubmit, errors }: StreamForm
   const [defaultFeatured, setDefaultFeatured] = useState(initialData?.default_featured || false)
   const [mastodonUrl, setMastodonUrl] = useState(initialData?.mastodon_url || '')
   const [mastodonAccessToken, setMastodonAccessToken] = useState(initialData?.mastodon_access_token || '')
+  const [premium, setPremium] = useState(initialData?.premium || false)
+  const [genre, setGenre] = useState(initialData?.genre || '')
+  const [description, setDescription] = useState(initialData?.description || '')
+  const [enabled, setEnabled] = useState(initialData?.enabled || false)
 
   useEffect(() => {
     if (initialData) {
@@ -24,12 +28,26 @@ export default function StreamForm({ initialData, onSubmit, errors }: StreamForm
       setDefaultFeatured(initialData.default_featured)
       setMastodonUrl(initialData.mastodon_url)
       setMastodonAccessToken(initialData.mastodon_access_token)
+      setPremium(initialData.premium || false)
+      setGenre(initialData.genre || '')
+      setDescription(initialData.description || '')
+      setEnabled(initialData.enabled || false)
     }
   }, [initialData])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit({ name, default_rating: defaultRating, default_featured: defaultFeatured, mastodon_url: mastodonUrl, mastodon_access_token: mastodonAccessToken })
+    onSubmit({
+      name,
+      default_rating: defaultRating,
+      default_featured: defaultFeatured,
+      mastodon_url: mastodonUrl,
+      mastodon_access_token: mastodonAccessToken,
+      premium,
+      genre,
+      description,
+      enabled
+    })
   }
 
   return (
@@ -92,6 +110,45 @@ export default function StreamForm({ initialData, onSubmit, errors }: StreamForm
           id="mastodon_access_token"
           value={mastodonAccessToken}
           onChange={(e) => setMastodonAccessToken(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="premium" style={{ display: 'block' }}>Premium</label>
+        <input
+          type="checkbox"
+          id="premium"
+          checked={premium}
+          onChange={(e) => setPremium(e.target.checked)}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="genre" style={{ display: 'block' }}>Genre</label>
+        <input
+          type="text"
+          id="genre"
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="description" style={{ display: 'block' }}>Description</label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="enabled" style={{ display: 'block' }}>Enabled</label>
+        <input
+          type="checkbox"
+          id="enabled"
+          checked={enabled}
+          onChange={(e) => setEnabled(e.target.checked)}
         />
       </div>
 
