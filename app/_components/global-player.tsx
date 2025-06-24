@@ -4,8 +4,8 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import { useAudio } from '../_contexts/audio-context'
 import { useScrollText } from '../_hooks/use-scroll-text'
-import LoveIt from '../s/[streamId]/_components/love-it'
-import HateIt from '../s/[streamId]/_components/hate-it'
+import LoveIt from './love-it'
+import HateIt from './hate-it'
 
 const VOLUME_INCREMENTS = 10
 

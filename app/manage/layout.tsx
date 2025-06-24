@@ -7,10 +7,9 @@ export default function ManageLayout({
 }) {
   return (
     <div className="manage-layout">
-      <header className="manage-header">
-        <h2>Manage Section</h2>
-        {/* Navigation specific to manage section can go here */}
-      </header>
+      <nav style={{ marginBottom: 16 }}>
+        <a href="/manage" className="text-blue-600 dark:text-blue-400 hover:underline">Home</a>
+      </nav>
       <main className="manage-content">
         {children}
       </main>

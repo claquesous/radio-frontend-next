@@ -22,7 +22,7 @@ export default function StreamNavigation({ streamId }: StreamNavigationProps) {
             Requests
           </Link>
           <Link
-            href={`/manage/streams/${streamId}/choosers`}
+            href={`/manage/streams/${streamId}/playlist`}
             className="hover:text-blue-300 transition-colors duration-200 font-medium"
           >
             Playlist

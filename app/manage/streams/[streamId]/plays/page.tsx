@@ -6,6 +6,8 @@ import Link from 'next/link'
 
 import { Play, Song, Artist, Stream } from '../../../../_types/types'
 import api from '../../../../../lib/api'
+import LoveIt from '../../../../_components/love-it'
+import HateIt from '../../../../_components/hate-it'
 
 export default function PlaysIndexPage() {
   const { streamId } = useParams()
@@ -27,18 +29,6 @@ export default function PlaysIndexPage() {
       fetchPlays()
     }
   }, [streamId])
-
-  const handleRate = async (playId: number, up: boolean) => {
-    // TODO: Send rating request to API
-    console.log(`Rating play ${playId} ${up ? 'up' : 'down'} for stream ${streamId}`)
-    try {
-      await api.post(`/streams/${streamId}/ratings`, { play_id: playId, up })
-      alert(`Play ${playId} rated ${up ? 'up' : 'down'} successfully!`)
-    } catch (error) {
-      console.error('Failed to rate play', error)
-      alert('Failed to rate play.')
-    }
-  }
 
   return (
     <div>
@@ -65,10 +55,10 @@ export default function PlaysIndexPage() {
               {index === 0 && (
                 <>
                   <td>
-                    <button onClick={() => handleRate(play.id, true)}>Rate Up</button>
+                    <LoveIt streamId={Number(streamId)} playId={play.id} />
                   </td>
                   <td>
-                    <button onClick={() => handleRate(play.id, false)}>Rate Down</button>
+                    <HateIt streamId={Number(streamId)} playId={play.id} />
                   </td>
                 </>
               )}

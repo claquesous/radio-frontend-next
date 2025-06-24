@@ -1,6 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import StreamCard from './_components/StreamCard'
+import { Stream } from '../_types/types'
+import api from '../../lib/api'
 
 export default function ManagePage() {
   const [lastPlayedStreamId, setLastPlayedStreamId] = useState<string | null>(null)
@@ -8,6 +11,27 @@ export default function ManagePage() {
   useEffect(() => {
     const lastStream = localStorage.getItem('lastPlayedStream')
     setLastPlayedStreamId(lastStream)
+  }, [])
+
+  const [streams, setStreams] = useState<Stream[]>([])
+  const [notice, setNotice] = useState<string | null>(null)
+
+  useEffect(() => {
+    const lastStream = localStorage.getItem('lastPlayedStream')
+    setLastPlayedStreamId(lastStream)
+
+    // Fetch streams from API
+    const fetchStreams = async () => {
+      try {
+        const response = await api.get<Stream[]>('/streams')
+        setStreams(response.data)
+        setNotice('Streams loaded successfully!')
+      } catch (error) {
+        console.error('Failed to fetch streams', error)
+        setNotice('Failed to load streams.')
+      }
+    }
+    fetchStreams()
   }, [])
 
   return (
@@ -20,12 +44,6 @@ export default function ManagePage() {
           <p className="text-gray-600 dark:text-gray-300">
             Manage your radio station content and settings.
           </p>
-          <Link
-              href={'/manage/streams'}
-              className="text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              Streams
-            </Link>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -54,6 +72,22 @@ export default function ManagePage() {
             Additional management options will be available here.
           </p>
         </div>
+      </div>
+
+      <div className="mt-10">
+        {notice && <p style={{ color: 'green' }}>{notice}</p>}
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Streams</h2>
+        <div id="streams">
+          {streams.map((stream) => (
+            <div key={stream.id}>
+              <StreamCard stream={stream} />
+              <p>
+                <Link href={`/manage/streams/${stream.id}`}>Show this stream</Link>
+              </p>
+            </div>
+          ))}
+        </div>
+        <Link href="/manage/streams/new" className="btn">New stream</Link>
       </div>
     </div>
   )
