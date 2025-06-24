@@ -58,10 +58,26 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
       ref={setNodeRef}
       style={style}
       {...attributes}
-      {...listeners}
-      className="relative cursor-move"
+      className="relative"
     >
-      <ChooserCard chooser={chooser} streamId={streamId} />
+      <div
+        {...listeners}
+        className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-10 cursor-grab z-10"
+        style={{ userSelect: 'none' }}
+        title="Drag to reorder"
+      >
+        <svg width="20" height="32" viewBox="0 0 20 32" fill="none" aria-hidden="true">
+          <circle cx="6" cy="7" r="2" fill="#888" />
+          <circle cx="14" cy="7" r="2" fill="#888" />
+          <circle cx="6" cy="16" r="2" fill="#888" />
+          <circle cx="14" cy="16" r="2" fill="#888" />
+          <circle cx="6" cy="25" r="2" fill="#888" />
+          <circle cx="14" cy="25" r="2" fill="#888" />
+        </svg>
+      </div>
+      <div className="pl-10">
+        <ChooserCard chooser={chooser} streamId={streamId} />
+      </div>
       <div
         className="absolute top-2 right-2 flex gap-2"
         onPointerDown={(e) => e.stopPropagation()}
