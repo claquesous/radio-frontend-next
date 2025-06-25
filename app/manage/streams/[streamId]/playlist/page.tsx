@@ -335,11 +335,11 @@ export default function ChoosersIndexPage() {
     }
 
     return (
-      <div className="flex items-center justify-center gap-2 mt-6">
+      <div className="flex items-center justify-center gap-2 mt-6 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent sm:overflow-x-visible">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 sm:px-3 sm:py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
           Previous
         </button>
@@ -348,7 +348,7 @@ export default function ChoosersIndexPage() {
           <>
             <button
               onClick={() => handlePageChange(1)}
-              className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+              className="px-2 py-1 sm:px-3 sm:py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm sm:text-base"
             >
               1
             </button>
@@ -360,7 +360,7 @@ export default function ChoosersIndexPage() {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`px-3 py-2 rounded ${
+            className={`px-2 py-1 sm:px-3 sm:py-2 rounded text-sm sm:text-base ${
               currentPage === page
                 ? 'bg-blue-500 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -375,7 +375,7 @@ export default function ChoosersIndexPage() {
             {endPage < totalPages - 1 && <span className="px-2">...</span>}
             <button
               onClick={() => handlePageChange(totalPages)}
-              className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300"
+              className="px-2 py-1 sm:px-3 sm:py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm sm:text-base"
             >
               {totalPages}
             </button>
@@ -385,7 +385,7 @@ export default function ChoosersIndexPage() {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 sm:px-3 sm:py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
           Next
         </button>
