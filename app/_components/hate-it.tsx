@@ -2,7 +2,7 @@
 
 import axios from 'axios'
 import { useState } from 'react'
-import { useHapticFeedback } from '../../../_hooks/use-haptic-feedback'
+import { useHapticFeedback } from '../_hooks/use-haptic-feedback'
 
 export default function HateIt(props: { streamId: number, playId: number }) {
   const { streamId, playId } = props
