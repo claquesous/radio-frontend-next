@@ -22,7 +22,6 @@ export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
           {chooser.song.title}
         </Link>
       </div>
-      <span className="text-gray-600">{chooser.rating.toFixed(2)}</span>
     </div>
   )
 }
