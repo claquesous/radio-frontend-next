@@ -11,7 +11,7 @@ export default async function StreamManageLayout({
   const { streamId } = await params
   return (
     <div className="stream-manage-layout min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto">
         <header className="stream-header mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Manage Stream

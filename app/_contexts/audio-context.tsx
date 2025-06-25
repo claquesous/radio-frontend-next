@@ -189,7 +189,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setCurrentStreamId(Number(streamId)) // Ensure it's stored as a number
     setCurrentStreamName(streamName)
 
-    localStorage.setItem('lastPlayedStream', streamId.toString())
+    localStorage.setItem('lastPlayedStream', JSON.stringify({ id: streamId, name: streamName }))
 
     try {
       // Dynamically import the player to avoid SSR issues
