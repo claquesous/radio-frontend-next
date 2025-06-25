@@ -221,55 +221,58 @@ export default function ChoosersIndexPage() {
     }
   }
 
-  const fetchChoosers = async (tab: TabType, page: number = 1) => {
-    if (!streamId) return
+  const fetchChoosers = React.useCallback(
+    async (tab: TabType, page: number = 1) => {
+      if (!streamId) return
 
-    try {
-      let url = `/streams/${streamId}/choosers`
-      const params = new URLSearchParams()
+      try {
+        let url = `/streams/${streamId}/choosers`
+        const params = new URLSearchParams()
 
-      switch (tab) {
-        case 'featured':
-          params.append('featured', 'true')
-          params.append('limit', '50')
-          params.append('offset', ((page - 1) * 50).toString())
-          break
-        case 'non-featured':
-          params.append('featured', 'false')
-          params.append('limit', '50')
-          params.append('offset', ((page - 1) * 50).toString())
-          break
-        case 'newest':
-          params.append('sort', 'created_at')
-          params.append('limit', '25')
-          break
+        switch (tab) {
+          case 'featured':
+            params.append('featured', 'true')
+            params.append('limit', '50')
+            params.append('offset', ((page - 1) * 50).toString())
+            break
+          case 'non-featured':
+            params.append('featured', 'false')
+            params.append('limit', '50')
+            params.append('offset', ((page - 1) * 50).toString())
+            break
+          case 'newest':
+            params.append('sort', 'created_at')
+            params.append('limit', '25')
+            break
+        }
+
+        if (params.toString()) {
+          url += `?${params.toString()}`
+        }
+
+        const response = await api.get<any>(url)
+
+        // Handle both paginated and non-paginated responses
+        if (response.data.choosers) {
+          // Paginated response
+          setChoosers(response.data.choosers)
+          setTotalPages(response.data.total_pages || 1)
+          setTotalChoosers(response.data.total || 0)
+        } else {
+          // Non-paginated response (for newest tab)
+          setChoosers(response.data)
+          setTotalPages(1)
+          setTotalChoosers(response.data.length)
+        }
+
+        setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
+      } catch (error) {
+        console.error(`Failed to fetch playlist for stream ${streamId}`, error)
+        setNotice(`Failed to load playlist for stream ${streamId}.`)
       }
-
-      if (params.toString()) {
-        url += `?${params.toString()}`
-      }
-
-      const response = await api.get<any>(url)
-
-      // Handle both paginated and non-paginated responses
-      if (response.data.choosers) {
-        // Paginated response
-        setChoosers(response.data.choosers)
-        setTotalPages(response.data.total_pages || 1)
-        setTotalChoosers(response.data.total || 0)
-      } else {
-        // Non-paginated response (for newest tab)
-        setChoosers(response.data)
-        setTotalPages(1)
-        setTotalChoosers(response.data.length)
-      }
-
-      setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
-    } catch (error) {
-      console.error(`Failed to fetch playlist for stream ${streamId}`, error)
-      setNotice(`Failed to load playlist for stream ${streamId}.`)
-    }
-  }
+    },
+    [streamId]
+  )
 
   useEffect(() => {
     setCurrentPage(1)
