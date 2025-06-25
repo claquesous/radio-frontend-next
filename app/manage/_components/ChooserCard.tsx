@@ -17,8 +17,7 @@ export default function ChooserCard({ chooser, streamId }: ChooserCardProps) {
         <Link href={`/s/${streamId}/artists/${chooser.artist.id}`} className="text-blue-600 hover:text-blue-800 break-all">
           {chooser.artist.name}
         </Link>
-        <span className="hidden sm:inline">-</span>
-        <span className="inline sm:hidden"> </span>
+        <span className="mx-1 text-gray-400">-</span>
         <Link href={`/s/${streamId}/songs/${chooser.song.id}`} className="text-blue-600 hover:text-blue-800 break-all">
           {chooser.song.title}
         </Link>
