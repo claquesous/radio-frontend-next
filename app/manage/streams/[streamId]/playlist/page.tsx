@@ -76,48 +76,51 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
         </svg>
       </div>
       <div className="pl-0 sm:pl-10 flex flex-col sm:block">
-        <ChooserCard chooser={chooser} streamId={streamId} />
-        <div
-          className="static sm:absolute sm:top-2 sm:right-2 flex gap-2 mt-2 sm:mt-0 w-full sm:w-auto"
-          onPointerDown={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Enqueue streamId={streamId} songId={chooser.song.id} />
-          {chooser.featured ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onDelete(chooser.id)
-              }}
-              onPointerDown={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-              title="Remove from playlist"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="Trash-Can--Streamline-Font-Awesome" height="16" width="16">
-                <desc>
-                  Trash Can Streamline Icon: https://streamlinehq.com
-                </desc>
-                <path d="M5.2805 0.7020642857142857C5.445875 0.36824999999999997 5.785814285714285 0.16 6.156375 0.16h3.6872499999999997c0.3705642857142857 0 0.7104999999999999 0.20825 0.875875 0.5420642857142857L10.94 1.14h2.9399999999999995c0.5420607142857142 0 0.98 0.4379392857142857 0.98 0.98S14.422060714285713 3.0999999999999996 13.879999999999999 3.0999999999999996H2.1199999999999997c-0.5420642857142857 0 -0.98 -0.43793571428571426 -0.98 -0.98s0.43793571428571426 -0.98 0.98 -0.98h2.9399999999999995l0.2205 -0.43793571428571426ZM2.1199999999999997 4.079999999999999h11.759999999999998v9.799999999999999c0 1.0810607142857143 -0.8789392857142856 1.96 -1.96 1.96H4.079999999999999c-1.0810642857142856 0 -1.96 -0.8789392857142856 -1.96 -1.96v-9.799999999999999Zm2.9399999999999995 1.96c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Zm2.9399999999999995 0c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Zm2.9399999999999995 0c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Z" fill="#ffffff" stroke-width="0.0357"></path>
-              </svg>
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onAdd(chooser.id)
-              }}
-              onPointerDown={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
-              title="Add to playlist"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16" fill="#ffffff">
-                <path d="M8 0C8.55228 0 9 0.447715 9 1V7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H9V15C9 15.5523 8.55228 16 8 16C7.44772 16 7 15.5523 7 15V9H1C0.447715 9 0 8.55228 0 8C0 7.44772 0.447715 7 1 7H7V1C7 0.447715 7.44772 0 8 0Z"/>
-              </svg>
-            </button>
-          )}
+        <div className="flex flex-col sm:flex-row sm:items-center w-full">
+          <ChooserCard chooser={chooser} streamId={streamId} />
+          <span className="text-gray-600 ml-0 sm:ml-4 mt-2 sm:mt-0">{chooser.rating.toFixed(2)}</span>
+          <div
+            className="static sm:absolute sm:top-2 sm:right-2 flex gap-2 mt-2 sm:mt-0 w-full sm:w-auto"
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Enqueue streamId={streamId} songId={chooser.song.id} />
+            {chooser.featured ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(chooser.id)
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+                title="Remove from playlist"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="Trash-Can--Streamline-Font-Awesome" height="16" width="16">
+                  <desc>
+                    Trash Can Streamline Icon: https://streamlinehq.com
+                  </desc>
+                  <path d="M5.2805 0.7020642857142857C5.445875 0.36824999999999997 5.785814285714285 0.16 6.156375 0.16h3.6872499999999997c0.3705642857142857 0 0.7104999999999999 0.20825 0.875875 0.5420642857142857L10.94 1.14h2.9399999999999995c0.5420607142857142 0 0.98 0.4379392857142857 0.98 0.98S14.422060714285713 3.0999999999999996 13.879999999999999 3.0999999999999996H2.1199999999999997c-0.5420642857142857 0 -0.98 -0.43793571428571426 -0.98 -0.98s0.43793571428571426 -0.98 0.98 -0.98h2.9399999999999995l0.2205 -0.43793571428571426ZM2.1199999999999997 4.079999999999999h11.759999999999998v9.799999999999999c0 1.0810607142857143 -0.8789392857142856 1.96 -1.96 1.96H4.079999999999999c-1.0810642857142856 0 -1.96 -0.8789392857142856 -1.96 -1.96v-9.799999999999999Zm2.9399999999999995 1.96c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Zm2.9399999999999995 0c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Zm2.9399999999999995 0c-0.2695 0 -0.49 0.2205 -0.49 0.49v6.86c0 0.2695 0.2205 0.49 0.49 0.49s0.49 -0.2205 0.49 -0.49V6.529999999999999c0 -0.2695 -0.2205 -0.49 -0.49 -0.49Z" fill="#ffffff" stroke-width="0.0357"></path>
+                </svg>
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onAdd(chooser.id)
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
+                title="Add to playlist"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16" fill="#ffffff">
+                  <path d="M8 0C8.55228 0 9 0.447715 9 1V7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H9V15C9 15.5523 8.55228 16 8 16C7.44772 16 7 15.5523 7 15V9H1C0.447715 9 0 8.55228 0 8C0 7.44772 0.447715 7 1 7H7V1C7 0.447715 7.44772 0 8 0Z"/>
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
