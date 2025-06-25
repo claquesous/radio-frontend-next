@@ -6,11 +6,20 @@ import { Stream } from '../_types/types'
 import api from '../../lib/api'
 
 export default function ManagePage() {
-  const [lastPlayedStreamId, setLastPlayedStreamId] = useState<string | null>(null)
+  const [lastPlayedStream, setLastPlayedStream] = useState<{ id: string, name: string } | null>(null)
 
   useEffect(() => {
     const lastStream = localStorage.getItem('lastPlayedStream')
-    setLastPlayedStreamId(lastStream)
+    if (lastStream) {
+      try {
+        const parsed = JSON.parse(lastStream)
+        setLastPlayedStream(parsed)
+      } catch {
+        setLastPlayedStream(null)
+      }
+    } else {
+      setLastPlayedStream(null)
+    }
   }, [])
 
   const [streams, setStreams] = useState<Stream[]>([])
@@ -18,7 +27,16 @@ export default function ManagePage() {
 
   useEffect(() => {
     const lastStream = localStorage.getItem('lastPlayedStream')
-    setLastPlayedStreamId(lastStream)
+    if (lastStream) {
+      try {
+        const parsed = JSON.parse(lastStream)
+        setLastPlayedStream(parsed)
+      } catch {
+        setLastPlayedStream(null)
+      }
+    } else {
+      setLastPlayedStream(null)
+    }
 
     // Fetch streams from API
     const fetchStreams = async () => {
@@ -50,12 +68,12 @@ export default function ManagePage() {
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Last Played Stream
           </h3>
-          {lastPlayedStreamId ? (
+          {lastPlayedStream ? (
             <Link
-              href={`/s/${lastPlayedStreamId}`}
+              href={`/s/${lastPlayedStream.id}`}
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
-              Go to Stream {lastPlayedStreamId}
+              Listen to Stream: {lastPlayedStream.name}
             </Link>
           ) : (
             <p className="text-gray-600 dark:text-gray-300">
