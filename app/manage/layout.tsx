@@ -6,7 +6,7 @@ export default function ManageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="manage-layout bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+    <div className="manage-layout bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen px-2 py-2 sm:px-4 md:px-8 lg:px-16">
       <nav style={{ marginBottom: 16 }}>
         <a
           href="/manage"
