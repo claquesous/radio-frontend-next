@@ -274,13 +274,13 @@ export default function ChoosersIndexPage() {
   useEffect(() => {
     setCurrentPage(1)
     fetchChoosers(activeTab, 1)
-  }, [streamId, activeTab])
+  }, [streamId, activeTab, fetchChoosers])
 
   useEffect(() => {
     if (activeTab !== 'newest') {
       fetchChoosers(activeTab, currentPage)
     }
-  }, [currentPage])
+  }, [currentPage, activeTab, fetchChoosers])
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab)
