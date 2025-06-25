@@ -79,15 +79,22 @@ export default function ManagePage() {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Streams</h2>
         <div id="streams">
           {streams.map((stream) => (
-            <div key={stream.id}>
-              <StreamCard stream={stream} />
-              <p>
-                <Link href={`/manage/streams/${stream.id}`}>Show this stream</Link>
-              </p>
+            <div key={stream.id} className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <StreamCard stream={stream} />
+                <Link
+                  href={`/manage/streams/${stream.id}`}
+                  className="text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap"
+                >
+                  Show this stream
+                </Link>
+              </div>
             </div>
           ))}
         </div>
-        <Link href="/manage/streams/new" className="btn">New stream</Link>
+        <div className="mt-6">
+          <Link href="/manage/streams/new" className="btn">New stream</Link>
+        </div>
       </div>
     </div>
   )
