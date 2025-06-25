@@ -105,8 +105,7 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
       {...attributes}
       className="relative"
     >
-      {/* Desktop layout */}
-      <div className="hidden sm:flex flex-row items-center w-full pl-10">
+      <div className="flex flex-row items-center w-full pl-0 sm:pl-10 gap-2 sm:gap-4">
         <div
           {...listeners}
           className="flex items-center justify-center w-8 h-10 cursor-grab z-10"
@@ -123,14 +122,7 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
           </svg>
         </div>
         <ChooserCard chooser={chooser} streamId={streamId} />
-        <span className="text-gray-600 ml-4">{chooser.rating.toFixed(2)}</span>
-        <RowActions chooser={chooser} streamId={streamId} onDelete={onDelete} onAdd={onAdd} />
-      </div>
-      {/* Mobile layout */}
-      <div className="flex flex-col sm:hidden w-full pl-0">
-        <span className="text-xs text-gray-400 mb-1">Drag and drop is not available on mobile.</span>
-        <ChooserCard chooser={chooser} streamId={streamId} />
-        <span className="text-gray-600 mt-1">{chooser.rating.toFixed(2)}</span>
+        <span className="text-gray-600">{chooser.rating.toFixed(2)}</span>
         <RowActions chooser={chooser} streamId={streamId} onDelete={onDelete} onAdd={onAdd} />
       </div>
     </div>
