@@ -13,7 +13,7 @@ export default function ManageLayout({
           className="inline-flex items-center px-3 py-2 rounded bg-blue-600 text-white dark:bg-blue-400 dark:text-gray-900 hover:bg-blue-700 dark:hover:bg-blue-500 transition-colors"
           aria-label="Home"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" id="Home--Streamline-Ionic-Filled" height="24" width="24">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" id="Home--Streamline-Ionic-Filled" height="24" width="24" className="mr-1">
             <desc>
               Home Streamline Icon: https://streamlinehq.com
             </desc>
