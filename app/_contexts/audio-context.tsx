@@ -195,7 +195,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       // Dynamically import the player to avoid SSR issues
       const { default: IcecastMetadataPlayer } = await import('icecast-metadata-player')
 
-      let player = new IcecastMetadataPlayer(`/streams/${streamName}`, {
+      let player = new IcecastMetadataPlayer(`/streams/stream-${streamId}`, {
         onMetadata,
         metadataTypes: ["icy"],
       }) as IcecastMetadataPlayer
