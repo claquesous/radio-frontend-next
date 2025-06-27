@@ -61,9 +61,19 @@ export default function TopBar() {
         setCurrentUser(response.data.user)
 
         const lastPlayedStream = localStorage.getItem('lastPlayedStream')
+        let redirected = false
         if (lastPlayedStream) {
-          router.push(`/s/${lastPlayedStream}`)
-        } else {
+          try {
+            const parsed = JSON.parse(lastPlayedStream)
+            if (parsed && parsed.id) {
+              router.push(`/s/${parsed.id}`)
+              redirected = true
+            }
+          } catch {
+            // ignore parse error, will refresh below
+          }
+        }
+        if (!redirected) {
           router.refresh()
         }
         return { success: true }
