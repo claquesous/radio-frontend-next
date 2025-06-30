@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function ManageLayout({
   children,
@@ -8,7 +9,7 @@ export default function ManageLayout({
   return (
     <div className="manage-layout bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen px-2 py-2 sm:px-4 md:px-8 lg:px-16">
       <nav style={{ marginBottom: 16 }}>
-        <a
+        <Link
           href="/manage"
           className="inline-flex items-center px-3 py-2 rounded bg-blue-600 text-white dark:bg-blue-400 dark:text-gray-900 hover:bg-blue-700 dark:hover:bg-blue-500 transition-colors"
           aria-label="Home"
@@ -21,7 +22,7 @@ export default function ManageLayout({
             <path fill="currentColor" d="m23.0106 11.4449 -3.5062 -3.35435V3.00047c0 -0.198915 -0.07895 -0.389675 -0.21965 -0.530325 -0.14065 -0.14065 -0.3314 -0.219665 -0.53035 -0.219665h-2.24995c-0.1989 0 -0.38965 0.079015 -0.5303 0.219665s-0.2197 0.33141 -0.2197 0.530325V4.50045L13.0395 1.904545c-0.25405 -0.25687 -0.63185 -0.404055 -1.04015 -0.404055 -0.40685 0 -0.78375 0.147185 -1.0378 0.404525L0.9914 11.44395c-0.291555 0.28125 -0.32812 0.7439 -0.06281 1.0486 0.06662 0.0769 0.1482 0.13945 0.23976 0.1838s0.1912 0.06965 0.292845 0.0743c0.10164 0.00465 0.20317 -0.0114 0.2984 -0.04725 0.09523 -0.03585 0.18218 -0.0907 0.255545 -0.1612L11.74155 3.247965c0.0698 -0.06676 0.16265 -0.10402 0.2592 -0.10402 0.0966 0 0.1895 0.03726 0.25925 0.10402L21.98735 12.5422c0.1433 0.1374 0.33525 0.2124 0.5337 0.20855 0.1985 -0.0039 0.3874 -0.0863 0.5252 -0.22915 0.2878 -0.29815 0.2639 -0.7903 -0.03565 -1.0767Z" strokeWidth="0.5"></path>
           </svg>
           Home
-        </a>
+        </Link>
       </nav>
       <main className="manage-content">
         {children}
