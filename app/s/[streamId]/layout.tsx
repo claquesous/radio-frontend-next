@@ -11,7 +11,9 @@ export default async function StreamsLayout({
 }>) {
   const { streamId } = await params
   return (<>
-    <DynamicGlobalPlayer streamId={streamId} />
+    <div className="mt-16">
+      <DynamicGlobalPlayer streamId={streamId} />
+    </div>
     <div className="py-2">
       <div className="mb-4 flex justify-end">
         <StreamSearchbox streamId={streamId} />
