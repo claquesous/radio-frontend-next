@@ -19,7 +19,7 @@ export default async function Plays(props: {streamId: number}) {
 
   return (
     <div className="w-full min-h-screen">
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 overflow-x-auto">
         {plays.map((play: Play) =>
           <div key={play.id} className="contents">
             <Link className="py-7 pl-3"

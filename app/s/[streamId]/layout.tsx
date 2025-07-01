@@ -13,12 +13,12 @@ export default async function StreamsLayout({
   return (
     <>
       <div className="py-2">
+        <DynamicGlobalPlayer streamId={streamId} />
         <div className="mb-4 flex justify-end">
           <StreamSearchbox streamId={streamId} />
         </div>
         {children}
       </div>
-      <DynamicGlobalPlayer streamId={streamId} />
     </>
   )
 }
