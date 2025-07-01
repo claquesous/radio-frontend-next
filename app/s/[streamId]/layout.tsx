@@ -10,13 +10,15 @@ export default async function StreamsLayout({
   params: Promise<{ streamId: number }>,
 }>) {
   const { streamId } = await params
-  return (<>
-    <DynamicGlobalPlayer streamId={streamId} />
-    <div className="py-2">
-      <div className="mb-4 flex justify-end">
-        <StreamSearchbox streamId={streamId} />
+  return (
+    <>
+      <div className="py-2">
+        <div className="mb-4 flex justify-end">
+          <StreamSearchbox streamId={streamId} />
+        </div>
+        {children}
       </div>
-      {children}
-    </div>
-  </>)
+      <DynamicGlobalPlayer streamId={streamId} />
+    </>
+  )
 }
