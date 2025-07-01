@@ -25,7 +25,7 @@ export default function RootLayout({
           <header className="sticky top-0 py-2 sm:py-3 w-full bg-slate-500 shadow-md z-50">
             <TopBar />
           </header>
-          <div className="primary-content">
+          <div className="primary-content overflow-x-hidden">
             {children}
           </div>
           <Footer />
