@@ -19,13 +19,13 @@ export default async function Plays(props: {streamId: number}) {
 
   return (
     <div className="w-full min-h-screen">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 overflow-x-auto">
+      <div className="flex flex-col w-full">
         {plays.map((play: Play) =>
-          <div key={play.id} className="contents">
-            <Link className="py-7 pl-3"
+          <div key={play.id} className="flex items-center border-b border-slate-300 dark:border-slate-700 px-3 py-4 gap-4">
+            <Link className="font-medium text-blue-700 dark:text-blue-300 hover:underline"
               href={`/s/${streamId}/artists/${play.artist.id}`}>{play.artist.name}
             </Link>
-            <Link className="py-7"
+            <Link className="flex-1 font-semibold text-slate-900 dark:text-slate-100 hover:underline"
               href={`/s/${streamId}/songs/${play.song.id}`}>{play.song.title}
             </Link>
             <Rating rating={play.song.rating} />
