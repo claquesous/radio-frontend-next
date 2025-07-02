@@ -30,9 +30,8 @@ export default function EditStreamPage() {
 
   const handleSubmit = async (formData: any) => {
     try {
-      // Send PUT/PATCH request to API to update stream
       await api.put(`/streams/${streamId}`, formData)
-      router.push(`/admin/streams/${streamId}`) // Redirect to stream show page after update
+      router.push(`/manage/streams/${streamId}`)
     } catch (error: any) {
       console.error(`Failed to update stream ${streamId}`, error)
       setErrors([error.message || 'Failed to update stream'])
