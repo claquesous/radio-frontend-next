@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useCurrentUser } from '../_hooks/use-current-user'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 
@@ -17,30 +17,17 @@ export default function SignupPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [errors, setErrors] = useState<string[]>([])
   const [success, setSuccess] = useState(false)
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const currentUser = useCurrentUser()
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already logged in
-    const storedToken = localStorage.getItem('authToken')
-    const storedUser = localStorage.getItem('user')
-
-    if (storedToken && storedUser) {
-      try {
-        const user = JSON.parse(storedUser)
-        setCurrentUser(user)
-        // Redirect to manage page since they're already logged in
-        router.push('/manage')
-        return
-      } catch (e) {
-        // Invalid stored data, clear it
-        localStorage.removeItem('authToken')
-        localStorage.removeItem('user')
-      }
+    if (currentUser) {
+      router.push('/manage')
+    } else {
+      setIsLoading(false)
     }
-    setIsLoading(false)
-  }, [router])
+  }, [currentUser, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
