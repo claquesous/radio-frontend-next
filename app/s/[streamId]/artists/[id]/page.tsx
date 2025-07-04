@@ -1,6 +1,9 @@
 import PlayStats from '../../_components/playstats'
 import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
+import dynamic from "next/dynamic"
+
+const PencilEditButton = dynamic(() => import("../../../../_components/pencil-edit-button"), { ssr: false })
 
 async function getArtist(streamId: number, id: number) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/streams/${streamId}/artists/${id}`, { next: { revalidate: 7200 } })
@@ -16,11 +19,16 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   const { streamId, id } = await params
   const artist = await getArtist(streamId, id)
 
-  return (<>
-    <div className="text-2xl font-bold mb-4 pl-3">{artist.name}</div>
-    { artist.songs.map((song: Song) =>
-      <SongItem key={song.id} song={song} streamId={streamId} />
-    ) }
-    <PlayStats playStats={artist} />
-  </>)
+  return (
+    <>
+      <div className="relative flex items-center mb-4 pl-3">
+        <div className="text-2xl font-bold flex-1">{artist.name}</div>
+        <PencilEditButton href={`/admin/artists/${id}/edit`} />
+      </div>
+      {artist.songs.map((song: Song) =>
+        <SongItem key={song.id} song={song} streamId={streamId} />
+      )}
+      <PlayStats playStats={artist} />
+    </>
+  )
 }
