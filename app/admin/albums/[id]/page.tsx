@@ -71,6 +71,21 @@ export default function AlbumShowPage() {
         {album.record_label}
       </p>
 
+      {album.songs && album.songs.length > 0 && (
+        <div>
+          <strong>Songs:</strong>
+          <ul>
+            {album.songs.map((song: { id: number, title: string }) => (
+              <li key={song.id}>
+                <Link href={`/admin/songs/${song.id}`} className="text-blue-600 hover:underline">
+                  {song.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <Link href={`/admin/albums/${album.id}/edit`}>Edit</Link> |{' '}
       <Link href="/admin/albums">Back</Link>
     </div>
