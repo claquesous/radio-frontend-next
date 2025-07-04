@@ -1,5 +1,3 @@
-// useCurrentUser hook for React
-
 import { useState, useEffect } from "react"
 
 interface User {
