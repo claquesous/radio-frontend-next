@@ -18,8 +18,8 @@ export default function PencilEditButton({ href }: PencilEditButtonProps) {
       title="Edit"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="currentColor" className="text-slate-400 hover:text-blue-500 transition-colors" style={{ display: "inline", verticalAlign: "middle" }}>
-        <rect x="9" y="5" width="6" height="12" rx="1" />
-        <polygon points="12,2 8,5 16,5" />
+        <polygon points="7,19 15,17 17,7 9,9" />
+        <polygon points="15,17 17,7 21,5 19,15" />
       </svg>
     </Link>
   )
