@@ -3,7 +3,7 @@ import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
 import dynamic from "next/dynamic"
 
-const PencilEditButton = dynamic(() => import("../../../../_components/pencil-edit-button"), { ssr: false })
+const PencilEditButton = dynamic(() => import("../../../../_components/pencil-edit-button"))
 
 async function getArtist(streamId: number, id: number) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/streams/${streamId}/artists/${id}`, { next: { revalidate: 7200 } })
