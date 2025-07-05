@@ -52,8 +52,6 @@ export default function ArtistsIndexPage() {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Sort</th>
-            <th>Slug</th>
             <th></th>
             <th></th>
           </tr>
@@ -63,8 +61,6 @@ export default function ArtistsIndexPage() {
           {artists.map((artist) => (
             <tr key={artist.id}>
               <td>{artist.name}</td>
-              <td>{artist.sort}</td>
-              <td>{artist.slug}</td>
               <td>
                 <div className="flex gap-2">
                   <Link href={`/admin/artists/${artist.id}`}>

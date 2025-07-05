@@ -53,11 +53,6 @@ export default function AlbumsIndexPage() {
           <tr>
             <th>Artist</th>
             <th>Title</th>
-            <th>Sort</th>
-            <th>Slug</th>
-            <th>Tracks</th>
-            <th>Id3 genre</th>
-            <th>Record label</th>
             <th></th>
             <th></th>
           </tr>
@@ -68,11 +63,6 @@ export default function AlbumsIndexPage() {
             <tr key={album.id}>
               <td><Link href={`/admin/artists/${album.artist.id}`}>{album.artist.name}</Link></td>
               <td>{album.title}</td>
-              <td>{album.sort}</td>
-              <td>{album.slug}</td>
-              <td>{album.tracks}</td>
-              <td>{album.id3_genre}</td>
-              <td>{album.record_label}</td>
               <td>
                 <div className="flex gap-2">
                   <Link href={`/admin/albums/${album.id}`}>

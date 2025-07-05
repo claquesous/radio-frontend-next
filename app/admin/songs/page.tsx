@@ -55,12 +55,6 @@ export default function SongsIndexPage() {
             <th>Artist</th>
             <th>Artist Name Override</th>
             <th>Title</th>
-            <th>Sort</th>
-            <th>Slug</th>
-            <th>Track</th>
-            <th>Time</th>
-            <th>Live</th>
-            <th>Remix</th>
             <th>Year</th>
             <th></th>
             <th></th>
@@ -74,12 +68,6 @@ export default function SongsIndexPage() {
               <td><Link href={`/admin/artists/${song.artist.id}`}>{song.artist.name}</Link></td>
               <td>{song.artist_name_override}</td>
               <td>{song.title}</td>
-              <td>{song.sort}</td>
-              <td>{song.slug}</td>
-              <td>{song.track}</td>
-              <td>{song.time}</td>
-              <td>{song.live ? 'Yes' : 'No'}</td>
-              <td>{song.remix ? 'Yes' : 'No'}</td>
               <td>{song.year}</td>
               <td>
                 <div className="flex gap-2">
