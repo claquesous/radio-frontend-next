@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import BackButton from '../../../_components/BackButton'
 import api from '../../../../lib/api'
 
 interface SongResponse {
@@ -71,7 +71,7 @@ export default function NewSongPage() {
         </div>
       )}
       <br />
-      <Link href="/admin/songs">Back</Link>
+      <BackButton href="/admin/songs" />
     </div>
   )
 }

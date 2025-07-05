@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import BackButton from '../../../../_components/BackButton'
 import AlbumForm from '../../../_components/AlbumForm'
 import { Album } from '../../../../_types/types'
 import api from '../../../../../lib/api'
@@ -52,7 +53,7 @@ export default function EditAlbumPage() {
       <br />
 
       <Link href={`/admin/albums/${album.id}`}>Show</Link> |{' '}
-      <Link href="/admin/albums">Back</Link>
+      <BackButton href="/admin/albums" />
     </div>
   )
 }

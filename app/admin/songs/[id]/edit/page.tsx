@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import BackButton from '../../../../_components/BackButton'
 import SongForm from '../../../_components/SongForm'
 import { Song } from '../../../../_types/types'
 import api from '../../../../../lib/api'
@@ -52,7 +53,7 @@ export default function EditSongPage() {
       <br />
 
       <Link href={`/admin/songs/${song.id}`}>Show</Link> |{' '}
-      <Link href="/admin/songs">Back</Link>
+      <BackButton href="/admin/songs" />
     </div>
   )
 }

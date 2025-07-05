@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import BackButton from '../../../_components/BackButton'
 import ArtistForm from '../../_components/ArtistForm'
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
@@ -30,7 +30,7 @@ export default function NewArtistPage() {
 
       <br />
 
-      <Link href="/admin/artists">Back</Link>
+      <BackButton href="/admin/artists" />
     </div>
   )
 }

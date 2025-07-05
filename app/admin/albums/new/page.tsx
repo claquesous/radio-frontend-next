@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import BackButton from '../../../_components/BackButton'
 import AlbumForm from '../../_components/AlbumForm'
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
@@ -30,7 +30,7 @@ export default function NewAlbumPage() {
 
       <br />
 
-      <Link href="/admin/albums">Back</Link>
+      <BackButton href="/admin/albums" />
     </div>
   )
 }
