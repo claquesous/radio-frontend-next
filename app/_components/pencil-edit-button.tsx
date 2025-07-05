@@ -12,7 +12,7 @@ export default function PencilEditButton({ href, className }: PencilEditButtonPr
   const user = useCurrentUser()
   if (!user || !user.admin) return null
 
-  const baseClass = "p-2 bg-gray-200 hover:bg-gray-300 rounded"
+  const baseClass = "p-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-200"
   const absoluteClass = className?.includes("edit-absolute")
     ? "absolute right-3 top-1"
     : ""
@@ -22,7 +22,7 @@ export default function PencilEditButton({ href, className }: PencilEditButtonPr
       className={`${baseClass} ${absoluteClass} ${className ? className : ""}`.trim()}
       title="Edit"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Pencil-1--Streamline-Ultimate" height="24" width="24">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="Pencil-1--Streamline-Ultimate" height="24" width="24">
         <desc>
           Pencil 1 Streamline Icon: https://streamlinehq.com
         </desc>
