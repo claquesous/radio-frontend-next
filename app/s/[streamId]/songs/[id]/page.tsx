@@ -25,7 +25,7 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
         <Link href={`/s/${streamId}/artists/${song.artist.id}`} className="text-2xl font-bold flex-1">
           {song.artist.name}
         </Link>
-        <PencilEditButton href={`/admin/songs/${id}/edit`} />
+        <PencilEditButton href={`/admin/songs/${id}/edit`} className="edit-absolute" />
       </div>
       <SongItem song={song} streamId={streamId} linkable={false} />
       <PlayStats playStats={song} />

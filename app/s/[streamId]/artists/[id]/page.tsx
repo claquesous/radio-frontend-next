@@ -23,7 +23,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
     <>
       <div className="relative flex items-center mb-4 pl-3">
         <div className="text-2xl font-bold flex-1">{artist.name}</div>
-        <PencilEditButton href={`/admin/artists/${id}/edit`} />
+        <PencilEditButton href={`/admin/artists/${id}/edit`} className="edit-absolute" />
       </div>
       {artist.songs.map((song: Song) =>
         <SongItem key={song.id} song={song} streamId={streamId} />

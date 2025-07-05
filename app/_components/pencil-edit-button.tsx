@@ -5,16 +5,21 @@ import Link from "next/link"
 
 type PencilEditButtonProps = {
   href: string
+  className?: string
 }
 
-export default function PencilEditButton({ href }: PencilEditButtonProps) {
+export default function PencilEditButton({ href, className }: PencilEditButtonProps) {
   const user = useCurrentUser()
   if (!user || !user.admin) return null
 
+  const baseClass = "p-2 bg-gray-200 hover:bg-gray-300 rounded"
+  const absoluteClass = className?.includes("edit-absolute")
+    ? "absolute right-3 top-1"
+    : ""
   return (
     <Link
       href={href}
-      className="absolute right-3 top-1"
+      className={`${baseClass} ${absoluteClass} ${className ? className : ""}`.trim()}
       title="Edit"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Pencil-1--Streamline-Ultimate" height="24" width="24">
