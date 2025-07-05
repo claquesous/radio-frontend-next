@@ -66,12 +66,12 @@ export default function ArtistsIndexPage() {
               <td>{artist.sort}</td>
               <td>{artist.slug}</td>
               <td>
-                <Link href={`/admin/artists/${artist.id}`}>
-                  <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
-                </Link>
-              </td>
-              <td>
-                <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
+                <div className="flex gap-2">
+                  <Link href={`/admin/artists/${artist.id}`}>
+                    <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                  </Link>
+                  <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
+                </div>
               </td>
             </tr>
           ))}

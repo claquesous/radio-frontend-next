@@ -74,12 +74,12 @@ export default function AlbumsIndexPage() {
               <td>{album.id3_genre}</td>
               <td>{album.record_label}</td>
               <td>
-                <Link href={`/admin/albums/${album.id}`}>
-                  <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
-                </Link>
-              </td>
-              <td>
-                <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+                <div className="flex gap-2">
+                  <Link href={`/admin/albums/${album.id}`}>
+                    <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                  </Link>
+                  <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+                </div>
               </td>
             </tr>
           ))}

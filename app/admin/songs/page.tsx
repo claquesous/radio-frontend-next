@@ -82,12 +82,12 @@ export default function SongsIndexPage() {
               <td>{song.remix ? 'Yes' : 'No'}</td>
               <td>{song.year}</td>
               <td>
-                <Link href={`/admin/songs/${song.id}`}>
-                  <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
-                </Link>
-              </td>
-              <td>
-                <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+                <div className="flex gap-2">
+                  <Link href={`/admin/songs/${song.id}`}>
+                    <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                  </Link>
+                  <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+                </div>
               </td>
             </tr>
           ))}
