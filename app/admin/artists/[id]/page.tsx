@@ -37,19 +37,46 @@ export default function ArtistShowPage() {
       {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
 
       <p>
-        <strong>Name:</strong>
-        {artist.name}
+        <strong>Name:</strong> {artist.name}
       </p>
 
       <p>
-        <strong>Sort:</strong>
-        {artist.sort}
+        <strong>Sort:</strong> {artist.sort}
       </p>
 
       <p>
-        <strong>Slug:</strong>
-        {artist.slug}
+        <strong>Slug:</strong> {artist.slug}
       </p>
+
+      {artist.albums && artist.albums.length > 0 && (
+        <div>
+          <strong>Albums:</strong>
+          <ul>
+            {artist.albums.map((album: { id: number, title: string }) => (
+              <li key={album.id}>
+                <Link href={`/admin/albums/${album.id}`} className="hover:underline">
+                  {album.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {artist.songs && artist.songs.length > 0 && (
+        <div>
+          <strong>Songs:</strong>
+          <ul>
+            {artist.songs.map((song: { id: number, title: string }) => (
+              <li key={song.id}>
+                <Link href={`/admin/songs/${song.id}`} className="hover:underline">
+                  {song.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <Link href={`/admin/artists/${artist.id}/edit`}>Edit</Link> |{' '}
       <Link href="/admin/artists">Back</Link>

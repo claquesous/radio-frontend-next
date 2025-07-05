@@ -3,6 +3,8 @@ export type Artist = {
   name: string
   sort: string | null
   slug: string | null
+  albums?: Album[]
+  songs?: Song[]
 }
 
 export type Album = {
@@ -14,6 +16,7 @@ export type Album = {
   tracks: number | null
   id3_genre: string | null
   record_label: string | null
+  songs?: Song[]
 }
 
 export type Song = {

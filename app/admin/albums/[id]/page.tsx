@@ -38,7 +38,7 @@ export default function AlbumShowPage() {
 
       <p>
         <strong>Artist:</strong>
-        <Link href={`/admin/artists/${album.artist.id}`}>{album.artist.name}</Link>
+        <Link href={`/admin/artists/${album.artist.id}`} className="hover:underline">{album.artist.name}</Link>
       </p>
 
       <p>
@@ -70,6 +70,21 @@ export default function AlbumShowPage() {
         <strong>Record label:</strong>
         {album.record_label}
       </p>
+
+      {album.songs && album.songs.length > 0 && (
+        <div>
+          <strong>Songs:</strong>
+          <ul>
+            {album.songs.map((song: { id: number, title: string }) => (
+              <li key={song.id}>
+                <Link href={`/admin/songs/${song.id}`} className="hover:underline">
+                  {song.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <Link href={`/admin/albums/${album.id}/edit`}>Edit</Link> |{' '}
       <Link href="/admin/albums">Back</Link>
