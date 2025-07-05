@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import BackButton from '../../../../_components/BackButton'
 import SongForm from '../../../_components/SongForm'
 import { Song } from '../../../../_types/types'
@@ -50,10 +49,9 @@ export default function EditSongPage() {
 
       <SongForm initialData={song} onSubmit={handleSubmit} errors={errors} />
 
-      <br />
-
-      <Link href={`/admin/songs/${song.id}`}>Show</Link> |{' '}
-      <BackButton href="/admin/songs" />
+      <div className="flex items-center gap-2 mt-4">
+        <BackButton href={`/admin/songs/${song.id}`} />
+      </div>
     </div>
   )
 }

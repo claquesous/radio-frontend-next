@@ -28,9 +28,9 @@ export default function NewAlbumPage() {
 
       <AlbumForm onSubmit={handleSubmit} errors={errors} />
 
-      <br />
-
-      <BackButton href="/admin/albums" />
+      <div className="flex items-center gap-2 mt-4">
+        <BackButton href="/admin/albums" />
+      </div>
     </div>
   )
 }

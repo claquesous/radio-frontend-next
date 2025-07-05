@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import BackButton from '../../../../_components/BackButton'
 import ArtistForm from '../../../_components/ArtistForm'
 import { Artist } from '../../../../_types/types'
@@ -50,10 +49,9 @@ export default function EditArtistPage() {
 
       <ArtistForm initialData={artist} onSubmit={handleSubmit} errors={errors} />
 
-      <br />
-
-      <Link href={`/admin/artists/${artist.id}`}>Show</Link> |{' '}
-      <BackButton href="/admin/artists" />
+      <div className="flex items-center gap-2 mt-4">
+        <BackButton href={`/admin/artists/${artist.id}`} />
+      </div>
     </div>
   )
 }

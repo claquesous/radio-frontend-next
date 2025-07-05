@@ -70,8 +70,10 @@ export default function NewSongPage() {
           </ul>
         </div>
       )}
-      <br />
-      <BackButton href="/admin/songs" />
+
+      <div className="flex items-center gap-2 mt-4">
+        <BackButton href="/admin/songs" />
+      </div>
     </div>
   )
 }

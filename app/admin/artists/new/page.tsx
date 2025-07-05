@@ -28,9 +28,9 @@ export default function NewArtistPage() {
 
       <ArtistForm onSubmit={handleSubmit} errors={errors} />
 
-      <br />
-
-      <BackButton href="/admin/artists" />
+      <div className="flex items-center gap-2 mt-4">
+        <BackButton href="/admin/artists" />
+      </div>
     </div>
   )
 }
