@@ -75,7 +75,7 @@ export default function ArtistForm({ initialData, onSubmit, errors, backHref }: 
         />
       </div>
       <div className="actions flex items-center gap-2 mt-4">
-        <button type="submit">Submit</button>
+        <button type="submit" className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 dark:text-gray-200 border border-gray-300">Submit</button>
         <BackButton href={backHref} />
       </div>
     </form>
