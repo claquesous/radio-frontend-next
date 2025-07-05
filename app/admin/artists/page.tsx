@@ -1,5 +1,3 @@
-// Pagination for Artists admin page
-
 'use client'
 
 import React, { useCallback, useEffect } from 'react'
