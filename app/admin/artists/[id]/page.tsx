@@ -54,7 +54,7 @@ export default function ArtistShowPage() {
           <ul>
             {artist.albums.map((album: { id: number, title: string }) => (
               <li key={album.id}>
-                <Link href={`/admin/albums/${album.id}`} className="text-blue-600 hover:underline">
+                <Link href={`/admin/albums/${album.id}`} className="hover:underline">
                   {album.title}
                 </Link>
               </li>
@@ -69,7 +69,7 @@ export default function ArtistShowPage() {
           <ul>
             {artist.songs.map((song: { id: number, title: string }) => (
               <li key={song.id}>
-                <Link href={`/admin/songs/${song.id}`} className="text-blue-600 hover:underline">
+                <Link href={`/admin/songs/${song.id}`} className="hover:underline">
                   {song.title}
                 </Link>
               </li>

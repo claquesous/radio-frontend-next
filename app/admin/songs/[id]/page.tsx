@@ -38,12 +38,12 @@ export default function SongShowPage() {
 
       <p>
         <strong>Album:</strong>
-        {song.album ? <Link href={`/admin/albums/${song.album.id}`} className="text-blue-600 hover:underline">{song.album.title}</Link> : 'N/A'}
+        {song.album ? <Link href={`/admin/albums/${song.album.id}`} className="hover:underline">{song.album.title}</Link> : 'N/A'}
       </p>
 
       <p>
         <strong>Artist:</strong>
-        <Link href={`/admin/artists/${song.artist.id}`} className="text-blue-600 hover:underline">{song.artist.name}</Link>
+        <Link href={`/admin/artists/${song.artist.id}`} className="hover:underline">{song.artist.name}</Link>
       </p>
 
       <p>
