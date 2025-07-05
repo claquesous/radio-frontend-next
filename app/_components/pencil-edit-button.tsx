@@ -17,8 +17,15 @@ export default function PencilEditButton({ href }: PencilEditButtonProps) {
       className="absolute right-3 top-1"
       title="Edit"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="currentColor" className="text-slate-400 hover:text-blue-500 transition-colors" style={{ display: "inline", verticalAlign: "middle" }}>
-        <path d="M16.862 5.487a2.25 2.25 0 1 1 3.182 3.182l-9.75 9.75a2 2 0 0 1-.878.513l-4.25 1.062 1.062-4.25a2 2 0 0 1 .513-.878l9.75-9.75z" />
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="Pencil-1--Streamline-Ultimate" height="24" width="24">
+        <desc>
+          Pencil 1 Streamline Icon: https://streamlinehq.com
+        </desc>
+        <g id="Pencil-1--Streamline-Ultimate.svg">
+          <path d="M15.07 4a0.49 0.49 0 0 0 -0.36 -0.15 0.5 0.5 0 0 0 -0.35 0.14L3.44 14.91a0.5 0.5 0 0 0 0 0.71l4.94 4.94a0.51 0.51 0 0 0 0.36 0.15 0.49 0.49 0 0 0 0.35 -0.15L20 9.65a0.51 0.51 0 0 0 0 -0.71Z" fill="#000000" stroke-width="1"></path>
+          <path d="M2.43 16.8a0.51 0.51 0 0 0 -0.84 0.24L0.08 23.31a0.49 0.49 0 0 0 0.14 0.47 0.51 0.51 0 0 0 0.47 0.14L7 22.41a0.49 0.49 0 0 0 0.36 -0.35 0.52 0.52 0 0 0 -0.12 -0.49Z" fill="#000000" stroke-width="1"></path>
+          <path d="M23.2 2.92 21.08 0.8a2.52 2.52 0 0 0 -3.54 0l-1.41 1.42a0.48 0.48 0 0 0 0 0.7l4.95 5a0.48 0.48 0 0 0 0.7 0l1.42 -1.47a2.5 2.5 0 0 0 0 -3.53Z" fill="#000000" stroke-width="1"></path>
+        </g>
       </svg>
     </Link>
   )

@@ -1,34 +1,51 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Link from 'next/link'
 
 import { Song } from '../../_types/types'
 import api from '../../../lib/api'
+import { usePagination } from '../../_hooks/usePagination'
+import { usePaginatedData } from '../../_hooks/usePaginatedData'
+import Pagination from '../../_components/Pagination'
+
+const PAGE_SIZE = 25
 
 export default function SongsIndexPage() {
-  const [songs, setSongs] = useState<Song[]>([])
-  const [notice, setNotice] = useState<string | null>(null)
+  const fetchSongs = useCallback(async (limit: number, offset: number) => {
+    const response = await api.get<{ songs: Song[]; total: number }>(
+      `/songs?limit=${limit}&offset=${offset}`
+    )
+    return {
+      data: response.data.songs,
+      total: response.data.total
+    }
+  }, [])
+
+  const { data: songs, totalItems, error, fetchPage } = usePaginatedData({
+    fetchFunction: fetchSongs,
+    pageSize: PAGE_SIZE
+  })
+
+  const { currentPage, totalPages, handlePageChange, offset } = usePagination({
+    totalItems,
+    pageSize: PAGE_SIZE
+  })
 
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const response = await api.get<Song[]>('/songs')
-        setSongs(response.data)
-        setNotice('Songs loaded successfully!')
-      } catch (error) {
-        console.error('Failed to fetch songs', error)
-        setNotice('Failed to load songs.')
-      }
-    }
-    fetchSongs()
-  }, [])
+    fetchPage(offset)
+  }, [fetchPage, offset])
 
   return (
     <div>
-      {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
+      {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
       <h1>Listing Songs</h1>
+
+      <div className="mb-4 text-sm text-gray-600">
+        Showing {songs.length} of {totalItems} songs
+        {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+      </div>
 
       <table>
         <thead>
@@ -69,6 +86,12 @@ export default function SongsIndexPage() {
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <br />
 

@@ -1,34 +1,51 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Link from 'next/link'
 
 import { Artist } from '../../_types/types'
 import api from '../../../lib/api'
+import { usePagination } from '../../_hooks/usePagination'
+import { usePaginatedData } from '../../_hooks/usePaginatedData'
+import Pagination from '../../_components/Pagination'
+
+const PAGE_SIZE = 25
 
 export default function ArtistsIndexPage() {
-  const [artists, setArtists] = useState<Artist[]>([])
-  const [notice, setNotice] = useState<string | null>(null)
+  const fetchArtists = useCallback(async (limit: number, offset: number) => {
+    const response = await api.get<{ artists: Artist[]; total: number }>(
+      `/artists?limit=${limit}&offset=${offset}`
+    )
+    return {
+      data: response.data.artists,
+      total: response.data.total
+    }
+  }, [])
+
+  const { data: artists, totalItems, error, fetchPage } = usePaginatedData({
+    fetchFunction: fetchArtists,
+    pageSize: PAGE_SIZE
+  })
+
+  const { currentPage, totalPages, handlePageChange, offset } = usePagination({
+    totalItems,
+    pageSize: PAGE_SIZE
+  })
 
   useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const response = await api.get<Artist[]>('/artists')
-        setArtists(response.data)
-        setNotice('Artists loaded successfully!')
-      } catch (error) {
-        console.error('Failed to fetch artists', error)
-        setNotice('Failed to load artists.')
-      }
-    }
-    fetchArtists()
-  }, [])
+    fetchPage(offset)
+  }, [fetchPage, offset])
 
   return (
     <div>
-      {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
+      {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
       <h1>Listing Artists</h1>
+
+      <div className="mb-4 text-sm text-gray-600">
+        Showing {artists.length} of {totalItems} artists
+        {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+      </div>
 
       <table>
         <thead>
@@ -53,6 +70,12 @@ export default function ArtistsIndexPage() {
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <br />
 
