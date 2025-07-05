@@ -8,6 +8,7 @@ import api from '../../../lib/api'
 import { usePagination } from '../../_hooks/usePagination'
 import { usePaginatedData } from '../../_hooks/usePaginatedData'
 import Pagination from '../../_components/Pagination'
+import PencilEditButton from '../../_components/pencil-edit-button'
 
 const PAGE_SIZE = 25
 
@@ -80,8 +81,14 @@ export default function SongsIndexPage() {
               <td>{song.live ? 'Yes' : 'No'}</td>
               <td>{song.remix ? 'Yes' : 'No'}</td>
               <td>{song.year}</td>
-              <td><Link href={`/admin/songs/${song.id}`}>Show</Link></td>
-              <td><Link href={`/admin/songs/${song.id}/edit`}>Edit</Link></td>
+              <td>
+                <Link href={`/admin/songs/${song.id}`}>
+                  <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                </Link>
+              </td>
+              <td>
+                <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+              </td>
             </tr>
           ))}
         </tbody>

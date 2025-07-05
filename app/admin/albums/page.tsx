@@ -8,6 +8,7 @@ import api from '../../../lib/api'
 import { usePagination } from '../../_hooks/usePagination'
 import { usePaginatedData } from '../../_hooks/usePaginatedData'
 import Pagination from '../../_components/Pagination'
+import PencilEditButton from '../../_components/pencil-edit-button'
 
 const PAGE_SIZE = 25
 
@@ -72,8 +73,14 @@ export default function AlbumsIndexPage() {
               <td>{album.tracks}</td>
               <td>{album.id3_genre}</td>
               <td>{album.record_label}</td>
-              <td><Link href={`/admin/albums/${album.id}`}>Show</Link></td>
-              <td><Link href={`/admin/albums/${album.id}/edit`}>Edit</Link></td>
+              <td>
+                <Link href={`/admin/albums/${album.id}`}>
+                  <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                </Link>
+              </td>
+              <td>
+                <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+              </td>
             </tr>
           ))}
         </tbody>
