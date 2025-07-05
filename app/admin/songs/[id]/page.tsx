@@ -6,6 +6,8 @@ import Link from 'next/link'
 
 import { Song } from '../../../_types/types'
 import api from '../../../../lib/api'
+import PencilEditButton from '../../../_components/pencil-edit-button'
+import BackButton from '../../../_components/BackButton'
 
 export default function SongShowPage() {
   const { id } = useParams()
@@ -91,8 +93,10 @@ export default function SongShowPage() {
         {song.year}
       </p>
 
-      <Link href={`/admin/songs/${song.id}/edit`}>Edit</Link> |{' '}
-      <Link href="/admin/songs">Back</Link>
+      <div className="flex items-center gap-2 mt-4">
+        <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+        <BackButton href="/admin/songs" />
+      </div>
     </div>
   )
 }
