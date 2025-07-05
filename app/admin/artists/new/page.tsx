@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import BackButton from '../../../_components/BackButton'
 import ArtistForm from '../../_components/ArtistForm'
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
@@ -26,11 +25,7 @@ export default function NewArtistPage() {
     <div>
       <h1>New Artist</h1>
 
-      <ArtistForm onSubmit={handleSubmit} errors={errors} />
-
-      <div className="flex items-center gap-2 mt-4">
-        <BackButton href="/admin/artists" />
-      </div>
+      <ArtistForm onSubmit={handleSubmit} errors={errors} backHref="/admin/artists" />
     </div>
   )
 }

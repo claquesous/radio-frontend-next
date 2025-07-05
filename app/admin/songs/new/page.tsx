@@ -59,9 +59,12 @@ export default function NewSongPage() {
           type="file"
           onChange={e => setFile(e.target.files?.[0] || null)}
         />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Uploading...' : 'Upload'}
-        </button>
+        <div className="flex items-center gap-2 mt-4">
+          <button type="submit" disabled={loading}>
+            {loading ? 'Uploading...' : 'Upload'}
+          </button>
+          <BackButton href="/admin/songs" />
+        </div>
       </form>
       {errors.length > 0 && (
         <div style={{ color: 'red' }}>
@@ -71,9 +74,6 @@ export default function NewSongPage() {
         </div>
       )}
 
-      <div className="flex items-center gap-2 mt-4">
-        <BackButton href="/admin/songs" />
-      </div>
     </div>
   )
 }

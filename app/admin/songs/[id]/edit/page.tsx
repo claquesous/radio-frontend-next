@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import BackButton from '../../../../_components/BackButton'
 import SongForm from '../../../_components/SongForm'
 import { Song } from '../../../../_types/types'
 import api from '../../../../../lib/api'
@@ -47,11 +46,7 @@ export default function EditSongPage() {
     <div>
       <h1>Editing Song</h1>
 
-      <SongForm initialData={song} onSubmit={handleSubmit} errors={errors} />
-
-      <div className="flex items-center gap-2 mt-4">
-        <BackButton href={`/admin/songs/${song.id}`} />
-      </div>
+      <SongForm initialData={song} onSubmit={handleSubmit} errors={errors} backHref={`/admin/songs/${song.id}`} />
     </div>
   )
 }

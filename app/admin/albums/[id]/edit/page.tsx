@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import BackButton from '../../../../_components/BackButton'
 import AlbumForm from '../../../_components/AlbumForm'
 import { Album } from '../../../../_types/types'
 import api from '../../../../../lib/api'
@@ -47,11 +46,7 @@ export default function EditAlbumPage() {
     <div>
       <h1>Editing Album</h1>
 
-      <AlbumForm initialData={album} onSubmit={handleSubmit} errors={errors} />
-
-      <div className="flex items-center gap-2 mt-4">
-        <BackButton href={`/admin/albums/${album.id}`} />
-      </div>
+      <AlbumForm initialData={album} onSubmit={handleSubmit} errors={errors} backHref={`/admin/albums/${album.id}`} />
     </div>
   )
 }

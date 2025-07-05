@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import BackButton from '../../../_components/BackButton'
 import AlbumForm from '../../_components/AlbumForm'
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
@@ -26,11 +25,7 @@ export default function NewAlbumPage() {
     <div>
       <h1>New Album</h1>
 
-      <AlbumForm onSubmit={handleSubmit} errors={errors} />
-
-      <div className="flex items-center gap-2 mt-4">
-        <BackButton href="/admin/albums" />
-      </div>
+      <AlbumForm onSubmit={handleSubmit} errors={errors} backHref="/admin/albums" />
     </div>
   )
 }
