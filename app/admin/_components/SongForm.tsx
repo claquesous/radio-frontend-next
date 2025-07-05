@@ -171,7 +171,7 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
         />
       </div>
       <div className="actions flex items-center gap-2 mt-4">
-        <button type="submit" className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-gray-700 dark:text-gray-200 border border-gray-300">Submit</button>
+        <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
     </form>
