@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Artist } from '../../_types/types'
 
-import BackButton from '../../../app/_components/BackButton'
+import BackButton from '../../../app/_components/back-button'
 
 interface ArtistFormProps {
   initialData?: Artist

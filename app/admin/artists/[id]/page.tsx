@@ -6,9 +6,9 @@ import Link from 'next/link'
 
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
-import DeleteIcon from '../../../_components/DeleteIcon'
-import EditButton from '../../../_components/EditButton'
-import BackButton from '../../../_components/BackButton'
+import DeleteIcon from '../../../_components/delete-icon'
+import EditButton from '../../../_components/edit-button'
+import BackButton from '../../../_components/back-button'
 
 export default function ArtistShowPage() {
   const { id } = useParams()

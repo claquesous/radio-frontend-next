@@ -1,7 +1,7 @@
 "use client"
 
 import { useCurrentUser } from "../_hooks/use-current-user"
-import EditButton from "./EditButton"
+import EditButton from "./edit-button"
 
 type AdminEditButtonProps = {
   href: string

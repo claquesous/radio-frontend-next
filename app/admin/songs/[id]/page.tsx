@@ -6,8 +6,8 @@ import Link from 'next/link'
 
 import { Song } from '../../../_types/types'
 import api from '../../../../lib/api'
-import EditButton from '../../../_components/EditButton'
-import BackButton from '../../../_components/BackButton'
+import EditButton from '../../../_components/edit-button'
+import BackButton from '../../../_components/back-button'
 
 export default function SongShowPage() {
   const { id } = useParams()

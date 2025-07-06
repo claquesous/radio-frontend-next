@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import AlbumForm from '../../_components/AlbumForm'
+import AlbumForm from '../../_components/album-form'
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import BackButton from '../../../_components/BackButton'
+import BackButton from '../../../_components/back-button'
 import api from '../../../../lib/api'
 
 interface SongResponse {

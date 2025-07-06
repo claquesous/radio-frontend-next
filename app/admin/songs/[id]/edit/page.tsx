@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import SongForm from '../../../_components/SongForm'
+import SongForm from '../../../_components/song-form'
 import { Song } from '../../../../_types/types'
 import api from '../../../../../lib/api'
 

@@ -24,8 +24,8 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-import DeleteIcon from '../../../../_components/DeleteIcon'
-import Pagination from '../../../../_components/Pagination'
+import DeleteIcon from '../../../../_components/delete-icon'
+import Pagination from '../../../../_components/pagination'
 import { Chooser } from '../../../../_types/types'
 import api from '../../../../../lib/api'
 

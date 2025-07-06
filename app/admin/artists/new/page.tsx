@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import ArtistForm from '../../_components/ArtistForm'
+import ArtistForm from '../../_components/artist-form'
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
 

@@ -5,10 +5,10 @@ import Link from 'next/link'
 
 import { Song } from '../../_types/types'
 import api from '../../../lib/api'
-import { usePagination } from '../../_hooks/usePagination'
-import { usePaginatedData } from '../../_hooks/usePaginatedData'
-import Pagination from '../../_components/Pagination'
-import EditButton from '../../_components/EditButton'
+import { usePagination } from '../../_hooks/use-pagination'
+import { usePaginatedData } from '../../_hooks/use-paginated-data'
+import Pagination from '../../_components/pagination'
+import EditButton from '../../_components/edit-button'
 
 const PAGE_SIZE = 25
 
