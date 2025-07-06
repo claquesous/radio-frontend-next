@@ -6,8 +6,8 @@ import Link from 'next/link'
 
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
-import TrashCanIcon from '../../../_components/TrashCanIcon'
-import PencilEditButton from '../../../_components/pencil-edit-button'
+import DeleteIcon from '../../../_components/DeleteIcon'
+import EditButton from '../../../_components/EditButton'
 import BackButton from '../../../_components/BackButton'
 
 export default function ArtistShowPage() {
@@ -82,7 +82,7 @@ export default function ArtistShowPage() {
       )}
 
       <div className="flex items-center gap-2 mt-4">
-        <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
+        <EditButton href={`/admin/artists/${artist.id}/edit`} />
         <button
           onClick={async () => {
             if (!confirm('Are you sure you want to delete this artist?')) return;
@@ -96,7 +96,7 @@ export default function ArtistShowPage() {
           className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
           title="Delete artist"
         >
-          <TrashCanIcon />
+          <DeleteIcon />
         </button>
         <BackButton href="/admin/artists" />
       </div>

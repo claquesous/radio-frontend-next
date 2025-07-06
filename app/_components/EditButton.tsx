@@ -3,11 +3,11 @@
 import { useCurrentUser } from "../_hooks/use-current-user"
 import Link from "next/link"
 
-type PencilEditButtonProps = {
+type EditButtonProps = {
   href: string
 }
 
-export default function PencilEditButton({ href }: PencilEditButtonProps) {
+export default function EditButton({ href }: EditButtonProps) {
   const user = useCurrentUser()
   if (!user || !user.admin) return null
 

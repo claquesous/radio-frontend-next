@@ -6,8 +6,8 @@ import Link from 'next/link'
 
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
-import TrashCanIcon from '../../../_components/TrashCanIcon'
-import PencilEditButton from '../../../_components/pencil-edit-button'
+import DeleteIcon from '../../../_components/DeleteIcon'
+import EditButton from '../../../_components/EditButton'
 import BackButton from '../../../_components/BackButton'
 
 export default function AlbumShowPage() {
@@ -90,7 +90,7 @@ export default function AlbumShowPage() {
       )}
 
       <div className="flex items-center gap-2 mt-4">
-        <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+        <EditButton href={`/admin/albums/${album.id}/edit`} />
         <button
           onClick={async () => {
             if (!confirm('Are you sure you want to delete this album?')) return;
@@ -104,7 +104,7 @@ export default function AlbumShowPage() {
           className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
           title="Delete album"
         >
-          <TrashCanIcon />
+          <DeleteIcon />
         </button>
         <BackButton href="/admin/albums" />
       </div>

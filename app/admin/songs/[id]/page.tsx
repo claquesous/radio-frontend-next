@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import { Song } from '../../../_types/types'
 import api from '../../../../lib/api'
-import PencilEditButton from '../../../_components/pencil-edit-button'
+import EditButton from '../../../_components/EditButton'
 import BackButton from '../../../_components/BackButton'
 
 export default function SongShowPage() {
@@ -94,7 +94,7 @@ export default function SongShowPage() {
       </p>
 
       <div className="flex items-center gap-2 mt-4">
-        <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+        <EditButton href={`/admin/songs/${song.id}/edit`} />
         <BackButton href="/admin/songs" />
       </div>
     </div>

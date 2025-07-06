@@ -8,7 +8,7 @@ import api from '../../../lib/api'
 import { usePagination } from '../../_hooks/usePagination'
 import { usePaginatedData } from '../../_hooks/usePaginatedData'
 import Pagination from '../../_components/Pagination'
-import PencilEditButton from '../../_components/pencil-edit-button'
+import EditButton from '../../_components/EditButton'
 
 const PAGE_SIZE = 25
 
@@ -60,7 +60,7 @@ export default function ArtistsIndexPage() {
               <Link href={`/admin/artists/${artist.id}`}>
                 <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
               </Link>
-              <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
+              <EditButton href={`/admin/artists/${artist.id}/edit`} />
             </div>
           </div>
         ))}

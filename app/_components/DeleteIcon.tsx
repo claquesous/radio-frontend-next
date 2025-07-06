@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function TrashCanIcon({ className = "", ...props }: React.SVGProps<SVGSVGElement>) {
+export default function DeleteIcon({ className = "", ...props }: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

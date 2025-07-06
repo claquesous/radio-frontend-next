@@ -3,7 +3,7 @@ import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
 import dynamic from "next/dynamic"
 
-const PencilEditButton = dynamic(() => import("../../../../_components/pencil-edit-button"))
+const EditButton = dynamic(() => import("../../../../_components/EditButton"))
 
 async function getArtist(streamId: number, id: number) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/streams/${streamId}/artists/${id}`, { next: { revalidate: 7200 } })
@@ -23,7 +23,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
     <>
       <div className="relative flex items-center mb-4 pl-3">
         <div className="text-2xl font-bold flex-1">{artist.name}</div>
-        <PencilEditButton href={`/admin/artists/${id}/edit`} />
+        <EditButton href={`/admin/artists/${id}/edit`} />
       </div>
       {artist.songs.map((song: Song) =>
         <SongItem key={song.id} song={song} streamId={streamId} />

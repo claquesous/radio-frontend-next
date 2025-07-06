@@ -24,7 +24,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-import TrashCanIcon from '../../../../_components/TrashCanIcon'
+import DeleteIcon from '../../../../_components/DeleteIcon'
 import Pagination from '../../../../_components/Pagination'
 import { Chooser } from '../../../../_types/types'
 import api from '../../../../../lib/api'
@@ -58,7 +58,7 @@ function RowActions({ chooser, streamId, onDelete, onAdd }: SortableChooserItemP
           className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
           title="Remove from playlist"
         >
-          <TrashCanIcon />
+          <DeleteIcon />
         </button>
       ) : (
         <button
