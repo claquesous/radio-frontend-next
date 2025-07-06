@@ -60,11 +60,13 @@ export default function AlbumsIndexPage() {
               <Link href={`/admin/artists/${album.artist.id}`}>{album.artist.name}</Link>
             </div>
             <div className="flex-1 flex items-center">{album.title}</div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-stretch">
               <Link href={`/admin/albums/${album.id}`}>
-                <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
+                <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center h-full">Show</span>
               </Link>
-              <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+              <div className="flex items-center h-full">
+                <PencilEditButton href={`/admin/albums/${album.id}/edit`} />
+              </div>
             </div>
           </div>
         ))}

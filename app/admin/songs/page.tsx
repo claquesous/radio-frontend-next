@@ -60,11 +60,13 @@ export default function SongsIndexPage() {
               <Link href={`/admin/artists/${song.artist.id}`}>{song.artist.name}</Link>
             </div>
             <div className="flex-1 flex items-center">{song.title}</div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-stretch">
               <Link href={`/admin/songs/${song.id}`}>
-                <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
+                <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center h-full">Show</span>
               </Link>
-              <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+              <div className="flex items-center h-full">
+                <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
+              </div>
             </div>
           </div>
         ))}
