@@ -51,11 +51,8 @@ export default function SongsIndexPage() {
       <table>
         <thead>
           <tr>
-            <th>Album</th>
             <th>Artist</th>
-            <th>Artist Name Override</th>
             <th>Title</th>
-            <th>Year</th>
             <th></th>
             <th></th>
           </tr>
@@ -64,11 +61,8 @@ export default function SongsIndexPage() {
         <tbody>
           {songs.map((song) => (
             <tr key={song.id}>
-              <td>{song.album ? <Link href={`/admin/albums/${song.album.id}`}>{song.album.title}</Link> : 'N/A'}</td>
               <td><Link href={`/admin/artists/${song.artist.id}`}>{song.artist.name}</Link></td>
-              <td>{song.artist_name_override}</td>
               <td>{song.title}</td>
-              <td>{song.year}</td>
               <td>
                 <div className="flex gap-2">
                   <Link href={`/admin/songs/${song.id}`}>
