@@ -1,6 +1,5 @@
 "use client"
 
-import { useCurrentUser } from "../_hooks/use-current-user"
 import Link from "next/link"
 
 type EditButtonProps = {
@@ -8,9 +7,6 @@ type EditButtonProps = {
 }
 
 export default function EditButton({ href }: EditButtonProps) {
-  const user = useCurrentUser()
-  if (!user || !user.admin) return null
-
   return (
     <Link
       href={href}
