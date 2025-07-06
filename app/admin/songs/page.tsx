@@ -48,25 +48,23 @@ export default function SongsIndexPage() {
         {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="hidden md:flex font-semibold border-b pb-2 mb-2">
-          <div className="flex-1">Artist</div>
-          <div className="flex-1">Title</div>
-          <div className="flex-1 text-right">Actions</div>
+      <div className="flex flex-col">
+        <div className="hidden md:flex font-semibold border-b">
+          <div className="flex-1 px-0 py-2">Artist</div>
+          <div className="flex-1 px-0 py-2">Title</div>
+          <div className="flex-1 px-0 py-2 text-right">Actions</div>
         </div>
         {songs.map((song) => (
-          <div key={song.id} className="flex flex-col md:flex-row items-stretch border-b py-2 gap-2">
-            <div className="flex-1 flex items-center">
+          <div key={song.id} className="flex flex-col md:flex-row items-center border-b">
+            <div className="flex-1 flex items-center px-0 py-2">
               <Link href={`/admin/artists/${song.artist.id}`}>{song.artist.name}</Link>
             </div>
-            <div className="flex-1 flex items-center">{song.title}</div>
-            <div className="flex gap-2 items-stretch">
+            <div className="flex-1 flex items-center px-0 py-2">{song.title}</div>
+            <div className="flex gap-2 items-center flex-1 px-0 py-2">
               <Link href={`/admin/songs/${song.id}`}>
-                <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center h-full">Show</span>
+                <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
               </Link>
-              <div className="flex items-center h-full">
-                <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
-              </div>
+              <PencilEditButton href={`/admin/songs/${song.id}/edit`} />
             </div>
           </div>
         ))}
