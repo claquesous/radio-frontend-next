@@ -5,17 +5,16 @@ import Link from "next/link"
 
 type PencilEditButtonProps = {
   href: string
-  className?: string
 }
 
-export default function PencilEditButton({ href, className }: PencilEditButtonProps) {
+export default function PencilEditButton({ href }: PencilEditButtonProps) {
   const user = useCurrentUser()
   if (!user || !user.admin) return null
 
   return (
     <Link
       href={href}
-      className={`p-2 rounded bg-gray-200 hover:bg-gray-300 border border-gray-300 flex items-center justify-center ${className ? className : ""}`.trim()}
+      className={"p-2 rounded bg-gray-200 hover:bg-gray-300 border border-gray-300 flex items-center justify-center"}
       title="Edit"
       style={{ lineHeight: 0 }}
     >
