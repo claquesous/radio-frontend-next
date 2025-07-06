@@ -8,7 +8,6 @@ interface PaginatedResponse<T> {
 interface UsePaginatedDataConfig<T> {
   fetchFunction: (limit: number, offset: number) => Promise<PaginatedResponse<T>>
   pageSize: number
-  dependencies?: any[]
 }
 
 interface UsePaginatedDataReturn<T> {
@@ -22,8 +21,7 @@ interface UsePaginatedDataReturn<T> {
 
 export function usePaginatedData<T>({
   fetchFunction,
-  pageSize,
-  dependencies = []
+  pageSize
 }: UsePaginatedDataConfig<T>): UsePaginatedDataReturn<T> {
   const [data, setData] = useState<T[]>([])
   const [totalItems, setTotalItems] = useState(0)
@@ -56,7 +54,7 @@ export function usePaginatedData<T>({
 
   useEffect(() => {
     fetchData(0)
-  }, [...dependencies, fetchData])
+  }, [fetchData])
 
   return {
     data,
