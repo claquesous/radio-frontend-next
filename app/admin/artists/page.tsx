@@ -54,7 +54,7 @@ export default function ArtistsIndexPage() {
           <div className="flex-1 px-0 py-2 text-right">Actions</div>
         </div>
         {artists.map((artist) => (
-          <div key={artist.id} className="flex flex-col md:flex-row items-center border-b">
+          <div key={artist.id} className="flex flex-row items-center border-b">
             <div className="flex-[2] flex items-center px-0 py-2">{artist.name}</div>
             <div className="flex gap-2 items-center flex-1 px-0 py-2 justify-end">
               <Link href={`/admin/artists/${artist.id}`}>

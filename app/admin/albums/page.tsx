@@ -55,7 +55,7 @@ export default function AlbumsIndexPage() {
           <div className="flex-1 px-0 py-2 text-right">Actions</div>
         </div>
         {albums.map((album) => (
-          <div key={album.id} className="flex flex-col md:flex-row items-center border-b">
+          <div key={album.id} className="flex flex-row items-center border-b">
             <div className="flex-[2] flex items-center px-0 py-2">
               <Link href={`/admin/artists/${album.artist.id}`}>{album.artist.name}</Link>
             </div>
