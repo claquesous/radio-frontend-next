@@ -62,11 +62,13 @@ export default function ArtistsIndexPage() {
             <tr key={artist.id}>
               <td>{artist.name}</td>
               <td>
-                <div className="flex gap-2">
-                  <Link href={`/admin/artists/${artist.id}`}>
-                    <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer inline-block">Show</span>
+                <div className="flex gap-2 w-full">
+                  <Link href={`/admin/artists/${artist.id}`} className="flex-1">
+                    <span className="w-full block px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
                   </Link>
-                  <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
+                  <div className="flex-1">
+                    <PencilEditButton href={`/admin/artists/${artist.id}/edit`} className="w-full" />
+                  </div>
                 </div>
               </td>
             </tr>
