@@ -38,7 +38,7 @@ export default function AlbumsIndexPage() {
   }, [fetchPage, offset])
 
   return (
-    <div>
+    <div className="w-full max-w-4xl mx-auto px-2">
       {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
       <h1>Listing Albums</h1>
