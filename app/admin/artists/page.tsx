@@ -56,13 +56,11 @@ export default function ArtistsIndexPage() {
         {artists.map((artist) => (
           <div key={artist.id} className="flex flex-col md:flex-row items-stretch border-b py-2 gap-2">
             <div className="flex-1 flex items-center">{artist.name}</div>
-            <div className="flex-1 flex gap-2">
-              <Link href={`/admin/artists/${artist.id}`} className="flex-1">
-                <span className="w-full block px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
+            <div className="flex gap-2">
+              <Link href={`/admin/artists/${artist.id}`}>
+                <span className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
               </Link>
-              <div className="flex-1">
-                <PencilEditButton href={`/admin/artists/${artist.id}/edit`} className="w-full" />
-              </div>
+              <PencilEditButton href={`/admin/artists/${artist.id}/edit`} />
             </div>
           </div>
         ))}
