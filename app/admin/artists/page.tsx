@@ -53,7 +53,7 @@ export default function ArtistsIndexPage() {
           <tr>
             <th>Name</th>
             <th></th>
-            <th></th>
+            <th className="w-48"></th>
           </tr>
         </thead>
 
@@ -61,7 +61,7 @@ export default function ArtistsIndexPage() {
           {artists.map((artist) => (
             <tr key={artist.id}>
               <td>{artist.name}</td>
-              <td>
+              <td className="w-48">
                 <div className="flex gap-2 w-full">
                   <Link href={`/admin/artists/${artist.id}`} className="flex-1">
                     <span className="w-full block px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
