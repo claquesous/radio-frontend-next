@@ -50,16 +50,16 @@ export default function SongsIndexPage() {
 
       <div className="flex flex-col">
         <div className="hidden md:flex font-semibold border-b">
-          <div className="flex-1 px-0 py-2">Artist</div>
-          <div className="flex-1 px-0 py-2">Title</div>
+          <div className="flex-[2] px-0 py-2">Artist</div>
+          <div className="flex-[3] px-0 py-2">Title</div>
           <div className="flex-1 px-0 py-2 text-right">Actions</div>
         </div>
         {songs.map((song) => (
           <div key={song.id} className="flex flex-col md:flex-row items-center border-b">
-            <div className="flex-1 flex items-center px-0 py-2">
+            <div className="flex-[2] flex items-center px-0 py-2">
               <Link href={`/admin/artists/${song.artist.id}`}>{song.artist.name}</Link>
             </div>
-            <div className="flex-1 flex items-center px-0 py-2">{song.title}</div>
+            <div className="flex-[3] flex items-center px-0 py-2">{song.title}</div>
             <div className="flex gap-2 items-center flex-1 px-0 py-2 justify-end">
               <Link href={`/admin/songs/${song.id}`}>
                 <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
