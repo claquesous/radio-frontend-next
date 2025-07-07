@@ -381,18 +381,30 @@ export default function ChoosersIndexPage() {
       // newest tab
       return newSongs.map((song) => (
         <div key={song.id} className="relative">
-          <SongItem
-            song={song}
-            streamId={Number(streamId)}
-            onAdd={handleAdd}
-          />
-          {song.included && song.chooser_id ? (
-            <DeleteButton
-              onClick={() => handleDelete(song.chooser_id)}
-              className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-              title="Remove from playlist"
-            />
-          ) : null}
+          <div className="flex flex-row items-center w-full gap-2 sm:gap-4">
+            <div className="flex-1">
+              <h3 className="font-medium">{song.title}</h3>
+              <p className="text-sm text-gray-600">{song.artist?.name}</p>
+              {song.album && <p className="text-xs text-gray-500">{song.album.title}</p>}
+            </div>
+            {song.included && song.chooser_id ? (
+              <DeleteButton
+                onClick={() => handleDelete(song.chooser_id)}
+                className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+                title="Remove from playlist"
+              />
+            ) : (
+              <button
+                onClick={() => handleAdd(song.id)}
+                className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
+                title="Add to playlist"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16" fill="#ffffff">
+                  <path d="M8 0C8.55228 0 9 0.447715 9 1V7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H9V15C9 15.5523 8.55228 16 8 16C7.44772 16 7 15.5523 7 15V9H1C0.447715 9 0 8.55228 0 8C0 7.44772 0.447715 7 1 7H7V1C7 0.447715 7.44772 0 8 0Z"/>
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       ))
     }
