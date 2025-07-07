@@ -137,7 +137,6 @@ function SongItem({ song, streamId, onAdd }: SongItemProps) {
         <div className="flex-1">
           <h3 className="font-medium">{song.title}</h3>
           <p className="text-sm text-gray-600">{song.artist?.name}</p>
-          {song.album && <p className="text-xs text-gray-500">{song.album.title}</p>}
         </div>
         <SongRowActions song={song} streamId={streamId} onAdd={onAdd} />
       </div>
@@ -385,7 +384,6 @@ export default function ChoosersIndexPage() {
             <div className="flex-1">
               <h3 className="font-medium">{song.title}</h3>
               <p className="text-sm text-gray-600">{song.artist?.name}</p>
-              {song.album && <p className="text-xs text-gray-500">{song.album.title}</p>}
             </div>
             {song.included && song.chooser_id ? (
               <DeleteButton
