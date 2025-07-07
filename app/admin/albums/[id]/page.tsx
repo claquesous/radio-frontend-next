@@ -6,6 +6,9 @@ import Link from 'next/link'
 
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
+import DeleteButton from '../../../_components/delete-button'
+import EditButton from '../../../_components/edit-button'
+import BackButton from '../../../_components/back-button'
 
 export default function AlbumShowPage() {
   const { id } = useParams()
@@ -86,8 +89,23 @@ export default function AlbumShowPage() {
         </div>
       )}
 
-      <Link href={`/admin/albums/${album.id}/edit`}>Edit</Link> |{' '}
-      <Link href="/admin/albums">Back</Link>
+      <div className="flex items-center gap-2 mt-4">
+        <EditButton href={`/admin/albums/${album.id}/edit`} />
+        <DeleteButton
+          onClick={async () => {
+            if (!confirm('Are you sure you want to delete this album?')) return;
+            try {
+              await api.delete(`/albums/${album.id}`)
+              window.location.href = '/admin/albums'
+            } catch (error: any) {
+              setNotice(error?.response?.data?.errors?.[0] || 'Failed to delete album.')
+            }
+          }}
+          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+          title="Delete album"
+        />
+        <BackButton href="/admin/albums" />
+      </div>
     </div>
   )
 }

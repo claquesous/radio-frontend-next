@@ -1,62 +1,80 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Link from 'next/link'
 
 import { Artist } from '../../_types/types'
 import api from '../../../lib/api'
+import { usePagination } from '../../_hooks/use-pagination'
+import { usePaginatedData } from '../../_hooks/use-paginated-data'
+import Pagination from '../../_components/pagination'
+import EditButton from '../../_components/edit-button'
+
+const PAGE_SIZE = 25
 
 export default function ArtistsIndexPage() {
-  const [artists, setArtists] = useState<Artist[]>([])
-  const [notice, setNotice] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const response = await api.get<Artist[]>('/artists')
-        setArtists(response.data)
-        setNotice('Artists loaded successfully!')
-      } catch (error) {
-        console.error('Failed to fetch artists', error)
-        setNotice('Failed to load artists.')
-      }
+  const fetchArtists = useCallback(async (limit: number, offset: number) => {
+    const response = await api.get<{ artists: Artist[]; total: number }>(
+      `/artists?limit=${limit}&offset=${offset}`
+    )
+    return {
+      data: response.data.artists,
+      total: response.data.total
     }
-    fetchArtists()
   }, [])
 
+  const { data: artists, totalItems, error, fetchPage } = usePaginatedData({
+    fetchFunction: fetchArtists,
+    pageSize: PAGE_SIZE
+  })
+
+  const { currentPage, totalPages, handlePageChange, offset } = usePagination({
+    totalItems,
+    pageSize: PAGE_SIZE
+  })
+
+  useEffect(() => {
+    fetchPage(offset)
+  }, [fetchPage, offset])
+
   return (
-    <div>
-      {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
+    <div className="w-full max-w-4xl mx-auto px-2">
+      {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
-      <h1>Listing Artists</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1>Listing Artists</h1>
+        <Link href="/admin/artists/new" className="btn">New Artist</Link>
+      </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Sort</th>
-            <th>Slug</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
+      <div className="mb-4 text-sm text-gray-600">
+        Showing {artists.length} of {totalItems} artists
+        {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
+      </div>
 
-        <tbody>
-          {artists.map((artist) => (
-            <tr key={artist.id}>
-              <td>{artist.name}</td>
-              <td>{artist.sort}</td>
-              <td>{artist.slug}</td>
-              <td><Link href={`/admin/artists/${artist.id}`}>Show</Link></td>
-              <td><Link href={`/admin/artists/${artist.id}/edit`}>Edit</Link></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="flex flex-col">
+        <div className="hidden md:flex font-semibold border-b">
+          <div className="flex-[2] px-0 py-2">Name</div>
+          <div className="flex-1 px-0 py-2 text-right">Actions</div>
+        </div>
+        {artists.map((artist) => (
+          <div key={artist.id} className="flex flex-row items-center border-b">
+            <div className="flex-[2] flex items-center px-0 py-2">{artist.name}</div>
+            <div className="flex gap-2 items-center flex-1 px-0 py-2 justify-end">
+              <Link href={`/admin/artists/${artist.id}`}>
+                <span className="px-3 py-1 flex items-center rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors cursor-pointer text-center">Show</span>
+              </Link>
+              <EditButton href={`/admin/artists/${artist.id}/edit`} />
+            </div>
+          </div>
+        ))}
+      </div>
 
-      <br />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
-      <Link href="/admin/artists/new" className="btn">New Artist</Link>
     </div>
   )
 }

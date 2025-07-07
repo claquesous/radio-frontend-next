@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import { Artist } from '../../_types/types'
 
+import BackButton from '../../../app/_components/back-button'
+
 interface ArtistFormProps {
   initialData?: Artist
   onSubmit: (data: any) => void
   errors?: string[]
+  backHref: string
 }
 
-export default function ArtistForm({ initialData, onSubmit, errors }: ArtistFormProps) {
+export default function ArtistForm({ initialData, onSubmit, errors, backHref }: ArtistFormProps) {
   const [name, setName] = useState(initialData?.name || '')
   const [sort, setSort] = useState(initialData?.sort || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
@@ -71,8 +74,9 @@ export default function ArtistForm({ initialData, onSubmit, errors }: ArtistForm
           onChange={(e) => setSlug(e.target.value)}
         />
       </div>
-      <div className="actions">
-        <button type="submit">Submit</button>
+      <div className="actions flex items-center gap-2 mt-4">
+        <button type="submit" className="px-3 py-1 rounded">Submit</button>
+        <BackButton href={backHref} />
       </div>
     </form>
   )

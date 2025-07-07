@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import ArtistForm from '../../_components/ArtistForm'
+import ArtistForm from '../../_components/artist-form'
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
 
@@ -26,11 +25,7 @@ export default function NewArtistPage() {
     <div>
       <h1>New Artist</h1>
 
-      <ArtistForm onSubmit={handleSubmit} errors={errors} />
-
-      <br />
-
-      <Link href="/admin/artists">Back</Link>
+      <ArtistForm onSubmit={handleSubmit} errors={errors} backHref="/admin/artists" />
     </div>
   )
 }

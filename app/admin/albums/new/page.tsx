@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import AlbumForm from '../../_components/AlbumForm'
+import AlbumForm from '../../_components/album-form'
 import { Album } from '../../../_types/types'
 import api from '../../../../lib/api'
 
@@ -26,11 +25,7 @@ export default function NewAlbumPage() {
     <div>
       <h1>New Album</h1>
 
-      <AlbumForm onSubmit={handleSubmit} errors={errors} />
-
-      <br />
-
-      <Link href="/admin/albums">Back</Link>
+      <AlbumForm onSubmit={handleSubmit} errors={errors} backHref="/admin/albums" />
     </div>
   )
 }

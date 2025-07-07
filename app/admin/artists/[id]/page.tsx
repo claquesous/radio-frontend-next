@@ -6,6 +6,9 @@ import Link from 'next/link'
 
 import { Artist } from '../../../_types/types'
 import api from '../../../../lib/api'
+import DeleteButton from '../../../_components/delete-button'
+import EditButton from '../../../_components/edit-button'
+import BackButton from '../../../_components/back-button'
 
 export default function ArtistShowPage() {
   const { id } = useParams()
@@ -78,8 +81,23 @@ export default function ArtistShowPage() {
         </div>
       )}
 
-      <Link href={`/admin/artists/${artist.id}/edit`}>Edit</Link> |{' '}
-      <Link href="/admin/artists">Back</Link>
+      <div className="flex items-center gap-2 mt-4">
+        <EditButton href={`/admin/artists/${artist.id}/edit`} />
+        <DeleteButton
+          onClick={async () => {
+            if (!confirm('Are you sure you want to delete this artist?')) return;
+            try {
+              await api.delete(`/artists/${artist.id}`)
+              window.location.href = '/admin/artists'
+            } catch (error: any) {
+              setNotice(error?.response?.data?.errors?.[0] || 'Failed to delete artist.')
+            }
+          }}
+          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+          title="Delete artist"
+        />
+        <BackButton href="/admin/artists" />
+      </div>
     </div>
   )
 }

@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import { Album } from '../../_types/types'
 
+import BackButton from '../../../app/_components/back-button'
+
 interface AlbumFormProps {
   initialData?: Album
   onSubmit: (data: any) => void
   errors?: string[]
+  backHref: string
 }
 
-export default function AlbumForm({ initialData, onSubmit, errors }: AlbumFormProps) {
+export default function AlbumForm({ initialData, onSubmit, errors, backHref }: AlbumFormProps) {
   const [artistId, setArtistId] = useState(initialData?.artist?.id || '')
   const [title, setTitle] = useState(initialData?.title || '')
   const [sort, setSort] = useState(initialData?.sort || '')
@@ -119,8 +122,9 @@ export default function AlbumForm({ initialData, onSubmit, errors }: AlbumFormPr
           onChange={(e) => setRecordLabel(e.target.value)}
         />
       </div>
-      <div className="actions">
-        <button type="submit">Submit</button>
+      <div className="actions flex items-center gap-2 mt-4">
+        <button type="submit" className="px-3 py-1 rounded">Submit</button>
+        <BackButton href={backHref} />
       </div>
     </form>
   )

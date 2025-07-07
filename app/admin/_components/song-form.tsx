@@ -3,13 +3,16 @@
 import React, { useState, useEffect } from 'react'
 import { Song } from '../../_types/types'
 
+import BackButton from '../../../app/_components/back-button'
+
 interface SongFormProps {
   initialData?: Song
   onSubmit: (data: any) => void
   errors?: string[]
+  backHref: string
 }
 
-export default function SongForm({ initialData, onSubmit, errors }: SongFormProps) {
+export default function SongForm({ initialData, onSubmit, errors, backHref }: SongFormProps) {
   const [albumId, setAlbumId] = useState(initialData?.album?.id || '')
   const [artistId, setArtistId] = useState(initialData?.artist?.id || '')
   const [artistNameOverride, setArtistNameOverride] = useState(initialData?.artist_name_override || '')
@@ -167,8 +170,9 @@ export default function SongForm({ initialData, onSubmit, errors }: SongFormProp
           onChange={(e) => setYear(Number(e.target.value))}
         />
       </div>
-      <div className="actions">
-        <button type="submit">Submit</button>
+      <div className="actions flex items-center gap-2 mt-4">
+        <button type="submit" className="px-3 py-1 rounded">Submit</button>
+        <BackButton href={backHref} />
       </div>
     </form>
   )

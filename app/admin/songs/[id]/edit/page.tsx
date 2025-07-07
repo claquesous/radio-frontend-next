@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import SongForm from '../../../_components/SongForm'
+import SongForm from '../../../_components/song-form'
 import { Song } from '../../../../_types/types'
 import api from '../../../../../lib/api'
 
@@ -47,12 +46,7 @@ export default function EditSongPage() {
     <div>
       <h1>Editing Song</h1>
 
-      <SongForm initialData={song} onSubmit={handleSubmit} errors={errors} />
-
-      <br />
-
-      <Link href={`/admin/songs/${song.id}`}>Show</Link> |{' '}
-      <Link href="/admin/songs">Back</Link>
+      <SongForm initialData={song} onSubmit={handleSubmit} errors={errors} backHref={`/admin/songs/${song.id}`} />
     </div>
   )
 }
