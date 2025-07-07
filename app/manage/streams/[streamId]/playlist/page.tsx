@@ -69,7 +69,6 @@ function RowActions({ chooser, streamId, onDelete }: SortableChooserItemProps) {
 function SongRowActions({ song, streamId, onAdd }: SongItemProps) {
   return (
     <div className="flex gap-2">
-      <Enqueue streamId={streamId} songId={song.id} />
       <button
         onClick={() => onAdd(song.id)}
         className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
