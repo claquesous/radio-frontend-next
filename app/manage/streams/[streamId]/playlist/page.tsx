@@ -386,11 +386,13 @@ export default function ChoosersIndexPage() {
             streamId={Number(streamId)}
             onAdd={handleAdd}
           />
-          {song.included && (
-            <span className="absolute top-2 right-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
-              In Playlist
-            </span>
-          )}
+          {song.included && song.chooser_id ? (
+            <DeleteButton
+              onClick={() => handleDelete(song.chooser_id)}
+              className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+              title="Remove from playlist"
+            />
+          ) : null}
         </div>
       ))
     }
