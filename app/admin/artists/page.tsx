@@ -72,8 +72,6 @@ export default function ArtistsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <br />
-
       <Link href="/admin/artists/new" className="btn">New Artist</Link>
     </div>
   )

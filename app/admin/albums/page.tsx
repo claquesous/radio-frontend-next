@@ -76,8 +76,6 @@ export default function AlbumsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <br />
-
       <Link href="/admin/albums/new" className="btn">New Album</Link>
     </div>
   )

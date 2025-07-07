@@ -76,8 +76,6 @@ export default function SongsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <br />
-
       <Link href="/admin/songs/new" className="btn">New Song</Link>
     </div>
   )
