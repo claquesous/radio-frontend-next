@@ -60,7 +60,11 @@ export default function NewSongPage() {
           onChange={e => setFile(e.target.files?.[0] || null)}
         />
         <div className="flex items-center gap-2 mt-4">
-          <button type="submit" disabled={loading}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-3 py-1 text-sm"
+          >
             {loading ? 'Uploading...' : 'Upload'}
           </button>
           <BackButton href="/admin/songs" />
