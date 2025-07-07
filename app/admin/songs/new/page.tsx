@@ -63,7 +63,7 @@ export default function NewSongPage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-3 py-1 text-sm"
+            className="px-2 py-1"
           >
             {loading ? 'Uploading...' : 'Upload'}
           </button>
