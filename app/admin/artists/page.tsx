@@ -41,7 +41,10 @@ export default function ArtistsIndexPage() {
     <div className="w-full max-w-4xl mx-auto px-2">
       {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
-      <h1>Listing Artists</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1>Listing Artists</h1>
+        <Link href="/admin/artists/new" className="btn">New Artist</Link>
+      </div>
 
       <div className="mb-4 text-sm text-gray-600">
         Showing {artists.length} of {totalItems} artists
@@ -72,7 +75,6 @@ export default function ArtistsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <Link href="/admin/artists/new" className="btn">New Artist</Link>
     </div>
   )
 }

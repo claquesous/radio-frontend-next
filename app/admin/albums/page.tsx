@@ -41,7 +41,10 @@ export default function AlbumsIndexPage() {
     <div className="w-full max-w-4xl mx-auto px-2">
       {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
-      <h1>Listing Albums</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1>Listing Albums</h1>
+        <Link href="/admin/albums/new" className="btn">New Album</Link>
+      </div>
 
       <div className="mb-4 text-sm text-gray-600">
         Showing {albums.length} of {totalItems} albums
@@ -76,7 +79,6 @@ export default function AlbumsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <Link href="/admin/albums/new" className="btn">New Album</Link>
     </div>
   )
 }

@@ -41,7 +41,10 @@ export default function SongsIndexPage() {
     <div className="w-full max-w-4xl mx-auto px-2">
       {error && <p id="notice" style={{ color: 'red' }}>{error}</p>}
 
-      <h1>Listing Songs</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1>Listing Songs</h1>
+        <Link href="/admin/songs/new" className="btn">New Song</Link>
+      </div>
 
       <div className="mb-4 text-sm text-gray-600">
         Showing {songs.length} of {totalItems} songs
@@ -76,7 +79,6 @@ export default function SongsIndexPage() {
         onPageChange={handlePageChange}
       />
 
-      <Link href="/admin/songs/new" className="btn">New Song</Link>
     </div>
   )
 }
