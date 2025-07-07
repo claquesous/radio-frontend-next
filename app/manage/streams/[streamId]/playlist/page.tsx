@@ -149,6 +149,8 @@ export default function ChoosersIndexPage() {
   const { streamId } = useParams()
   const [choosers, setChoosers] = useState<Chooser[]>([])
   const [availableSongs, setAvailableSongs] = useState<any[]>([])
+  const [newSongs, setNewSongs] = useState<any[]>([])
+  const [stream, setStream] = useState<any>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('included')
   const [currentPage, setCurrentPage] = useState(1)
@@ -243,50 +245,33 @@ export default function ChoosersIndexPage() {
       if (!streamId) return
 
       try {
-        let url: string
-        const params = new URLSearchParams()
+        // Always fetch stream info for default_rating
+        const streamResp = await api.get<any>(`/streams/${streamId}`)
+        setStream(streamResp.data)
 
-        switch (tab) {
-          case 'included':
-            url = `/streams/${streamId}/choosers`
-            params.append('limit', '50')
-            params.append('offset', ((page - 1) * 50).toString())
-            break
-          case 'available':
-            url = `/streams/${streamId}/available_songs`
-            params.append('limit', '50')
-            params.append('offset', ((page - 1) * 50).toString())
-            break
-          case 'newest':
-            url = `/streams/${streamId}/choosers`
-            params.append('sort', 'created_at')
-            params.append('limit', '25')
-            break
-        }
-
-        if (params.toString()) {
-          url += `?${params.toString()}`
-        }
-
-        const response = await api.get<any>(url)
-
-        if (tab === 'available') {
-          setAvailableSongs(response.data)
-          setTotalPages(1) // For now, we'll implement pagination later if needed
-          setTotalItems(response.data.length)
-        } else {
-          // Handle both paginated and non-paginated responses
+        if (tab === 'included') {
+          const url = `/streams/${streamId}/choosers?limit=50&offset=${(page - 1) * 50}`
+          const response = await api.get<any>(url)
           if (response.data.choosers) {
-            // Paginated response
             setChoosers(response.data.choosers)
             setTotalPages(response.data.total_pages || 1)
             setTotalItems(response.data.total || 0)
           } else {
-            // Non-paginated response (for newest tab)
             setChoosers(response.data)
             setTotalPages(1)
             setTotalItems(response.data.length)
           }
+        } else if (tab === 'available') {
+          const url = `/streams/${streamId}/available_songs?limit=50&offset=${(page - 1) * 50}`
+          const response = await api.get<any>(url)
+          setAvailableSongs(response.data)
+          setTotalPages(1)
+          setTotalItems(response.data.length)
+        } else if (tab === 'newest') {
+          const resp = await api.get<any>(`/streams/${streamId}/new_songs_with_included`)
+          setNewSongs(resp.data)
+          setTotalPages(1)
+          setTotalItems(resp.data.length)
         }
 
         setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
@@ -333,14 +318,13 @@ export default function ChoosersIndexPage() {
   }
 
   const handleAdd = async (songId: number) => {
-    if (!streamId) return
+    if (!streamId || !stream) return
 
     try {
-      const defaultRating = 50 // You might want to get this from stream settings
+      const defaultRating = stream.default_rating ?? 50
       await api.post(`/streams/${streamId}/choosers`, {
         chooser: { song_id: songId, rating: defaultRating }
       })
-      // Refresh the current tab data
       fetchData(activeTab, currentPage)
       setNotice(`Added to playlist successfully!`)
     } catch (error) {
@@ -395,17 +379,18 @@ export default function ChoosersIndexPage() {
       ))
     } else {
       // newest tab
-      return choosers.map((chooser) => (
-        <div key={chooser.id} className="relative">
-          <ChooserCard chooser={chooser} streamId={Number(streamId)} />
-          <div className="absolute top-2 right-2 flex gap-2">
-            <Enqueue streamId={Number(streamId)} songId={chooser.song.id} />
-            <DeleteButton
-              onClick={() => handleDelete(chooser.id)}
-              className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-              title="Remove from playlist"
-            />
-          </div>
+      return newSongs.map((song) => (
+        <div key={song.id} className="relative">
+          <SongItem
+            song={song}
+            streamId={Number(streamId)}
+            onAdd={handleAdd}
+          />
+          {song.included && (
+            <span className="absolute top-2 right-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
+              In Playlist
+            </span>
+          )}
         </div>
       ))
     }
