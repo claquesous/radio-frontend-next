@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import ChooserCard from '../../../_components/ChooserCard'
 import Enqueue from '../../../../_components/enqueue'
+
 import {
   DndContext,
   closestCenter,
@@ -238,7 +239,7 @@ export default function ChoosersIndexPage() {
     }
   }
 
-  const fetchData = React.useCallback(
+  const fetchData = useCallback(
     async (tab: TabType, page: number = 1) => {
       if (!streamId) return
 
@@ -262,9 +263,10 @@ export default function ChoosersIndexPage() {
         } else if (tab === 'available') {
           const url = `/streams/${streamId}/available_songs?limit=50&offset=${(page - 1) * 50}`
           const response = await api.get<any>(url)
-          setAvailableSongs(response.data)
-          setTotalPages(1)
-          setTotalItems(response.data.length)
+          // If paginated, expect { songs: [...], pagination: {...} }
+          setAvailableSongs(response.data.songs)
+          setTotalPages(Math.ceil(response.data.total / 50))
+          setTotalItems(response.data.total)
         } else if (tab === 'newest') {
           const resp = await api.get<any>(`/streams/${streamId}/new_songs_with_included`)
           setNewSongs(resp.data)
