@@ -276,7 +276,7 @@ export default function ChoosersIndexPage() {
           setTotalPages(Math.ceil(response.data.total / 50))
           setTotalItems(response.data.total)
         } else if (tab === 'newest') {
-          const resp = await api.get<any>(`/streams/${streamId}/new_songs_with_included`)
+          const resp = await api.get<any>(`/streams/${streamId}/new_songs`)
           setNewSongs(resp.data)
           setTotalPages(1)
           setTotalItems(resp.data.length)
