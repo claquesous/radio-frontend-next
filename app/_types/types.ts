@@ -71,13 +71,12 @@ export type Chooser = {
   id: number
   song: Song
   artist: Artist
-  featured: boolean
   rating: number
 }
 
 export type ChooserFormData = {
-  featured: boolean
   rating: number
+  song_id: number
 }
 
 export type Request = {

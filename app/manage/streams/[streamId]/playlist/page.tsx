@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import ChooserCard from '../../../_components/ChooserCard'
 import Enqueue from '../../../../_components/enqueue'
+
 import {
   DndContext,
   closestCenter,
@@ -29,16 +30,21 @@ import Pagination from '../../../../_components/pagination'
 import { Chooser } from '../../../../_types/types'
 import api from '../../../../../lib/api'
 
-type TabType = 'featured' | 'non-featured' | 'newest'
+type TabType = 'included' | 'available' | 'newest'
 
 interface SortableChooserItemProps {
   chooser: Chooser
   streamId: number
   onDelete: (chooserId: number) => void
-  onAdd: (chooserId: number) => void
 }
 
-function RowActions({ chooser, streamId, onDelete, onAdd }: SortableChooserItemProps) {
+interface SongItemProps {
+  song: any
+  streamId: number
+  onAdd: (songId: number) => void
+}
+
+function RowActions({ chooser, streamId, onDelete }: SortableChooserItemProps) {
   return (
     <div
       className="flex gap-2"
@@ -47,25 +53,32 @@ function RowActions({ chooser, streamId, onDelete, onAdd }: SortableChooserItemP
       onClick={e => e.stopPropagation()}
     >
       <Enqueue streamId={streamId} songId={chooser.song.id} />
-      {chooser.featured ? (
+      <DeleteButton
+        onClick={e => {
+          e.stopPropagation()
+          onDelete(chooser.id)
+        }}
+        onPointerDown={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
+        className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+        title="Remove from playlist"
+      />
+    </div>
+  )
+}
+
+function SongRowActions({ song, streamId, onAdd, onDelete }: SongItemProps & { onDelete?: (chooserId: number) => void }) {
+  return (
+    <div className="flex gap-2">
+      {song.included && song.chooser_id && onDelete ? (
         <DeleteButton
-          onClick={e => {
-            e.stopPropagation()
-            onDelete(chooser.id)
-          }}
-          onPointerDown={e => e.stopPropagation()}
-          onMouseDown={e => e.stopPropagation()}
+          onClick={() => onDelete(song.chooser_id)}
           className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
           title="Remove from playlist"
         />
       ) : (
         <button
-          onClick={e => {
-            e.stopPropagation()
-            onAdd(chooser.id)
-          }}
-          onPointerDown={e => e.stopPropagation()}
-          onMouseDown={e => e.stopPropagation()}
+          onClick={() => onAdd(song.id)}
           className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
           title="Add to playlist"
         >
@@ -78,7 +91,7 @@ function RowActions({ chooser, streamId, onDelete, onAdd }: SortableChooserItemP
   )
 }
 
-function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableChooserItemProps) {
+function SortableChooserItem({ chooser, streamId, onDelete }: SortableChooserItemProps) {
   const {
     attributes,
     listeners,
@@ -119,7 +132,21 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
         </div>
         <ChooserCard chooser={chooser} streamId={streamId} />
         <span className="text-gray-600">{chooser.rating.toFixed(2)}</span>
-        <RowActions chooser={chooser} streamId={streamId} onDelete={onDelete} onAdd={onAdd} />
+        <RowActions chooser={chooser} streamId={streamId} onDelete={onDelete} />
+      </div>
+    </div>
+  )
+}
+
+function SongItem({ song, streamId, onAdd, onDelete }: SongItemProps & { onDelete?: (chooserId: number) => void }) {
+  return (
+    <div className="relative border-b py-2">
+      <div className="flex flex-row items-center w-full gap-2 sm:gap-4">
+        <div className="flex-1">
+          <h3 className="font-medium">{song.title}</h3>
+          <p className="text-sm text-gray-600">{song.artist?.name}</p>
+        </div>
+        <SongRowActions song={song} streamId={streamId} onAdd={onAdd} onDelete={onDelete} />
       </div>
     </div>
   )
@@ -128,11 +155,14 @@ function SortableChooserItem({ chooser, streamId, onDelete, onAdd }: SortableCho
 export default function ChoosersIndexPage() {
   const { streamId } = useParams()
   const [choosers, setChoosers] = useState<Chooser[]>([])
+  const [availableSongs, setAvailableSongs] = useState<any[]>([])
+  const [newSongs, setNewSongs] = useState<any[]>([])
+  const [stream, setStream] = useState<any>(null)
   const [notice, setNotice] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<TabType>('featured')
+  const [activeTab, setActiveTab] = useState<TabType>('included')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [totalChoosers, setTotalChoosers] = useState(0)
+  const [totalItems, setTotalItems] = useState(0)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -208,57 +238,48 @@ export default function ChoosersIndexPage() {
       })
       setNotice(`Playlist order updated successfully!`)
       // Refresh the data to show updated ratings
-      fetchChoosers(activeTab, currentPage)
+      fetchData(activeTab, currentPage)
     } catch (error) {
       console.error(`Failed to update chooser ${draggedChooser.id}`, error)
       setNotice(`Failed to update playlist order.`)
       // Revert the change on error
-      fetchChoosers(activeTab, currentPage)
+      fetchData(activeTab, currentPage)
     }
   }
 
-  const fetchChoosers = React.useCallback(
+  const fetchData = useCallback(
     async (tab: TabType, page: number = 1) => {
       if (!streamId) return
 
       try {
-        let url = `/streams/${streamId}/choosers`
-        const params = new URLSearchParams()
+        // Always fetch stream info for default_rating
+        const streamResp = await api.get<any>(`/streams/${streamId}`)
+        setStream(streamResp.data)
 
-        switch (tab) {
-          case 'featured':
-            params.append('featured', 'true')
-            params.append('limit', '50')
-            params.append('offset', ((page - 1) * 50).toString())
-            break
-          case 'non-featured':
-            params.append('featured', 'false')
-            params.append('limit', '50')
-            params.append('offset', ((page - 1) * 50).toString())
-            break
-          case 'newest':
-            params.append('sort', 'created_at')
-            params.append('limit', '25')
-            break
-        }
-
-        if (params.toString()) {
-          url += `?${params.toString()}`
-        }
-
-        const response = await api.get<any>(url)
-
-        // Handle both paginated and non-paginated responses
-        if (response.data.choosers) {
-          // Paginated response
-          setChoosers(response.data.choosers)
-          setTotalPages(response.data.total_pages || 1)
-          setTotalChoosers(response.data.total || 0)
-        } else {
-          // Non-paginated response (for newest tab)
-          setChoosers(response.data)
+        if (tab === 'included') {
+          const url = `/streams/${streamId}/choosers?limit=50&offset=${(page - 1) * 50}`
+          const response = await api.get<any>(url)
+          if (response.data.choosers) {
+            setChoosers(response.data.choosers)
+            setTotalPages(response.data.total_pages || 1)
+            setTotalItems(response.data.total || 0)
+          } else {
+            setChoosers(response.data)
+            setTotalPages(1)
+            setTotalItems(response.data.length)
+          }
+        } else if (tab === 'available') {
+          const url = `/streams/${streamId}/available_songs?limit=50&offset=${(page - 1) * 50}`
+          const response = await api.get<any>(url)
+          // If paginated, expect { songs: [...], pagination: {...} }
+          setAvailableSongs(response.data.songs)
+          setTotalPages(Math.ceil(response.data.total / 50))
+          setTotalItems(response.data.total)
+        } else if (tab === 'newest') {
+          const resp = await api.get<any>(`/streams/${streamId}/new_songs`)
+          setNewSongs(resp.data)
           setTotalPages(1)
-          setTotalChoosers(response.data.length)
+          setTotalItems(resp.data.length)
         }
 
         setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
@@ -272,14 +293,14 @@ export default function ChoosersIndexPage() {
 
   useEffect(() => {
     setCurrentPage(1)
-    fetchChoosers(activeTab, 1)
-  }, [streamId, activeTab, fetchChoosers])
+    fetchData(activeTab, 1)
+  }, [streamId, activeTab, fetchData])
 
   useEffect(() => {
     if (activeTab !== 'newest') {
-      fetchChoosers(activeTab, currentPage)
+      fetchData(activeTab, currentPage)
     }
-  }, [currentPage, activeTab, fetchChoosers])
+  }, [currentPage, activeTab, fetchData])
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab)
@@ -294,11 +315,9 @@ export default function ChoosersIndexPage() {
     if (!streamId) return
 
     try {
-      await api.patch(`/streams/${streamId}/choosers/${chooserId}`, {
-        chooser: { featured: false }
-      })
+      await api.delete(`/streams/${streamId}/choosers/${chooserId}`)
       // Refresh the current tab data
-      fetchChoosers(activeTab, currentPage)
+      fetchData(activeTab, currentPage)
       setNotice(`Removed from playlist successfully!`)
     } catch (error) {
       console.error(`Failed to remove playlist chooser ${chooserId}`, error)
@@ -306,19 +325,19 @@ export default function ChoosersIndexPage() {
     }
   }
 
-  const handleAdd = async (chooserId: number) => {
-    if (!streamId) return
+  const handleAdd = async (songId: number) => {
+    if (!streamId || !stream) return
 
     try {
-      await api.patch(`/streams/${streamId}/choosers/${chooserId}`, {
-        chooser: { featured: true }
+      const defaultRating = stream.default_rating ?? 50
+      await api.post(`/streams/${streamId}/choosers`, {
+        chooser: { song_id: songId, rating: defaultRating }
       })
-      // Refresh the current tab data
-      fetchChoosers(activeTab, currentPage)
+      fetchData(activeTab, currentPage)
       setNotice(`Added to playlist successfully!`)
     } catch (error) {
-      console.error(`Failed to add playlist chooser ${chooserId}`, error)
-      setNotice(`Failed to add playlist chooser.`)
+      console.error(`Failed to add song ${songId} to playlist`, error)
+      setNotice(`Failed to add song to playlist.`)
     }
   }
 
@@ -334,6 +353,52 @@ export default function ChoosersIndexPage() {
     )
   }
 
+  const renderContent = () => {
+    if (activeTab === 'included') {
+      return (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={choosers.map(chooser => chooser.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {choosers.map((chooser) => (
+              <SortableChooserItem
+                key={chooser.id}
+                chooser={chooser}
+                streamId={Number(streamId)}
+                onDelete={handleDelete}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      )
+    } else if (activeTab === 'available') {
+      return availableSongs.map((song) => (
+        <SongItem
+          key={song.id}
+          song={song}
+          streamId={Number(streamId)}
+          onAdd={handleAdd}
+        />
+      ))
+    } else {
+      // newest tab
+      return newSongs.map((song) => (
+        <SongItem
+          key={song.id}
+          song={song}
+          streamId={Number(streamId)}
+          onAdd={handleAdd}
+          onDelete={handleDelete}
+        />
+      ))
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {notice && <p style={{ color: 'green' }}>{notice}</p>}
@@ -343,21 +408,21 @@ export default function ChoosersIndexPage() {
       <div className="tabs mb-4">
         <button
           className={`px-4 py-2 mr-2 rounded ${
-            activeTab === 'featured'
+            activeTab === 'included'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
-          onClick={() => handleTabChange('featured')}
+          onClick={() => handleTabChange('included')}
         >
           Included
         </button>
         <button
           className={`px-4 py-2 mr-2 rounded ${
-            activeTab === 'non-featured'
+            activeTab === 'available'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
-          onClick={() => handleTabChange('non-featured')}
+          onClick={() => handleTabChange('available')}
         >
           Available
         </button>
@@ -373,62 +438,15 @@ export default function ChoosersIndexPage() {
         </button>
       </div>
 
-      {(activeTab === 'featured' || activeTab === 'non-featured') && (
+      {(activeTab === 'included' || activeTab === 'available') && (
         <div className="mb-4 text-sm text-gray-600">
-          Showing {choosers.length} of {totalChoosers} choosers
+          Showing {activeTab === 'available' ? availableSongs.length : choosers.length} of {totalItems} {activeTab === 'available' ? 'songs' : 'choosers'}
           {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
         </div>
       )}
 
       <div id="choosers">
-        {activeTab === 'featured' ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={choosers.map(chooser => chooser.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {choosers.map((chooser) => (
-                <SortableChooserItem
-                  key={chooser.id}
-                  chooser={chooser}
-                  streamId={Number(streamId)}
-                  onDelete={handleDelete}
-                  onAdd={handleAdd}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-        ) : (
-          choosers.map((chooser) => (
-            <div key={chooser.id} className="relative">
-              <ChooserCard chooser={chooser} streamId={Number(streamId)} />
-              <div className="absolute top-2 right-2 flex gap-2">
-                <Enqueue streamId={Number(streamId)} songId={chooser.song.id} />
-                {chooser.featured ? (
-                  <DeleteButton
-                    onClick={() => handleDelete(chooser.id)}
-                    className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-                    title="Remove from playlist"
-                  />
-                ) : (
-                  <button
-                    onClick={() => handleAdd(chooser.id)}
-                    className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
-                    title="Add to playlist"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16" fill="#ffffff">
-                      <path d="M8 0C8.55228 0 9 0.447715 9 1V7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H9V15C9 15.5523 8.55228 16 8 16C7.44772 16 7 15.5523 7 15V9H1C0.447715 9 0 8.55228 0 8C0 7.44772 0.447715 7 1 7H7V1C7 0.447715 7.44772 0 8 0Z"/>
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
-        )}
+        {renderContent()}
       </div>
 
       {renderPagination()}
