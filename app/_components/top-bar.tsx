@@ -21,6 +21,15 @@ interface AuthResponse {
   user: User
 }
 
+function decodeJwtExp(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return typeof payload.exp === 'number' ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function TopBar() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
@@ -32,18 +41,28 @@ export default function TopBar() {
     const storedToken = localStorage.getItem('authToken')
     const storedUser = localStorage.getItem('user')
     if (storedToken && storedUser) {
-      try {
-        setCurrentUser(JSON.parse(storedUser))
-      } catch (e) {
-        console.error("Failed to parse stored user data:", e)
+      const exp = decodeJwtExp(storedToken)
+      const now = Math.floor(Date.now() / 1000)
+      if (exp && exp < now) {
         localStorage.removeItem('authToken')
         localStorage.removeItem('user')
+        setCurrentUser(null)
+      } else {
+        try {
+          setCurrentUser(JSON.parse(storedUser))
+        } catch (e) {
+          console.error("Failed to parse stored user data:", e)
+          localStorage.removeItem('authToken')
+          localStorage.removeItem('user')
+        }
       }
     }
     setIsReady(true)
 
     // Listen for global login modal open event
-    const openModal = () => setIsLoginModalOpen(true)
+    const openModal = () => {
+      setIsLoginModalOpen(true)
+    }
     window.addEventListener('open-login-modal', openModal)
     return () => window.removeEventListener('open-login-modal', openModal)
   }, [])
@@ -110,27 +129,29 @@ export default function TopBar() {
 
       <div className="flex items-center space-x-4 min-h-[2.5rem]">
         {isReady ? (
-          currentUser ? (
-            <>
-              <MiniPlayer />
-              <UserMenu user={currentUser} onLogout={handleLogout} />
-            </>
-          ) : (
-            <>
-              <LoginButton onClick={() => setIsLoginModalOpen(true)} />
-              <Link
-                href="/signup"
-                className="ml-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
-              >
-                Sign Up
-              </Link>
-              <LoginModal
-                isOpen={isLoginModalOpen}
-                onClose={() => setIsLoginModalOpen(false)}
-                onLogin={handleLogin}
-              />
-            </>
-          )
+          <>
+            {currentUser ? (
+              <>
+                <MiniPlayer />
+                <UserMenu user={currentUser} onLogout={handleLogout} />
+              </>
+            ) : (
+              <>
+                <LoginButton onClick={() => setIsLoginModalOpen(true)} />
+                <Link
+                  href="/signup"
+                  className="ml-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+            <LoginModal
+              isOpen={isLoginModalOpen}
+              onClose={() => setIsLoginModalOpen(false)}
+              onLogin={handleLogin}
+            />
+          </>
         ) : (
           <div className="h-10 w-64"></div>
         )}

@@ -29,4 +29,19 @@ api.interceptors.request.use(
   }
 )
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      typeof window !== "undefined"
+    ) {
+      localStorage.removeItem('authToken');
+      window.dispatchEvent(new Event('open-login-modal'));
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api
