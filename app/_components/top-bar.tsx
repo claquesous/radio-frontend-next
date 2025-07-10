@@ -34,7 +34,6 @@ export default function TopBar() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const [loginModalKey, setLoginModalKey] = useState(0)
   const { stopStream } = useAudio()
   const router = useRouter()
 
@@ -62,7 +61,6 @@ export default function TopBar() {
 
     // Listen for global login modal open event
     const openModal = () => {
-      setLoginModalKey((k) => k + 1)
       setIsLoginModalOpen(true)
     }
     window.addEventListener('open-login-modal', openModal)
@@ -149,7 +147,6 @@ export default function TopBar() {
               </>
             )}
             <LoginModal
-              key={loginModalKey}
               isOpen={isLoginModalOpen}
               onClose={() => setIsLoginModalOpen(false)}
               onLogin={handleLogin}
