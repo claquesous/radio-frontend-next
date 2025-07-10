@@ -21,6 +21,15 @@ interface AuthResponse {
   user: User
 }
 
+function decodeJwtExp(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return typeof payload.exp === 'number' ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function TopBar() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
@@ -32,12 +41,20 @@ export default function TopBar() {
     const storedToken = localStorage.getItem('authToken')
     const storedUser = localStorage.getItem('user')
     if (storedToken && storedUser) {
-      try {
-        setCurrentUser(JSON.parse(storedUser))
-      } catch (e) {
-        console.error("Failed to parse stored user data:", e)
+      const exp = decodeJwtExp(storedToken)
+      const now = Math.floor(Date.now() / 1000)
+      if (exp && exp < now) {
         localStorage.removeItem('authToken')
         localStorage.removeItem('user')
+        setCurrentUser(null)
+      } else {
+        try {
+          setCurrentUser(JSON.parse(storedUser))
+        } catch (e) {
+          console.error("Failed to parse stored user data:", e)
+          localStorage.removeItem('authToken')
+          localStorage.removeItem('user')
+        }
       }
     }
     setIsReady(true)
