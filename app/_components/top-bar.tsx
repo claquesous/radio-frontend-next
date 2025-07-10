@@ -62,11 +62,8 @@ export default function TopBar() {
 
     // Listen for global login modal open event
     const openModal = () => {
-      setIsLoginModalOpen(false)
-      setTimeout(() => {
-        setLoginModalKey((k) => k + 1)
-        setIsLoginModalOpen(true)
-      }, 0)
+      setLoginModalKey((k) => k + 1)
+      setIsLoginModalOpen(true)
     }
     window.addEventListener('open-login-modal', openModal)
     return () => window.removeEventListener('open-login-modal', openModal)
@@ -134,28 +131,30 @@ export default function TopBar() {
 
       <div className="flex items-center space-x-4 min-h-[2.5rem]">
         {isReady ? (
-          currentUser ? (
-            <>
-              <MiniPlayer />
-              <UserMenu user={currentUser} onLogout={handleLogout} />
-            </>
-          ) : (
-            <>
-              <LoginButton onClick={() => setIsLoginModalOpen(true)} />
-              <Link
-                href="/signup"
-                className="ml-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
-              >
-                Sign Up
-              </Link>
-              <LoginModal
-                key={loginModalKey}
-                isOpen={isLoginModalOpen}
-                onClose={() => setIsLoginModalOpen(false)}
-                onLogin={handleLogin}
-              />
-            </>
-          )
+          <>
+            {currentUser ? (
+              <>
+                <MiniPlayer />
+                <UserMenu user={currentUser} onLogout={handleLogout} />
+              </>
+            ) : (
+              <>
+                <LoginButton onClick={() => setIsLoginModalOpen(true)} />
+                <Link
+                  href="/signup"
+                  className="ml-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold py-2 px-4 rounded text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-150"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+            <LoginModal
+              key={loginModalKey}
+              isOpen={isLoginModalOpen}
+              onClose={() => setIsLoginModalOpen(false)}
+              onLogin={handleLogin}
+            />
+          </>
         ) : (
           <div className="h-10 w-64"></div>
         )}
