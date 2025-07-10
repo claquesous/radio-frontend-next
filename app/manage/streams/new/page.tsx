@@ -13,9 +13,8 @@ export default function NewStreamPage() {
 
   const handleSubmit = async (formData: any) => {
     try {
-      // Send POST request to API to create new stream
       const response = await api.post<Stream>('/streams', formData)
-      router.push(`/admin/streams/${response.data.id}`) // Redirect to stream show page after creation
+      router.push(`/manage/streams/${response.data.id}`)
     } catch (error: any) {
       console.error('Failed to create stream', error)
       setErrors([error.message || 'Failed to create stream'])
