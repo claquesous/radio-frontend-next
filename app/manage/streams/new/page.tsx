@@ -29,7 +29,7 @@ export default function NewStreamPage() {
 
       <br />
 
-      <Link href="/manage/streams">Back</Link>
+      <Link href="/manage">Back</Link>
     </div>
   )
 }
