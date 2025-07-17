@@ -28,9 +28,9 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
     const controller = new AbortController()
     const signal = controller.signal
     previousController.current = controller
-    const response = await fetch(`/search?query=${searchTerm}&limit=10`)
+    const response = await fetch(`/search?query=${searchTerm}&limit=10&stream_id=${streamId}`)
     const data = await response.json()
-    setOptions(data)
+    setOptions(data.songs || [])
     setLoading(false)
   }
 
