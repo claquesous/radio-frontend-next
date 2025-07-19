@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Song } from '../../_types/types'
 
 import BackButton from '../../../app/_components/back-button'
+import MusicbrainzSearch from '../../_components/musicbrainz-search'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 interface SongFormProps {
   initialData?: Song
@@ -24,6 +26,7 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
   const [live, setLive] = useState(initialData?.live || false)
   const [remix, setRemix] = useState(initialData?.remix || false)
   const [year, setYear] = useState(initialData?.year || '')
+  const [musicbrainzMetadata, setMusicbrainzMetadata] = useState<any>(initialData?.musicbrainz_metadata || null)
 
   useEffect(() => {
     if (initialData) {
@@ -38,6 +41,7 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
       setLive(initialData.live)
       setRemix(initialData.remix)
       setYear(initialData.year || '')
+      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
 
@@ -55,7 +59,12 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
       live,
       remix,
       year,
+      musicbrainz_metadata: musicbrainzMetadata,
     })
+  }
+
+  const handleMetadataSave = (metadata: any) => {
+    setMusicbrainzMetadata(metadata)
   }
 
   return (
@@ -174,6 +183,20 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
         <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
+
+      <div className="my-8">
+        <MusicbrainzMetadataDisplay
+          metadata={musicbrainzMetadata}
+          entityType="songs"
+        />
+      </div>
+
+      <MusicbrainzSearch
+        entityType="songs"
+        entityId={initialData?.id}
+        entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+        onMetadataSaved={handleMetadataSave}
+      />
     </form>
   )
 }

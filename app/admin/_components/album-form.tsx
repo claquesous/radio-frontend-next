@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Album } from '../../_types/types'
 
 import BackButton from '../../../app/_components/back-button'
+import MusicbrainzSearch from '../../_components/musicbrainz-search'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 interface AlbumFormProps {
   initialData?: Album
@@ -20,6 +22,7 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
   const [tracks, setTracks] = useState(initialData?.tracks || '')
   const [id3Genre, setId3Genre] = useState(initialData?.id3_genre || '')
   const [recordLabel, setRecordLabel] = useState(initialData?.record_label || '')
+  const [musicbrainzMetadata, setMusicbrainzMetadata] = useState<any>(initialData?.musicbrainz_metadata || null)
 
   useEffect(() => {
     if (initialData) {
@@ -30,6 +33,7 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
       setTracks(initialData.tracks || '')
       setId3Genre(initialData.id3_genre || '')
       setRecordLabel(initialData.record_label || '')
+      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
 
@@ -43,7 +47,12 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
       tracks,
       id3_genre: id3Genre,
       record_label: recordLabel,
+      musicbrainz_metadata: musicbrainzMetadata,
     })
+  }
+
+  const handleMetadataSave = (metadata: any) => {
+    setMusicbrainzMetadata(metadata)
   }
 
   return (
@@ -126,6 +135,20 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
         <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
+
+      <div className="my-8">
+        <MusicbrainzMetadataDisplay
+          metadata={musicbrainzMetadata}
+          entityType="albums"
+        />
+      </div>
+
+      <MusicbrainzSearch
+        entityType="albums"
+        entityId={initialData?.id}
+        entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+        onMetadataSaved={handleMetadataSave}
+      />
     </form>
   )
 }

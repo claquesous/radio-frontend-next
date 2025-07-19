@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Artist } from '../../_types/types'
 
 import BackButton from '../../../app/_components/back-button'
+import MusicbrainzSearch from '../../_components/musicbrainz-search'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 interface ArtistFormProps {
   initialData?: Artist
@@ -16,12 +18,14 @@ export default function ArtistForm({ initialData, onSubmit, errors, backHref }: 
   const [name, setName] = useState(initialData?.name || '')
   const [sort, setSort] = useState(initialData?.sort || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
+  const [musicbrainzMetadata, setMusicbrainzMetadata] = useState<any>(initialData?.musicbrainz_metadata || null)
 
   useEffect(() => {
     if (initialData) {
       setName(initialData.name)
       setSort(initialData.sort || '')
       setSlug(initialData.slug || '')
+      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
 
@@ -31,7 +35,12 @@ export default function ArtistForm({ initialData, onSubmit, errors, backHref }: 
       name,
       sort,
       slug,
+      musicbrainz_metadata: musicbrainzMetadata,
     })
+  }
+
+  const handleMetadataSave = (metadata: any) => {
+    setMusicbrainzMetadata(metadata)
   }
 
   return (
@@ -78,6 +87,20 @@ export default function ArtistForm({ initialData, onSubmit, errors, backHref }: 
         <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
+
+      <div className="my-8">
+        <MusicbrainzMetadataDisplay
+          metadata={musicbrainzMetadata}
+          entityType="artists"
+        />
+      </div>
+
+      <MusicbrainzSearch
+        entityType="artists"
+        entityId={initialData?.id}
+        entityName={initialData?.name || name}
+        onMetadataSaved={handleMetadataSave}
+      />
     </form>
   )
 }

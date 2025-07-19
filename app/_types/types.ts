@@ -5,6 +5,7 @@ export type Artist = {
   slug: string | null
   albums?: Album[]
   songs?: Song[]
+  musicbrainz_metadata?: any
 }
 
 export type Album = {
@@ -17,6 +18,7 @@ export type Album = {
   id3_genre: string | null
   record_label: string | null
   songs?: Song[]
+  musicbrainz_metadata?: any
 }
 
 export type Song = {
@@ -33,6 +35,7 @@ export type Song = {
   live: boolean
   remix: boolean
   year: number | null
+  musicbrainz_metadata?: any
 }
 
 export type Stream = {
