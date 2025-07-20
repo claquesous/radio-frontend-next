@@ -117,7 +117,7 @@ export default function MusicbrainzSearch({
       case 'songs':
         return {
           title: result.title || 'Unknown Song',
-          subtitle: result['artist-credit']?.[0]?.name || 'Unknown Artist',
+          subtitle: `${result['artist-credit']?.[0]?.name || 'Unknown Artist'} • ${result['first-release-date'] || 'Unknown Date'}`,
           score: result.score
         }
       default:

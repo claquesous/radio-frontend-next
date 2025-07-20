@@ -121,6 +121,11 @@ export default function MusicbrainzMetadataDisplay({
         <div>
           <span className="font-medium">Title:</span> {metadata.title || 'Unknown'}
         </div>
+        {(metadata as any)['first-release-date'] && (
+          <div>
+            <span className="font-medium">First Release:</span> {formatDate((metadata as any)['first-release-date'])}
+          </div>
+        )}
         {metadata.length && (
           <div>
             <span className="font-medium">Length:</span> {Math.floor(metadata.length / 60000)}:{String(Math.floor((metadata.length % 60000) / 1000)).padStart(2, '0')}
