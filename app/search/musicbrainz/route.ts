@@ -9,9 +9,9 @@ export async function GET(req: NextRequest) {
   const limit = url.searchParams.get('limit') || '10'
 
   let mbUrl = ''
+  const incParam = inc ? `&inc=${encodeURIComponent(inc)}` : ''
   // Fetch by ID for artist
   if (entity === 'artist' && id) {
-    const incParam = inc ? `&inc=${encodeURIComponent(inc)}` : ''
     mbUrl = `https://musicbrainz.org/ws/2/artist/${encodeURIComponent(id)}?fmt=json${incParam}`
     try {
       const resp = await fetch(mbUrl, {
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
 
   // Fetch by ID for album (release-group)
   if (entity === 'album' && id) {
-    mbUrl = `https://musicbrainz.org/ws/2/release-group/${encodeURIComponent(id)}?fmt=json`
+    mbUrl = `https://musicbrainz.org/ws/2/release-group/${encodeURIComponent(id)}?fmt=json${incParam}`
     try {
       const resp = await fetch(mbUrl, {
         headers: {
