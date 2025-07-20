@@ -3,7 +3,7 @@
 import React from 'react'
 
 interface MusicbrainzMetadata {
-  mbid: string
+  id?: string
   name?: string
   title?: string
   type?: string
@@ -31,7 +31,8 @@ export default function MusicbrainzMetadataDisplay({
   metadata,
   entityType
 }: MusicbrainzMetadataDisplayProps) {
-  if (!metadata || !metadata.mbid) {
+  const mbid = metadata?.id;
+  if (!metadata || !mbid) {
     return (
       <div className="text-gray-500 text-sm">
         No Musicbrainz metadata available
@@ -152,7 +153,7 @@ export default function MusicbrainzMetadataDisplay({
 
       <div className="mt-3 pt-3 border-t border-green-200">
         <div className="text-xs text-gray-600 mb-2">
-          <span className="font-medium">MBID:</span> {metadata.mbid}
+          <span className="font-medium">MBID:</span> {mbid}
         </div>
 
         {metadata.images && metadata.images.length > 0 && (
