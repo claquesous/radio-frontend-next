@@ -38,72 +38,65 @@ export default function SongShowPage() {
   return (
     <div>
       {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
-
-      <p>
-        <strong>Album:</strong>
-        {song.album ? <Link href={`/admin/albums/${song.album.id}`} className="hover:underline">{song.album.title}</Link> : 'N/A'}
-      </p>
-
-      <p>
-        <strong>Artist:</strong>
-        <Link href={`/admin/artists/${song.artist.id}`} className="hover:underline">{song.artist.name}</Link>
-      </p>
-
-      <p>
-        <strong>Artist Name Override:</strong>
-        {song.artist_name_override}
-      </p>
-
-      <p>
-        <strong>Title:</strong>
-        {song.title}
-      </p>
-
-      {song.musicbrainz_metadata && (
-        <MusicbrainzMetadataDisplay
-          metadata={song.musicbrainz_metadata}
-          entityType="songs"
-        />
-      )}
-
-      <p>
-        <strong>Sort:</strong>
-        {song.sort}
-      </p>
-
-      <p>
-        <strong>Slug:</strong>
-        {song.slug}
-      </p>
-
-      <p>
-        <strong>Track:</strong>
-        {song.track}
-      </p>
-
-      <p>
-        <strong>Time:</strong>
-        {song.time}
-      </p>
-
-      <p>
-        <strong>Live:</strong>
-        {song.live ? 'Yes' : 'No'}
-      </p>
-
-      <p>
-        <strong>Remix:</strong>
-        {song.remix ? 'Yes' : 'No'}
-      </p>
-
-      <p>
-        <strong>Year:</strong>
-        {song.year}
-      </p>
-
-      <div className="flex items-center gap-2 mt-4">
-        <EditButton href={`/admin/songs/${song.id}/edit`} />
-        <BackButton href="/admin/songs" />
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1">
+          <p>
+            <strong>Album:</strong>
+            {song.album ? <Link href={`/admin/albums/${song.album.id}`} className="hover:underline">{song.album.title}</Link> : 'N/A'}
+          </p>
+          <p>
+            <strong>Artist:</strong>
+            <Link href={`/admin/artists/${song.artist.id}`} className="hover:underline">{song.artist.name}</Link>
+          </p>
+          <p>
+            <strong>Artist Name Override:</strong>
+            {song.artist_name_override}
+          </p>
+          <p>
+            <strong>Title:</strong>
+            {song.title}
+          </p>
+          <p>
+            <strong>Sort:</strong>
+            {song.sort}
+          </p>
+          <p>
+            <strong>Slug:</strong>
+            {song.slug}
+          </p>
+          <p>
+            <strong>Track:</strong>
+            {song.track}
+          </p>
+          <p>
+            <strong>Time:</strong>
+            {song.time}
+          </p>
+          <p>
+            <strong>Live:</strong>
+            {song.live ? 'Yes' : 'No'}
+          </p>
+          <p>
+            <strong>Remix:</strong>
+            {song.remix ? 'Yes' : 'No'}
+          </p>
+          <p>
+            <strong>Year:</strong>
+            {song.year}
+          </p>
+          <div className="flex items-center gap-2 mt-4">
+            <EditButton href={`/admin/songs/${song.id}/edit`} />
+            <BackButton href="/admin/songs" />
+          </div>
+        </div>
+        {song.musicbrainz_metadata && (
+          <div className="md:w-1/3 w-full md:order-2 order-last mt-6 md:mt-0">
+            <MusicbrainzMetadataDisplay
+              metadata={song.musicbrainz_metadata}
+              entityType="songs"
+            />
+          </div>
+        )}
       </div>
     </div>
   )

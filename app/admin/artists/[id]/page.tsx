@@ -39,72 +39,71 @@ export default function ArtistShowPage() {
   return (
     <div>
       {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
-
-      <p>
-        <strong>Name:</strong> {artist.name}
-      </p>
-
-      {artist.musicbrainz_metadata && (
-        <MusicbrainzMetadataDisplay
-          metadata={artist.musicbrainz_metadata}
-          entityType="artists"
-        />
-      )}
-
-      <p>
-        <strong>Sort:</strong> {artist.sort}
-      </p>
-
-      <p>
-        <strong>Slug:</strong> {artist.slug}
-      </p>
-
-      {artist.albums && artist.albums.length > 0 && (
-        <div>
-          <strong>Albums:</strong>
-          <ul>
-            {artist.albums.map((album: { id: number, title: string }) => (
-              <li key={album.id}>
-                <Link href={`/admin/albums/${album.id}`} className="hover:underline">
-                  {album.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1">
+          <p>
+            <strong>Name:</strong> {artist.name}
+          </p>
+          <p>
+            <strong>Sort:</strong> {artist.sort}
+          </p>
+          <p>
+            <strong>Slug:</strong> {artist.slug}
+          </p>
+          {artist.albums && artist.albums.length > 0 && (
+            <div>
+              <strong>Albums:</strong>
+              <ul>
+                {artist.albums.map((album: { id: number, title: string }) => (
+                  <li key={album.id}>
+                    <Link href={`/admin/albums/${album.id}`} className="hover:underline">
+                      {album.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {artist.songs && artist.songs.length > 0 && (
+            <div>
+              <strong>Songs:</strong>
+              <ul>
+                {artist.songs.map((song: { id: number, title: string }) => (
+                  <li key={song.id}>
+                    <Link href={`/admin/songs/${song.id}`} className="hover:underline">
+                      {song.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="flex items-center gap-2 mt-4">
+            <EditButton href={`/admin/artists/${artist.id}/edit`} />
+            <DeleteButton
+              onClick={async () => {
+                if (!confirm('Are you sure you want to delete this artist?')) return;
+                try {
+                  await api.delete(`/artists/${artist.id}`)
+                  window.location.href = '/admin/artists'
+                } catch (error: any) {
+                  setNotice(error?.response?.data?.errors?.[0] || 'Failed to delete artist.')
+                }
+              }}
+              className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
+              title="Delete artist"
+            />
+            <BackButton href="/admin/artists" />
+          </div>
         </div>
-      )}
-
-      {artist.songs && artist.songs.length > 0 && (
-        <div>
-          <strong>Songs:</strong>
-          <ul>
-            {artist.songs.map((song: { id: number, title: string }) => (
-              <li key={song.id}>
-                <Link href={`/admin/songs/${song.id}`} className="hover:underline">
-                  {song.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="flex items-center gap-2 mt-4">
-        <EditButton href={`/admin/artists/${artist.id}/edit`} />
-        <DeleteButton
-          onClick={async () => {
-            if (!confirm('Are you sure you want to delete this artist?')) return;
-            try {
-              await api.delete(`/artists/${artist.id}`)
-              window.location.href = '/admin/artists'
-            } catch (error: any) {
-              setNotice(error?.response?.data?.errors?.[0] || 'Failed to delete artist.')
-            }
-          }}
-          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-          title="Delete artist"
-        />
-        <BackButton href="/admin/artists" />
+        {artist.musicbrainz_metadata && (
+          <div className="md:w-1/3 w-full md:order-2 order-last mt-6 md:mt-0">
+            <MusicbrainzMetadataDisplay
+              metadata={artist.musicbrainz_metadata}
+              entityType="artists"
+            />
+          </div>
+        )}
       </div>
     </div>
   )
