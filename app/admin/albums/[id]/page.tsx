@@ -83,6 +83,14 @@ export default function AlbumShowPage() {
               </ul>
             </div>
           )}
+          {album.musicbrainz_metadata && (
+            <div className="w-full md:w-1/3 md:absolute md:right-0 md:top-0 mt-6 md:mt-0">
+              <MusicbrainzMetadataDisplay
+                metadata={album.musicbrainz_metadata}
+                entityType="albums"
+              />
+            </div>
+          )}
           <div className="flex items-center gap-2 mt-4">
             <EditButton href={`/admin/albums/${album.id}/edit`} />
             <DeleteButton
@@ -101,14 +109,6 @@ export default function AlbumShowPage() {
             <BackButton href="/admin/albums" />
           </div>
         </div>
-        {album.musicbrainz_metadata && (
-          <div className="md:w-1/3 w-full md:order-2 order-last mt-6 md:mt-0">
-            <MusicbrainzMetadataDisplay
-              metadata={album.musicbrainz_metadata}
-              entityType="albums"
-            />
-          </div>
-        )}
       </div>
     </div>
   )
