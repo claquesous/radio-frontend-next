@@ -9,6 +9,7 @@ import api from '../../../../lib/api'
 import DeleteButton from '../../../_components/delete-button'
 import EditButton from '../../../_components/edit-button'
 import BackButton from '../../../_components/back-button'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 export default function AlbumShowPage() {
   const { id } = useParams()
@@ -43,6 +44,13 @@ export default function AlbumShowPage() {
         <strong>Artist:</strong>
         <Link href={`/admin/artists/${album.artist.id}`} className="hover:underline">{album.artist.name}</Link>
       </p>
+
+      {album.musicbrainz_metadata && (
+        <MusicbrainzMetadataDisplay
+          metadata={album.musicbrainz_metadata}
+          entityType="albums"
+        />
+      )}
 
       <p>
         <strong>Title:</strong>

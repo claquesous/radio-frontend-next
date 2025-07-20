@@ -2,6 +2,7 @@ import PlayStats from '../../_components/playstats'
 import SongItem from '../../_components/song-item'
 import { Song } from '../../../../_types/types'
 import dynamic from "next/dynamic"
+import MusicbrainzMetadataDisplay from '../../../../admin/_components/musicbrainz-metadata-display'
 
 const AdminEditButton = dynamic(() => import("../../../../_components/admin-edit-button"))
 
@@ -25,6 +26,13 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
         <div className="text-2xl font-bold flex-1">{artist.name}</div>
         <AdminEditButton href={`/admin/artists/${id}/edit`} />
       </div>
+      {artist.musicbrainz_metadata && (
+        <MusicbrainzMetadataDisplay
+          metadata={artist.musicbrainz_metadata}
+          entityType="artists"
+          showFetchedAt={false}
+        />
+      )}
       {artist.songs.map((song: Song) =>
         <SongItem key={song.id} song={song} streamId={streamId} />
       )}

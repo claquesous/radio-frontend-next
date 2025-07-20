@@ -8,6 +8,7 @@ import { Song } from '../../../_types/types'
 import api from '../../../../lib/api'
 import EditButton from '../../../_components/edit-button'
 import BackButton from '../../../_components/back-button'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 export default function SongShowPage() {
   const { id } = useParams()
@@ -57,6 +58,13 @@ export default function SongShowPage() {
         <strong>Title:</strong>
         {song.title}
       </p>
+
+      {song.musicbrainz_metadata && (
+        <MusicbrainzMetadataDisplay
+          metadata={song.musicbrainz_metadata}
+          entityType="songs"
+        />
+      )}
 
       <p>
         <strong>Sort:</strong>

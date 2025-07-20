@@ -2,6 +2,7 @@ import Link from 'next/link'
 import PlayStats from '../../_components/playstats'
 import SongItem from '../../_components/song-item'
 import dynamic from "next/dynamic"
+import MusicbrainzMetadataDisplay from '../../../../admin/_components/musicbrainz-metadata-display'
 
 const AdminEditButton = dynamic(() => import("../../../../_components/admin-edit-button"))
 
@@ -27,6 +28,13 @@ export default async function SongPage({ params }: { params: Promise<{ streamId:
         </Link>
         <AdminEditButton href={`/admin/songs/${id}/edit`} />
       </div>
+      {song.musicbrainz_metadata && (
+        <MusicbrainzMetadataDisplay
+          metadata={song.musicbrainz_metadata}
+          entityType="songs"
+          showFetchedAt={false}
+        />
+      )}
       <SongItem song={song} streamId={streamId} linkable={false} />
       <PlayStats playStats={song} />
     </>

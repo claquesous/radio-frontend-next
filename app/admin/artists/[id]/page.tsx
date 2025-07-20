@@ -9,6 +9,7 @@ import api from '../../../../lib/api'
 import DeleteButton from '../../../_components/delete-button'
 import EditButton from '../../../_components/edit-button'
 import BackButton from '../../../_components/back-button'
+import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
 
 export default function ArtistShowPage() {
   const { id } = useParams()
@@ -42,6 +43,13 @@ export default function ArtistShowPage() {
       <p>
         <strong>Name:</strong> {artist.name}
       </p>
+
+      {artist.musicbrainz_metadata && (
+        <MusicbrainzMetadataDisplay
+          metadata={artist.musicbrainz_metadata}
+          entityType="artists"
+        />
+      )}
 
       <p>
         <strong>Sort:</strong> {artist.sort}
