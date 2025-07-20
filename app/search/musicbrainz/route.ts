@@ -11,12 +11,16 @@ export async function GET(req: NextRequest) {
   }
 
   let mbUrl = ''
+  let inc = ''
   if (entity === 'artist') {
-    mbUrl = `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json`
+    inc = '&inc=annotation+artist-rels+release-group-rels+url-rels'
+    mbUrl = `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json${inc}`
   } else if (entity === 'album') {
-    mbUrl = `https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json`
+    inc = '&inc=annotation'
+    mbUrl = `https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json${inc}`
   } else if (entity === 'song') {
-    mbUrl = `https://musicbrainz.org/ws/2/recording/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json`
+    inc = '&inc=annotation'
+    mbUrl = `https://musicbrainz.org/ws/2/recording/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json${inc}`
   } else {
     return NextResponse.json({ error: 'Invalid entity type' }, { status: 400 })
   }

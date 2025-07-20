@@ -11,6 +11,8 @@ interface MusicbrainzResult {
   'artist-credit'?: Array<{ name: string }>
   'first-release-date'?: string
   'primary-type'?: string
+  annotation?: string
+  relations?: Array<{ type: string; artist: { name: string } }>
 }
 
 interface MusicbrainzSearchProps {
@@ -146,6 +148,26 @@ export default function MusicbrainzSearch({
                   <div className="text-xs text-gray-400 dark:text-gray-400 mt-1">
                     Score: {Math.round(formatted.score)}% • MBID: {result.id}
                   </div>
+                  {result.annotation && (
+                    <div
+                      className="text-sm text-gray-600 dark:text-gray-300 mt-2 prose"
+                      dangerouslySetInnerHTML={{ __html: result.annotation }}
+                    />
+                  )}
+                  {result.relations && result.relations.length > 0 && (
+                    <div className="mt-2">
+                      <h5 className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                        Related Artists
+                      </h5>
+                      <ul className="text-sm text-gray-600 dark:text-gray-300">
+                        {result.relations.map((rel, i) => (
+                          <li key={i}>
+                            {rel.type}: {rel.artist.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => saveMetadata(result)}
