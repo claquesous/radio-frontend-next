@@ -79,7 +79,7 @@ export default function ArtistShowPage() {
             </div>
           )}
           {artist.musicbrainz_metadata && (
-            <div className="w-full md:w-1/3 md:absolute md:right-0 md:top-0 mt-6 md:mt-0">
+            <div className="w-full md:w-1/3 mt-6 md:mt-0">
               <MusicbrainzMetadataDisplay
                 metadata={artist.musicbrainz_metadata}
                 entityType="artists"
