@@ -34,13 +34,8 @@ export default function MusicbrainzMetadataDisplay({
   entityType,
   showFetchedAt = true
 }: MusicbrainzMetadataDisplayProps) {
-  const mappedMetadata = {
-    ...metadata,
-    type: metadata.type || (metadata as any)['primary-type'] || 'Unknown',
-    first_release_date: metadata.first_release_date || (metadata as any)['first-release-date'] || '',
-  };
-  const mbid = mappedMetadata?.id;
-  if (!mappedMetadata || !mbid) {
+  const mbid = metadata?.id;
+  if (!metadata || !mbid) {
     return (
       <div className="text-gray-500 text-sm">
         No Musicbrainz metadata available
@@ -61,26 +56,26 @@ export default function MusicbrainzMetadataDisplay({
     <div className="space-y-2">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <span className="font-medium">Name:</span> {mappedMetadata.name || 'Unknown'}
+          <span className="font-medium">Name:</span> {metadata.name || 'Unknown'}
         </div>
         <div>
-          <span className="font-medium">Type:</span> {mappedMetadata.type || 'Unknown'}
+          <span className="font-medium">Type:</span> {metadata.type || 'Unknown'}
         </div>
-        {mappedMetadata.country && (
+        {metadata.country && (
           <div>
-            <span className="font-medium">Country:</span> {mappedMetadata.country}
+            <span className="font-medium">Country:</span> {metadata.country}
           </div>
         )}
-        {mappedMetadata.life_span && (
+        {metadata.life_span && (
           <div>
             <span className="font-medium">Active:</span>{' '}
-            {mappedMetadata.life_span.begin || '?'} - {mappedMetadata.life_span.end || 'present'}
+            {metadata.life_span.begin || '?'} - {metadata.life_span.end || 'present'}
           </div>
         )}
       </div>
-      {mappedMetadata.disambiguation && (
+      {metadata.disambiguation && (
         <div>
-          <span className="font-medium">Disambiguation:</span> {mappedMetadata.disambiguation}
+          <span className="font-medium">Disambiguation:</span> {metadata.disambiguation}
         </div>
       )}
     </div>
@@ -90,31 +85,31 @@ export default function MusicbrainzMetadataDisplay({
     <div className="space-y-2">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <span className="font-medium">Title:</span> {mappedMetadata.title || 'Unknown'}
+          <span className="font-medium">Title:</span> {metadata.title || 'Unknown'}
         </div>
         <div>
-          <span className="font-medium">Type:</span> {mappedMetadata.type || 'Unknown'}
+          <span className="font-medium">Type:</span> {(metadata as any)['primary-type'] || 'Unknown'}
         </div>
-        {mappedMetadata.first_release_date && (
+        {(metadata as any)['first-release-date'] && (
           <div>
-            <span className="font-medium">First Release:</span> {formatDate(mappedMetadata.first_release_date)}
+            <span className="font-medium">First Release:</span> {formatDate((metadata as any)['first-release-date'])}
           </div>
         )}
-        {mappedMetadata.secondary_types && mappedMetadata.secondary_types.length > 0 && (
+        {metadata.secondary_types && metadata.secondary_types.length > 0 && (
           <div>
-            <span className="font-medium">Secondary Types:</span> {mappedMetadata.secondary_types.join(', ')}
+            <span className="font-medium">Secondary Types:</span> {metadata.secondary_types.join(', ')}
           </div>
         )}
       </div>
-      {mappedMetadata.artist_credits && mappedMetadata.artist_credits.length > 0 && (
+      {metadata.artist_credits && metadata.artist_credits.length > 0 && (
         <div>
           <span className="font-medium">Artists:</span>{' '}
-          {mappedMetadata.artist_credits.map(ac => ac.name).join(', ')}
+          {metadata.artist_credits.map(ac => ac.name).join(', ')}
         </div>
       )}
-      {mappedMetadata.disambiguation && (
+      {metadata.disambiguation && (
         <div>
-          <span className="font-medium">Disambiguation:</span> {mappedMetadata.disambiguation}
+          <span className="font-medium">Disambiguation:</span> {metadata.disambiguation}
         </div>
       )}
     </div>
@@ -124,23 +119,23 @@ export default function MusicbrainzMetadataDisplay({
     <div className="space-y-2">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <span className="font-medium">Title:</span> {mappedMetadata.title || 'Unknown'}
+          <span className="font-medium">Title:</span> {metadata.title || 'Unknown'}
         </div>
-        {mappedMetadata.length && (
+        {metadata.length && (
           <div>
-            <span className="font-medium">Length:</span> {Math.floor(mappedMetadata.length / 60000)}:{String(Math.floor((mappedMetadata.length % 60000) / 1000)).padStart(2, '0')}
+            <span className="font-medium">Length:</span> {Math.floor(metadata.length / 60000)}:{String(Math.floor((metadata.length % 60000) / 1000)).padStart(2, '0')}
           </div>
         )}
       </div>
-      {mappedMetadata.artist_credits && mappedMetadata.artist_credits.length > 0 && (
+      {metadata.artist_credits && metadata.artist_credits.length > 0 && (
         <div>
           <span className="font-medium">Artists:</span>{' '}
-          {mappedMetadata.artist_credits.map(ac => ac.name).join(', ')}
+          {metadata.artist_credits.map(ac => ac.name).join(', ')}
         </div>
       )}
-      {mappedMetadata.disambiguation && (
+      {metadata.disambiguation && (
         <div>
-          <span className="font-medium">Disambiguation:</span> {mappedMetadata.disambiguation}
+          <span className="font-medium">Disambiguation:</span> {metadata.disambiguation}
         </div>
       )}
     </div>
@@ -152,7 +147,7 @@ export default function MusicbrainzMetadataDisplay({
         <h4 className="font-semibold text-green-800 dark:text-green-200">Musicbrainz Metadata</h4>
         {showFetchedAt && (
           <span className="text-xs text-gray-500 dark:text-gray-400">
-            Fetched: {mappedMetadata.fetched_at ? <TimeAgo date={mappedMetadata.fetched_at} /> : 'Unknown'}
+            Fetched: {metadata.fetched_at ? <TimeAgo date={metadata.fetched_at} /> : 'Unknown'}
           </span>
         )}
       </div>
@@ -167,15 +162,15 @@ export default function MusicbrainzMetadataDisplay({
         </div>
 
         {entityType === 'albums' &&
-          typeof mappedMetadata.images === 'object' &&
-          mappedMetadata.images !== null &&
-          'thumbnails' in mappedMetadata.images &&
-          mappedMetadata.images.thumbnails &&
-          mappedMetadata.images.thumbnails['250'] && (
+          typeof metadata.images === 'object' &&
+          metadata.images !== null &&
+          'thumbnails' in metadata.images &&
+          metadata.images.thumbnails &&
+          metadata.images.thumbnails['250'] && (
             <div className="mb-3">
               <div className="font-medium text-sm mb-2">Album Cover:</div>
               <img
-                src={mappedMetadata.images.thumbnails['250']}
+                src={metadata.images.thumbnails['250']}
                 alt="Album Cover"
                 className="w-40 h-40 object-cover rounded border border-gray-300 dark:border-gray-600"
                 onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
@@ -183,11 +178,11 @@ export default function MusicbrainzMetadataDisplay({
             </div>
         )}
 
-        {mappedMetadata.images && Array.isArray(mappedMetadata.images) && mappedMetadata.images.length > 0 && (
+        {metadata.images && Array.isArray(metadata.images) && metadata.images.length > 0 && (
           <div className="mb-3">
             <div className="font-medium text-sm mb-2">Images:</div>
             <div className="flex gap-2 flex-wrap">
-              {mappedMetadata.images.map((imageUrl, index) => (
+              {metadata.images.map((imageUrl: string, index: number) => (
                 <img
                   key={index}
                   src={imageUrl}
@@ -203,11 +198,11 @@ export default function MusicbrainzMetadataDisplay({
           </div>
         )}
 
-        {mappedMetadata.urls && mappedMetadata.urls.length > 0 && (
+        {metadata.urls && metadata.urls.length > 0 && (
           <div>
             <div className="font-medium text-sm mb-2">External Links:</div>
             <div className="flex gap-2 flex-wrap">
-              {mappedMetadata.urls.slice(0, 5).map((link, index) => (
+              {metadata.urls.slice(0, 5).map((link: any, index: number) => (
                 <a
                   key={index}
                   href={link.url}
