@@ -80,7 +80,7 @@ export default function MusicbrainzSearch({
       if (entityType === 'albums') {
         try {
           const mbid = metadata.id
-          const response = await fetch(`/search/musicbrainz?entity=album&id=${encodeURIComponent(mbid)}&inc=label-info-list+labels`)
+          const response = await fetch(`/search/musicbrainz?entity=album&id=${encodeURIComponent(mbid)}&inc=labels`)
           if (response.ok) {
             const data = await response.json()
             if (data.album?.cover_art_url) {
