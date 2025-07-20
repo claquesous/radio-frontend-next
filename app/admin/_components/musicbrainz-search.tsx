@@ -77,6 +77,21 @@ export default function MusicbrainzSearch({
           fullMetadata = data.artist || metadata
         }
       }
+      if (entityType === 'albums') {
+        try {
+          const mbid = metadata.id
+          const response = await fetch(`/search/musicbrainz?entity=album&id=${encodeURIComponent(mbid)}`)
+          if (response.ok) {
+            const data = await response.json()
+            if (data.album?.cover_art_url) {
+              fullMetadata.images = fullMetadata.images || {}
+              fullMetadata.images.thumbnails = fullMetadata.images.thumbnails || {}
+              fullMetadata.images.thumbnails['250'] = data.album.cover_art_url
+              fullMetadata.cover_art_url = data.album.cover_art_url
+            }
+          }
+        } catch {}
+      }
       setSuccess('Metadata selected!')
       onMetadataSaved?.({ ...fullMetadata, fetched_at: new Date().toISOString() })
     } catch {

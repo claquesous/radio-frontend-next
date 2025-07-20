@@ -26,6 +26,30 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Fetch by ID for album (release-group)
+  if (entity === 'album' && id) {
+    mbUrl = `https://musicbrainz.org/ws/2/release-group/${encodeURIComponent(id)}?fmt=json`
+    try {
+      const resp = await fetch(mbUrl, {
+        headers: {
+          'User-Agent': 'ClaqRadio/1.0'
+        }
+      })
+      const data = await resp.json()
+      // Try to fetch cover art from coverartarchive.org
+      let coverArtUrl = null
+      try {
+        const coverResp = await fetch(`https://coverartarchive.org/release-group/${encodeURIComponent(id)}/front`)
+        if (coverResp.ok) {
+          coverArtUrl = `https://coverartarchive.org/release-group/${encodeURIComponent(id)}/front`
+        }
+      } catch {}
+      return NextResponse.json({ album: { ...data, cover_art_url: coverArtUrl } })
+    } catch (err) {
+      return NextResponse.json({ error: 'Failed to fetch from Musicbrainz' }, { status: 500 })
+    }
+  }
+
   // Search by query
   if (!entity || !query) {
     return NextResponse.json({ error: 'Missing entity or query' }, { status: 400 })

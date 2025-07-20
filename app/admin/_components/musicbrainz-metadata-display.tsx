@@ -18,7 +18,7 @@ interface MusicbrainzMetadata {
   secondary_types?: string[]
   artist_credits?: Array<{ name: string }>
   urls?: Array<{ type: string; url: string }>
-  images?: string[]
+  images?: string[] | { thumbnails?: { [key: string]: string } }
   length?: number
   fetched_at: string
 }
@@ -161,7 +161,24 @@ export default function MusicbrainzMetadataDisplay({
           <span className="font-medium">MBID:</span> {mbid}
         </div>
 
-        {metadata.images && metadata.images.length > 0 && (
+        {entityType === 'albums' &&
+          typeof metadata.images === 'object' &&
+          metadata.images !== null &&
+          'thumbnails' in metadata.images &&
+          metadata.images.thumbnails &&
+          metadata.images.thumbnails['250'] && (
+            <div className="mb-3">
+              <div className="font-medium text-sm mb-2">Album Cover:</div>
+              <img
+                src={metadata.images.thumbnails['250']}
+                alt="Album Cover"
+                className="w-40 h-40 object-cover rounded border border-gray-300 dark:border-gray-600"
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
+            </div>
+        )}
+
+        {metadata.images && Array.isArray(metadata.images) && metadata.images.length > 0 && (
           <div className="mb-3">
             <div className="font-medium text-sm mb-2">Images:</div>
             <div className="flex gap-2 flex-wrap">
