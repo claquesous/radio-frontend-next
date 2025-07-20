@@ -63,24 +63,10 @@ export default function MusicbrainzSearch({
     }
   }
 
-  const saveMetadata = async (mbid: string) => {
-    setSaving(true)
-    setError(null)
-    setSuccess(null)
-
-    try {
-      const endpoint = `/musicbrainz/${entityType}/${entityId}/metadata`
-      const response = await api.post(endpoint, { mbid })
-      const data = response.data as { message: string; metadata: any }
-
-      setSuccess('Metadata saved successfully!')
-      setResults([])
-      onMetadataSaved?.(data.metadata)
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save metadata')
-    } finally {
-      setSaving(false)
-    }
+  const saveMetadata = (metadata: any) => {
+    setSuccess('Metadata selected!')
+    setResults([])
+    onMetadataSaved?.(metadata)
   }
 
   const formatResult = (result: MusicbrainzResult) => {
@@ -164,11 +150,10 @@ export default function MusicbrainzSearch({
                   </div>
                 </div>
                 <button
-                  onClick={() => saveMetadata(result.id)}
-                  disabled={saving}
-                  className="ml-3 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  onClick={() => saveMetadata(result)}
+                  className="ml-3 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
                 >
-                  {saving ? 'Saving...' : 'Confirm'}
+                  Confirm
                 </button>
               </div>
             )
