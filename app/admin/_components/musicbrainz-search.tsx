@@ -70,7 +70,7 @@ export default function MusicbrainzSearch({
       let fullMetadata = metadata
       if (entityType === 'artists') {
         const response = await fetch(
-          `/search/musicbrainz?entity=artist&id=${encodeURIComponent(metadata.id)}&inc=aliases+tags+ratings+annotation+genres+relations`
+          `/search/musicbrainz?entity=artist&id=${encodeURIComponent(metadata.id)}&inc=annotation+genres+artist-rels+url-rels`
         )
         if (response.ok) {
           const data = await response.json()
