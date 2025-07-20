@@ -25,9 +25,12 @@ export default function ArtistForm({ initialData, onSubmit, errors, backHref }: 
       setName(initialData.name)
       setSort(initialData.sort || '')
       setSlug(initialData.slug || '')
-      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
+
+  useEffect(() => {
+    setMusicbrainzMetadata(initialData?.musicbrainz_metadata || null)
+  }, [initialData?.musicbrainz_metadata])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

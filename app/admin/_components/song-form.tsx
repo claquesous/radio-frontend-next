@@ -41,9 +41,12 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
       setLive(initialData.live)
       setRemix(initialData.remix)
       setYear(initialData.year || '')
-      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
+
+  useEffect(() => {
+    setMusicbrainzMetadata(initialData?.musicbrainz_metadata || null)
+  }, [initialData?.musicbrainz_metadata])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

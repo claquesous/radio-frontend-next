@@ -33,9 +33,12 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
       setTracks(initialData.tracks || '')
       setId3Genre(initialData.id3_genre || '')
       setRecordLabel(initialData.record_label || '')
-      setMusicbrainzMetadata(initialData.musicbrainz_metadata || null)
     }
   }, [initialData])
+
+  useEffect(() => {
+    setMusicbrainzMetadata(initialData?.musicbrainz_metadata || null)
+  }, [initialData?.musicbrainz_metadata])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
