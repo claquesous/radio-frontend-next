@@ -96,19 +96,19 @@ export default function MusicbrainzSearch({
   }
 
   return (
-    <div className="musicbrainz-search bg-gray-50 p-4 rounded-lg">
-      <h3 className="text-lg font-semibold mb-3">
+    <div className="musicbrainz-search bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">
         Fetch Musicbrainz Metadata
       </h3>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded mb-3">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-3 py-2 rounded mb-3">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-3 py-2 rounded mb-3">
+        <div className="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-3 py-2 rounded mb-3">
           {success}
         </div>
       )}
@@ -139,14 +139,14 @@ export default function MusicbrainzSearch({
             return (
               <div
                 key={result.id}
-                className="bg-white p-3 rounded border border-gray-200 flex justify-between items-start"
+                className="bg-white dark:bg-gray-800 p-3 rounded border border-gray-200 dark:border-gray-700 flex justify-between items-start"
               >
                 <div className="flex-1">
-                  <div className="font-medium">{formatted.title}</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">{formatted.title}</div>
                   {formatted.subtitle && (
-                    <div className="text-sm text-gray-600">{formatted.subtitle}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">{formatted.subtitle}</div>
                   )}
-                  <div className="text-xs text-gray-400 mt-1">
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-1">
                     Score: {Math.round(formatted.score)}% • MBID: {result.id}
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function MusicbrainzSearch({
       )}
 
       {results.length === 0 && hasSearched && !loading && success === null && (
-        <div className="text-gray-500 text-center py-4">
+        <div className="text-gray-500 dark:text-gray-400 text-center py-4">
           No results found. Try a different search term.
         </div>
       )}
