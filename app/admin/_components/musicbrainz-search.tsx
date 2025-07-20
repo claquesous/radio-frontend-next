@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import api from '../../../lib/api'
 
 interface MusicbrainzResult {
   id: string
@@ -16,14 +15,12 @@ interface MusicbrainzResult {
 
 interface MusicbrainzSearchProps {
   entityType: 'artists' | 'albums' | 'songs'
-  entityId: number
   entityName: string
   onMetadataSaved?: (metadata: any) => void
 }
 
 export default function MusicbrainzSearch({
   entityType,
-  entityId,
   entityName,
   onMetadataSaved
 }: MusicbrainzSearchProps) {
