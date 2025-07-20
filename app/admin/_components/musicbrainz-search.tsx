@@ -26,7 +26,6 @@ export default function MusicbrainzSearch({
   entityName,
   onMetadataSaved
 }: MusicbrainzSearchProps) {
-  const [query, setQuery] = useState(entityName)
   const [results, setResults] = useState<MusicbrainzResult[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -34,7 +33,8 @@ export default function MusicbrainzSearch({
   const [hasSearched, setHasSearched] = useState(false)
 
   const searchMusicbrainz = async () => {
-    if (!query.trim()) return
+    const trimmedName = entityName.trim()
+    if (!trimmedName) return
 
     setLoading(true)
     setError(null)
@@ -43,7 +43,7 @@ export default function MusicbrainzSearch({
 
     try {
       const response = await fetch(
-        `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(query.trim())}&limit=10`
+        `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(trimmedName)}&limit=10`
       )
       const data = await response.json()
       // Musicbrainz returns results in different keys depending on entity
@@ -129,17 +129,9 @@ export default function MusicbrainzSearch({
       )}
 
       <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={`Search for ${entityType.slice(0, -1)}...`}
-          className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onKeyPress={(e) => e.key === 'Enter' && searchMusicbrainz()}
-        />
         <button
           onClick={searchMusicbrainz}
-          disabled={loading || !query.trim()}
+          disabled={loading || !entityName.trim()}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? 'Searching...' : 'Search'}
@@ -199,7 +191,7 @@ export default function MusicbrainzSearch({
 
       {results.length === 0 && hasSearched && !loading && success === null && (
         <div className="text-gray-500 dark:text-gray-400 text-center py-4">
-          No results found. Try a different search term.
+          No results found.
         </div>
       )}
     </div>
