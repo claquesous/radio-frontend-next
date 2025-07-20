@@ -30,7 +30,6 @@ export default function MusicbrainzSearch({
   const [query, setQuery] = useState(entityName)
   const [results, setResults] = useState<MusicbrainzResult[]>([])
   const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
@@ -161,7 +160,7 @@ export default function MusicbrainzSearch({
         </div>
       )}
 
-      {results.length === 0 && query && !loading && (
+      {results.length === 0 && query && !loading && success === null && (
         <div className="text-gray-500 text-center py-4">
           No results found. Try a different search term.
         </div>
