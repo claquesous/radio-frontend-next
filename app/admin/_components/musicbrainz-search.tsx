@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import api from '../../lib/api'
+import api from '../../../lib/api'
 
 interface MusicbrainzResult {
   id: string
@@ -42,13 +42,22 @@ export default function MusicbrainzSearch({
     setResults([])
 
     try {
-      const response = await api.get(`/musicbrainz/search/${entityType}`, {
-        params: { query: query.trim(), limit: 10 }
-      })
-      const data = response.data as { results: MusicbrainzResult[] }
-      setResults(data.results || [])
+      const response = await fetch(
+        `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(query.trim())}&limit=10`
+      )
+      const data = await response.json()
+      // Musicbrainz returns results in different keys depending on entity
+      let results: MusicbrainzResult[] = []
+      if (entityType === 'artists') {
+        results = data.artists || []
+      } else if (entityType === 'albums') {
+        results = data['release-groups'] || []
+      } else if (entityType === 'songs') {
+        results = data.recordings || []
+      }
+      setResults(results)
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Search failed')
+      setError('Search failed')
     } finally {
       setLoading(false)
     }
