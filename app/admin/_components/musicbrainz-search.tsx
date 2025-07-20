@@ -63,10 +63,26 @@ export default function MusicbrainzSearch({
     }
   }
 
-  const saveMetadata = (metadata: any) => {
-    setSuccess('Metadata selected!')
+  const saveMetadata = async (metadata: any) => {
+    setSuccess(null)
     setResults([])
-    onMetadataSaved?.({ ...metadata, fetched_at: new Date().toISOString() })
+    try {
+      let fullMetadata = metadata
+      if (entityType === 'artists') {
+        const response = await fetch(
+          `/search/musicbrainz?entity=artist&id=${encodeURIComponent(metadata.id)}&inc=aliases+tags+ratings+annotation+genres+relations`
+        )
+        if (response.ok) {
+          const data = await response.json()
+          fullMetadata = data.artist || metadata
+        }
+      }
+      setSuccess('Metadata selected!')
+      onMetadataSaved?.({ ...fullMetadata, fetched_at: new Date().toISOString() })
+    } catch {
+      setSuccess('Metadata selected!')
+      onMetadataSaved?.({ ...metadata, fetched_at: new Date().toISOString() })
+    }
   }
 
   const formatResult = (result: MusicbrainzResult) => {
