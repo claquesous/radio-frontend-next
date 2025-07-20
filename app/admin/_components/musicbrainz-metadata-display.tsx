@@ -140,10 +140,10 @@ export default function MusicbrainzMetadataDisplay({
   )
 
   return (
-    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+    <div className="bg-green-50 border border-green-200 rounded-lg p-4 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="font-semibold text-green-800">Musicbrainz Metadata</h4>
-        <span className="text-xs text-gray-500">
+        <h4 className="font-semibold text-green-800 dark:text-green-200">Musicbrainz Metadata</h4>
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           Fetched: {metadata.fetched_at ? <TimeAgo date={metadata.fetched_at} /> : 'Unknown'}
         </span>
       </div>
@@ -153,7 +153,7 @@ export default function MusicbrainzMetadataDisplay({
       {entityType === 'songs' && renderSongMetadata()}
 
       <div className="mt-3 pt-3 border-t border-green-200">
-        <div className="text-xs text-gray-600 mb-2">
+        <div className="text-xs text-gray-600 mb-2 dark:text-gray-300">
           <span className="font-medium">MBID:</span> {mbid}
         </div>
 
@@ -166,7 +166,7 @@ export default function MusicbrainzMetadataDisplay({
                   key={index}
                   src={imageUrl}
                   alt={`${entityType} image ${index + 1}`}
-                  className="w-16 h-16 object-cover rounded border border-gray-300"
+                  className="w-16 h-16 object-cover rounded border border-gray-300 dark:border-gray-600"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     target.style.display = 'none'
@@ -187,7 +187,7 @@ export default function MusicbrainzMetadataDisplay({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200"
+                  className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200 dark:bg-blue-950 dark:text-blue-200 dark:hover:bg-blue-900"
                 >
                   {new URL(link.url).hostname}
                 </a>
