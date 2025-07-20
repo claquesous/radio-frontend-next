@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Album } from '../../_types/types'
 
 import BackButton from '../../../app/_components/back-button'
-import MusicbrainzSearch from '../../_components/musicbrainz-search'
-import MusicbrainzMetadataDisplay from '../../_components/musicbrainz-metadata-display'
+import MusicbrainzSearch from './musicbrainz-search'
+import MusicbrainzMetadataDisplay from './musicbrainz-metadata-display'
 
 interface AlbumFormProps {
   initialData?: Album
