@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   const inc = url.searchParams.get('inc')
   const limit = url.searchParams.get('limit') || '10'
   const artistMbid = url.searchParams.get('artist_mbid')
+  const albumMbid = url.searchParams.get('album_mbid')
 
   let mbUrl = ''
   const incParam = inc ? `&inc=${encodeURIComponent(inc)}` : ''
@@ -68,6 +69,9 @@ export async function GET(req: NextRequest) {
     let songQuery = query
     if (artistMbid) {
       songQuery += ` AND arid:${artistMbid}`
+    }
+    if (albumMbid) {
+      songQuery += ` AND rgid:${albumMbid}`
     }
     mbUrl = `https://musicbrainz.org/ws/2/recording/?query=${encodeURIComponent(songQuery)}&limit=${limit}&fmt=json&inc=annotation`
   } else {

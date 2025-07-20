@@ -19,6 +19,7 @@ interface MusicbrainzSearchProps {
   entityType: 'artists' | 'albums' | 'songs'
   entityName: string
   artistMbid?: string
+  albumMbid?: string
   onMetadataSaved?: (metadata: any) => void
 }
 
@@ -26,6 +27,7 @@ export default function MusicbrainzSearch({
   entityType,
   entityName,
   artistMbid,
+  albumMbid,
   onMetadataSaved
 }: MusicbrainzSearchProps) {
   const [results, setResults] = useState<MusicbrainzResult[]>([])
@@ -51,6 +53,9 @@ export default function MusicbrainzSearch({
       let url = `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(trimmedName)}&limit=10`
       if ((entityType === 'albums' || entityType === 'songs') && artistMbid) {
         url += `&artist_mbid=${encodeURIComponent(artistMbid)}`
+      }
+      if (entityType === 'songs' && albumMbid) {
+        url += `&album_mbid=${encodeURIComponent(albumMbid)}`
       }
       const response = await fetch(url)
       const data = await response.json()
