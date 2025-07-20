@@ -10,7 +10,7 @@ interface MusicbrainzMetadata {
   type?: string
   disambiguation?: string
   country?: string
-  life_span?: {
+  ['life-span']?: {
     begin?: string
     end?: string
   }
@@ -66,10 +66,14 @@ export default function MusicbrainzMetadataDisplay({
             <span className="font-medium">Country:</span> {metadata.country}
           </div>
         )}
-        {metadata.life_span && (
+        {metadata['life-span'] && (
           <div>
-            <span className="font-medium">Active:</span>{' '}
-            {metadata.life_span.begin || '?'} - {metadata.life_span.end || 'present'}
+            <span className="font-medium">
+              {metadata['life-span'].begin ? 'Founded:' : 'Active:'}
+            </span>{' '}
+            {metadata['life-span'].begin || '?'}
+            {metadata['life-span'].end && ` - ${metadata['life-span'].end}`}
+            {!metadata['life-span'].end && metadata['life-span'].begin && ' - present'}
           </div>
         )}
       </div>
