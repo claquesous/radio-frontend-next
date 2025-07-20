@@ -98,7 +98,7 @@ export default function SongShowPage() {
           </div>
         </div>
         {song.musicbrainz_metadata && (
-          <div className="hidden md:block md:w-1/3 mt-6 md:mt-0">
+          <div className="hidden md:block md:w-1/2 mt-6 md:mt-0">
             <MusicbrainzMetadataDisplay
               metadata={song.musicbrainz_metadata}
               entityType="songs"
