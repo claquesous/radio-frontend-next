@@ -40,7 +40,7 @@ export default function AlbumShowPage() {
     <div>
       {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <p>
             <strong>Artist:</strong>
             <Link href={`/admin/artists/${album.artist.id}`} className="hover:underline">{album.artist.name}</Link>
@@ -83,6 +83,14 @@ export default function AlbumShowPage() {
               </ul>
             </div>
           )}
+          {album.musicbrainz_metadata && (
+            <div className="w-full mt-6 md:mt-0 md:hidden">
+              <MusicbrainzMetadataDisplay
+                metadata={album.musicbrainz_metadata}
+                entityType="albums"
+              />
+            </div>
+          )}
           <div className="flex items-center gap-2 mt-4">
             <EditButton href={`/admin/albums/${album.id}/edit`} />
             <DeleteButton
@@ -102,7 +110,7 @@ export default function AlbumShowPage() {
           </div>
         </div>
         {album.musicbrainz_metadata && (
-          <div className="w-full md:w-1/3 mt-6 md:mt-0">
+          <div className="hidden md:block md:w-1/3 mt-6 md:mt-0">
             <MusicbrainzMetadataDisplay
               metadata={album.musicbrainz_metadata}
               entityType="albums"

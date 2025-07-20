@@ -39,7 +39,7 @@ export default function SongShowPage() {
     <div>
       {notice && <p id="notice" style={{ color: 'green' }}>{notice}</p>}
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <p>
             <strong>Album:</strong>
             {song.album ? <Link href={`/admin/albums/${song.album.id}`} className="hover:underline">{song.album.title}</Link> : 'N/A'}
@@ -84,13 +84,21 @@ export default function SongShowPage() {
             <strong>Year:</strong>
             {song.year}
           </p>
+          {song.musicbrainz_metadata && (
+            <div className="w-full mt-6 md:mt-0 md:hidden">
+              <MusicbrainzMetadataDisplay
+                metadata={song.musicbrainz_metadata}
+                entityType="songs"
+              />
+            </div>
+          )}
           <div className="flex items-center gap-2 mt-4">
             <EditButton href={`/admin/songs/${song.id}/edit`} />
             <BackButton href="/admin/songs" />
           </div>
         </div>
         {song.musicbrainz_metadata && (
-          <div className="w-full md:w-1/3 mt-6 md:mt-0">
+          <div className="hidden md:block md:w-1/3 mt-6 md:mt-0">
             <MusicbrainzMetadataDisplay
               metadata={song.musicbrainz_metadata}
               entityType="songs"
