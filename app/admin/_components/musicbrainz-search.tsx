@@ -32,6 +32,7 @@ export default function MusicbrainzSearch({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [hasSearched, setHasSearched] = useState(false)
 
   const searchMusicbrainz = async () => {
     if (!query.trim()) return
@@ -39,6 +40,7 @@ export default function MusicbrainzSearch({
     setLoading(true)
     setError(null)
     setResults([])
+    setHasSearched(true)
 
     try {
       const response = await fetch(
@@ -160,7 +162,7 @@ export default function MusicbrainzSearch({
         </div>
       )}
 
-      {results.length === 0 && query && !loading && success === null && (
+      {results.length === 0 && hasSearched && !loading && success === null && (
         <div className="text-gray-500 text-center py-4">
           No results found. Try a different search term.
         </div>
