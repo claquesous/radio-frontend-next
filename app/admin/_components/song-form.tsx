@@ -83,122 +83,127 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
         </div>
       )}
 
-      <div className="field">
-        <label htmlFor="album_id" style={{ display: 'block' }}>Album</label>
-        <input
-          type="text"
-          id="album_id"
-          value={albumId}
-          onChange={(e) => setAlbumId(e.target.value)}
-        />
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-1">
+          <div className="field">
+            <label htmlFor="album_id" style={{ display: 'block' }}>Album</label>
+            <input
+              type="text"
+              id="album_id"
+              value={albumId}
+              onChange={(e) => setAlbumId(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="artist_id" style={{ display: 'block' }}>Artist</label>
+            <input
+              type="text"
+              id="artist_id"
+              value={artistId}
+              onChange={(e) => setArtistId(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="artist_name_override" style={{ display: 'block' }}>Artist Name Override</label>
+            <input
+              type="text"
+              id="artist_name_override"
+              value={artistNameOverride}
+              onChange={(e) => setArtistNameOverride(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="title" style={{ display: 'block' }}>Title</label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="sort" style={{ display: 'block' }}>Sort</label>
+            <input
+              type="text"
+              id="sort"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="slug" style={{ display: 'block' }}>Slug</label>
+            <input
+              type="text"
+              id="slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="track" style={{ display: 'block' }}>Track</label>
+            <input
+              type="text"
+              id="track"
+              value={track}
+              onChange={(e) => setTrack(Number(e.target.value))}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="time" style={{ display: 'block' }}>Time</label>
+            <input
+              type="text"
+              id="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="live" style={{ display: 'block' }}>Live</label>
+            <input
+              type="checkbox"
+              id="live"
+              checked={live}
+              onChange={(e) => setLive(e.target.checked)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="remix" style={{ display: 'block' }}>Remix</label>
+            <input
+              type="checkbox"
+              id="remix"
+              checked={remix}
+              onChange={(e) => setRemix(e.target.checked)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="year" style={{ display: 'block' }}>Year</label>
+            <input
+              type="text"
+              id="year"
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+            />
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="my-8 md:my-0">
+            <MusicbrainzMetadataDisplay
+              metadata={musicbrainzMetadata}
+              entityType="songs"
+            />
+          </div>
+          <MusicbrainzSearch
+            entityType="songs"
+            entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+            onMetadataSaved={handleMetadataSave}
+          />
+        </div>
       </div>
-      <div className="field">
-        <label htmlFor="artist_id" style={{ display: 'block' }}>Artist</label>
-        <input
-          type="text"
-          id="artist_id"
-          value={artistId}
-          onChange={(e) => setArtistId(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="artist_name_override" style={{ display: 'block' }}>Artist Name Override</label>
-        <input
-          type="text"
-          id="artist_name_override"
-          value={artistNameOverride}
-          onChange={(e) => setArtistNameOverride(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="title" style={{ display: 'block' }}>Title</label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="sort" style={{ display: 'block' }}>Sort</label>
-        <input
-          type="text"
-          id="sort"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="slug" style={{ display: 'block' }}>Slug</label>
-        <input
-          type="text"
-          id="slug"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="track" style={{ display: 'block' }}>Track</label>
-        <input
-          type="text"
-          id="track"
-          value={track}
-          onChange={(e) => setTrack(Number(e.target.value))}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="time" style={{ display: 'block' }}>Time</label>
-        <input
-          type="text"
-          id="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="live" style={{ display: 'block' }}>Live</label>
-        <input
-          type="checkbox"
-          id="live"
-          checked={live}
-          onChange={(e) => setLive(e.target.checked)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="remix" style={{ display: 'block' }}>Remix</label>
-        <input
-          type="checkbox"
-          id="remix"
-          checked={remix}
-          onChange={(e) => setRemix(e.target.checked)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="year" style={{ display: 'block' }}>Year</label>
-        <input
-          type="text"
-          id="year"
-          value={year}
-          onChange={(e) => setYear(Number(e.target.value))}
-        />
-      </div>
-      <div className="actions flex items-center gap-2 mt-4">
+
+      <div className="actions flex items-center gap-2 mt-8">
         <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
-
-      <div className="my-8">
-        <MusicbrainzMetadataDisplay
-          metadata={musicbrainzMetadata}
-          entityType="songs"
-        />
-      </div>
-
-      <MusicbrainzSearch
-        entityType="songs"
-        entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
-        onMetadataSaved={handleMetadataSave}
-      />
     </form>
   )
 }

@@ -71,86 +71,91 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
         </div>
       )}
 
-      <div className="field">
-        <label htmlFor="artist_id" style={{ display: 'block' }}>Artist</label>
-        <input
-          type="text"
-          id="artist_id"
-          value={artistId}
-          onChange={(e) => setArtistId(e.target.value)}
-        />
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-1">
+          <div className="field">
+            <label htmlFor="artist_id" style={{ display: 'block' }}>Artist</label>
+            <input
+              type="text"
+              id="artist_id"
+              value={artistId}
+              onChange={(e) => setArtistId(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="title" style={{ display: 'block' }}>Title</label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="sort" style={{ display: 'block' }}>Sort</label>
+            <input
+              type="text"
+              id="sort"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="slug" style={{ display: 'block' }}>Slug</label>
+            <input
+              type="text"
+              id="slug"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="tracks" style={{ display: 'block' }}>Tracks</label>
+            <input
+              type="text"
+              id="tracks"
+              value={tracks}
+              onChange={(e) => setTracks(Number(e.target.value))}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="id3_genre" style={{ display: 'block' }}>Id3 genre</label>
+            <input
+              type="text"
+              id="id3_genre"
+              value={id3Genre}
+              onChange={(e) => setId3Genre(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="record_label" style={{ display: 'block' }}>Record label</label>
+            <input
+              type="text"
+              id="record_label"
+              value={recordLabel}
+              onChange={(e) => setRecordLabel(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="flex-1">
+          <div className="my-8 md:my-0">
+            <MusicbrainzMetadataDisplay
+              metadata={musicbrainzMetadata}
+              entityType="albums"
+            />
+          </div>
+          <MusicbrainzSearch
+            entityType="albums"
+            entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+            onMetadataSaved={handleMetadataSave}
+          />
+        </div>
       </div>
-      <div className="field">
-        <label htmlFor="title" style={{ display: 'block' }}>Title</label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="sort" style={{ display: 'block' }}>Sort</label>
-        <input
-          type="text"
-          id="sort"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="slug" style={{ display: 'block' }}>Slug</label>
-        <input
-          type="text"
-          id="slug"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="tracks" style={{ display: 'block' }}>Tracks</label>
-        <input
-          type="text"
-          id="tracks"
-          value={tracks}
-          onChange={(e) => setTracks(Number(e.target.value))}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="id3_genre" style={{ display: 'block' }}>Id3 genre</label>
-        <input
-          type="text"
-          id="id3_genre"
-          value={id3Genre}
-          onChange={(e) => setId3Genre(e.target.value)}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="record_label" style={{ display: 'block' }}>Record label</label>
-        <input
-          type="text"
-          id="record_label"
-          value={recordLabel}
-          onChange={(e) => setRecordLabel(e.target.value)}
-        />
-      </div>
-      <div className="actions flex items-center gap-2 mt-4">
+
+      <div className="actions flex items-center gap-2 mt-8">
         <button type="submit" className="px-3 py-1 rounded">Submit</button>
         <BackButton href={backHref} />
       </div>
-
-      <div className="my-8">
-        <MusicbrainzMetadataDisplay
-          metadata={musicbrainzMetadata}
-          entityType="albums"
-        />
-      </div>
-
-      <MusicbrainzSearch
-        entityType="albums"
-        entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
-        onMetadataSaved={handleMetadataSave}
-      />
     </form>
   )
 }
