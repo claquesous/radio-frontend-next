@@ -18,12 +18,14 @@ interface MusicbrainzResult {
 interface MusicbrainzSearchProps {
   entityType: 'artists' | 'albums' | 'songs'
   entityName: string
+  artistMbid?: string
   onMetadataSaved?: (metadata: any) => void
 }
 
 export default function MusicbrainzSearch({
   entityType,
   entityName,
+  artistMbid,
   onMetadataSaved
 }: MusicbrainzSearchProps) {
   const [results, setResults] = useState<MusicbrainzResult[]>([])
@@ -35,6 +37,10 @@ export default function MusicbrainzSearch({
   const searchMusicbrainz = async () => {
     const trimmedName = entityName.trim()
     if (!trimmedName) return
+    if ((entityType === 'albums' || entityType === 'songs') && !artistMbid) {
+      setError('You must set the artist’s MusicBrainz ID before searching for albums or songs.')
+      return
+    }
 
     setLoading(true)
     setError(null)
@@ -42,9 +48,11 @@ export default function MusicbrainzSearch({
     setHasSearched(true)
 
     try {
-      const response = await fetch(
-        `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(trimmedName)}&limit=10`
-      )
+      let url = `/search/musicbrainz?entity=${encodeURIComponent(entityType.slice(0, -1))}&query=${encodeURIComponent(trimmedName)}&limit=10`
+      if ((entityType === 'albums' || entityType === 'songs') && artistMbid) {
+        url += `&artist_mbid=${encodeURIComponent(artistMbid)}`
+      }
+      const response = await fetch(url)
       const data = await response.json()
       // Musicbrainz returns results in different keys depending on entity
       let results: MusicbrainzResult[] = []
@@ -146,12 +154,21 @@ export default function MusicbrainzSearch({
       <div className="flex gap-2 mb-4">
         <button
           onClick={searchMusicbrainz}
-          disabled={loading || !entityName.trim()}
+          disabled={
+            loading ||
+            !entityName.trim() ||
+            ((entityType === 'albums' || entityType === 'songs') && !artistMbid)
+          }
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {loading ? 'Searching...' : 'Search'}
         </button>
       </div>
+      {(entityType === 'albums' || entityType === 'songs') && !artistMbid && (
+        <div className="bg-yellow-100 dark:bg-yellow-900 border border-yellow-400 dark:border-yellow-700 text-yellow-700 dark:text-yellow-300 px-3 py-2 rounded mb-3">
+          You must set the artist’s MusicBrainz ID before searching for albums or songs.
+        </div>
+      )}
 
       {results.length > 0 && (
         <div className="space-y-2">

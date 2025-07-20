@@ -195,6 +195,7 @@ export default function SongForm({ initialData, onSubmit, errors, backHref }: So
           <MusicbrainzSearch
             entityType="songs"
             entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+            artistMbid={initialData?.artist?.musicbrainz_metadata?.id}
             onMetadataSaved={handleMetadataSave}
           />
         </div>

@@ -147,6 +147,7 @@ export default function AlbumForm({ initialData, onSubmit, errors, backHref }: A
           <MusicbrainzSearch
             entityType="albums"
             entityName={`${initialData?.artist?.name || ''} - ${initialData?.title || title}`}
+            artistMbid={initialData?.artist?.musicbrainz_metadata?.id}
             onMetadataSaved={handleMetadataSave}
           />
         </div>

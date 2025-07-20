@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const id = url.searchParams.get('id')
   const inc = url.searchParams.get('inc')
   const limit = url.searchParams.get('limit') || '10'
+  const artistMbid = url.searchParams.get('artist_mbid')
 
   let mbUrl = ''
   const incParam = inc ? `&inc=${encodeURIComponent(inc)}` : ''
@@ -58,9 +59,17 @@ export async function GET(req: NextRequest) {
   if (entity === 'artist') {
     mbUrl = `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json&inc=annotation+artist-rels+release-group-rels+url-rels`
   } else if (entity === 'album') {
-    mbUrl = `https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json&inc=annotation`
+    let albumQuery = query
+    if (artistMbid) {
+      albumQuery += ` AND arid:${artistMbid}`
+    }
+    mbUrl = `https://musicbrainz.org/ws/2/release-group/?query=${encodeURIComponent(albumQuery)}&limit=${limit}&fmt=json&inc=annotation`
   } else if (entity === 'song') {
-    mbUrl = `https://musicbrainz.org/ws/2/recording/?query=${encodeURIComponent(query)}&limit=${limit}&fmt=json&inc=annotation`
+    let songQuery = query
+    if (artistMbid) {
+      songQuery += ` AND arid:${artistMbid}`
+    }
+    mbUrl = `https://musicbrainz.org/ws/2/recording/?query=${encodeURIComponent(songQuery)}&limit=${limit}&fmt=json&inc=annotation`
   } else {
     return NextResponse.json({ error: 'Invalid entity type' }, { status: 400 })
   }
