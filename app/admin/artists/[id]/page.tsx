@@ -78,14 +78,6 @@ export default function ArtistShowPage() {
               </ul>
             </div>
           )}
-          {artist.musicbrainz_metadata && (
-            <div className="w-full md:w-1/3 mt-6 md:mt-0">
-              <MusicbrainzMetadataDisplay
-                metadata={artist.musicbrainz_metadata}
-                entityType="artists"
-              />
-            </div>
-          )}
           <div className="flex items-center gap-2 mt-4">
             <EditButton href={`/admin/artists/${artist.id}/edit`} />
             <DeleteButton
@@ -104,6 +96,14 @@ export default function ArtistShowPage() {
             <BackButton href="/admin/artists" />
           </div>
         </div>
+        {artist.musicbrainz_metadata && (
+          <div className="w-full md:w-1/3 mt-6 md:mt-0">
+            <MusicbrainzMetadataDisplay
+              metadata={artist.musicbrainz_metadata}
+              entityType="artists"
+            />
+          </div>
+        )}
       </div>
     </div>
   )
