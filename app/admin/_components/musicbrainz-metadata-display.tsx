@@ -68,9 +68,7 @@ export default function MusicbrainzMetadataDisplay({
         )}
         {metadata['life-span'] && (
           <div>
-            <span className="font-medium">
-              {metadata['life-span'].begin ? 'Founded:' : 'Active:'}
-            </span>{' '}
+            <span className="font-medium">Active:</span>{' '}
             {metadata['life-span'].begin || '?'}
             {metadata['life-span'].end && ` - ${metadata['life-span'].end}`}
             {!metadata['life-span'].end && metadata['life-span'].begin && ' - present'}
