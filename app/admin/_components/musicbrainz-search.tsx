@@ -66,7 +66,7 @@ export default function MusicbrainzSearch({
   const saveMetadata = (metadata: any) => {
     setSuccess('Metadata selected!')
     setResults([])
-    onMetadataSaved?.(metadata)
+    onMetadataSaved?.({ ...metadata, fetched_at: new Date().toISOString() })
   }
 
   const formatResult = (result: MusicbrainzResult) => {

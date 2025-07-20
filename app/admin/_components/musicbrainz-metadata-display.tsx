@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import TimeAgo from '../../s/[streamId]/_components/timeago'
 
 interface MusicbrainzMetadata {
   id?: string
@@ -143,7 +144,7 @@ export default function MusicbrainzMetadataDisplay({
       <div className="flex items-center justify-between mb-3">
         <h4 className="font-semibold text-green-800">Musicbrainz Metadata</h4>
         <span className="text-xs text-gray-500">
-          Fetched: {formatDate(metadata.fetched_at)}
+          Fetched: {metadata.fetched_at ? <TimeAgo date={metadata.fetched_at} /> : 'Unknown'}
         </span>
       </div>
 
