@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Enforce authentication for all /admin routes
   if (request.nextUrl.pathname.startsWith('/admin')) {
     const jwt = request.cookies.get('jwt')
