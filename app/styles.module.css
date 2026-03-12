@@ -1,154 +1,500 @@
-/*
-header {
-  background-color: rgb(100, 116, 139);
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
+/* ======================================================
+   CLAQ RADIO — Homepage
+   Aesthetic: Underground Broadcast Station
+   Fonts: Bebas Neue (--font-display) · DM Sans (--font-body)
+   ====================================================== */
+
+/* ── Page wrapper ──────────────────────────────────────── */
+.page {
+  background: #0b0b0f;
+  color: #e4e4ec;
+  font-family: var(--font-body, sans-serif);
 }
 
-header a {
-  color: white;
+/* ── Shared layout ─────────────────────────────────────── */
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Section header ────────────────────────────────────── */
+.sectionHead {
+  margin-bottom: 3.5rem;
+}
+
+.label {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #ff7040;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: #e4e4ec;
+  margin: 0;
+}
+
+/* ── CTA buttons ───────────────────────────────────────── */
+.ctas {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.625rem;
+  background: #8ef7fa;
+  color: #0b0b0f;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   text-decoration: none;
-  margin-left: 1rem;
+  border-radius: 2px;
+  border: 2px solid #8ef7fa;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  line-height: 1;
 }
 
-header a:hover {
-  text-decoration: underline;
+.ctaPrimary:hover {
+  background: transparent;
+  color: #8ef7fa;
+  box-shadow: 0 0 24px rgba(142, 247, 250, 0.22);
 }
-*/
-.hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 4rem 2rem;
-  min-height: 400px;
-  display: flex;
+
+/* For StreamPlayButton (a <button> element) */
+.ctaGhost {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.8125rem 1.625rem !important;
+  background: transparent !important;
+  color: #8a8a9e !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  transition: border-color 0.18s, color 0.18s !important;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ctaGhost:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #e4e4ec !important;
+}
+
+/* For <Link> ghost variant (no !important needed) */
+.ctaGhostLink {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.625rem;
+  background: transparent;
+  color: #8a8a9e;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.18s, color 0.18s;
+  line-height: 1;
+}
+
+.ctaGhostLink:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #e4e4ec;
+}
+
+/* ── Hero ──────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 6rem 4rem;
+  overflow: hidden;
+  background: #0b0b0f;
+}
+
+.heroGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(142, 247, 250, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(142, 247, 250, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
 }
 
 .heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #8ef7fa;
+  margin: 0 0 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 1200px;
-  width: 100%;
-  gap: 3rem;
+  gap: 0.75rem;
 }
 
-.heroText {
-  flex: 1;
-  text-align: left;
-}
-
-.heroText h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
-
-.heroText p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
-.heroText .cta-button {
-  background-color: var(--primary-color);
-  color: black;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  text-decoration: none;
-  border-radius: 0.5rem;
-  display: inline-block;
-  transition: background-color 0.3s ease;
-}
-
-.heroText .cta-button:hover {
-  background-color: #6ED3D8;
-}
-
-.heroLogo {
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background: #8ef7fa;
   flex-shrink: 0;
 }
 
-.heroLogo img {
-  border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+.headline {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(4rem, 8vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  margin: 0 0 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-width: 768px) {
-  .heroContent {
-    flex-direction: column;
-    text-align: center;
-  }
+.headline span { display: block; }
+.accentLine    { color: #8ef7fa; }
+.mutedLine     { color: #30303e; }
 
-  .heroText {
-    text-align: center;
-  }
-
-  .heroText h1 {
-    font-size: 2rem;
-  }
-
-  .heroText p {
-    font-size: 1.2rem;
-  }
+.subtitle {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: #6a6a80;
+  max-width: 440px;
+  margin: 0 0 2.5rem;
+  font-weight: 300;
 }
 
-.features {
+/* ── Hero art ──────────────────────────────────────────── */
+.heroArt {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
-  background-color: rgba(214, 219, 220, 0.5);
+  gap: 2.5rem;
 }
 
-.features h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+.vinyl {
+  position: relative;
+  width: min(280px, 50vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    #131318 0deg,   #0e0e13 8deg,
+    #131318 16deg,  #0e0e13 24deg,
+    #131318 32deg,  #0e0e13 40deg,
+    #131318 48deg,  #0e0e13 56deg,
+    #131318 64deg,  #0e0e13 72deg,
+    #131318 80deg,  #0e0e13 88deg,
+    #131318 96deg,  #0e0e13 104deg,
+    #131318 112deg, #0e0e13 120deg,
+    #131318 128deg, #0e0e13 136deg,
+    #131318 144deg, #0e0e13 152deg,
+    #131318 160deg, #0e0e13 168deg,
+    #131318 176deg, #0e0e13 184deg,
+    #131318 192deg, #0e0e13 200deg,
+    #131318 208deg, #0e0e13 216deg,
+    #131318 224deg, #0e0e13 232deg,
+    #131318 240deg, #0e0e13 248deg,
+    #131318 256deg, #0e0e13 264deg,
+    #131318 272deg, #0e0e13 280deg,
+    #131318 288deg, #0e0e13 296deg,
+    #131318 304deg, #0e0e13 312deg,
+    #131318 320deg, #0e0e13 328deg,
+    #131318 336deg, #0e0e13 344deg,
+    #131318 352deg, #0e0e13 360deg
+  );
+  box-shadow:
+    0 0 0 1px rgba(142, 247, 250, 0.07),
+    0 20px 60px rgba(0, 0, 0, 0.75),
+    0 0 50px rgba(142, 247, 250, 0.04);
+  animation: vinylSpin 22s linear infinite;
 }
 
-.features .feature {
+@keyframes vinylSpin {
+  to { transform: rotate(360deg); }
+}
+
+.vinylGrooves {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0  8px rgba(255, 255, 255, 0.018),
+    0 0 0 18px rgba(255, 255, 255, 0.013),
+    0 0 0 28px rgba(255, 255, 255, 0.009),
+    0 0 0 38px rgba(255, 255, 255, 0.006),
+    0 0 0 48px rgba(255, 255, 255, 0.004),
+    0 0 0 58px rgba(255, 255, 255, 0.003);
+}
+
+.vinylLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 31%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #1a1a26;
+  border: 1px solid rgba(142, 247, 250, 0.22);
+  box-shadow: 0 0 18px rgba(142, 247, 250, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: vinylSpin 22s linear infinite reverse;
+}
+
+.vinylLabel span {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(0.52rem, 1.6vw, 0.82rem);
+  letter-spacing: 0.1em;
+  color: #8ef7fa;
+  line-height: 1.15;
+}
+
+/* ── Waveform ───────────────────────────────────────────── */
+.waveform {
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
+  gap: 3px;
+  height: 52px;
 }
 
-.features .feature img {
-  width: 50px;
-  height: 50px;
-  margin-right: 1rem;
+.bar {
+  width: 4px;
+  border-radius: 2px;
+  background: #8ef7fa;
+  animation: waveAnim 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.045s);
+  height: 6px;
 }
 
-.features .feature p {
-  font-size: 1.2rem;
+@keyframes waveAnim {
+  0%, 100% { height: 6px;  opacity: 0.2; }
+  50%       { height: 44px; opacity: 0.7; }
 }
 
-.how-it-works {
-  padding: 2rem;
-  background-color: rgb(214, 219, 220);
+/* ── Features ──────────────────────────────────────────── */
+.features {
+  padding: 6rem 4rem;
+  background: #0f0f15;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.how-it-works h2 {
-  font-size: 2.5rem;
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.featureCard {
+  background: #0f0f15;
+  padding: 2.75rem 2.25rem;
+  transition: background 0.2s;
+}
+
+.featureCard:hover {
+  background: #141420;
+}
+
+.featureIcon {
+  width: 42px;
+  height: 42px;
+  color: #8ef7fa;
   margin-bottom: 1.5rem;
+}
+
+.featureTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.5rem;
+  letter-spacing: 0.03em;
+  color: #e4e4ec;
+  margin: 0 0 0.75rem;
+}
+
+.featureDesc {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: #606070;
+  margin: 0;
+  font-weight: 300;
+}
+
+/* ── How It Works ──────────────────────────────────────── */
+.howItWorks {
+  padding: 6rem 4rem;
+  background: #0b0b0f;
+}
+
+.steps {
+  display: flex;
+  align-items: flex-start;
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stepConnector {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-top: 1.9rem;
+}
+
+.stepNum {
+  font-family: var(--font-display, sans-serif);
+  font-size: 3rem;
+  color: #8ef7fa;
+  opacity: 0.3;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.stepTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+  color: #e4e4ec;
+  margin: 0;
+}
+
+.stepDesc {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #505060;
+  margin: 0;
+  font-weight: 300;
+}
+
+/* ── Testimonials ──────────────────────────────────────── */
+.testimonials {
+  padding: 6rem 4rem;
+  background: #0f0f15;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Final CTA ─────────────────────────────────────────── */
+.finalCta {
+  padding: 9rem 4rem;
+  background: #0b0b0f;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.how-it-works .step {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
+.finalCta::before {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(142, 247, 250, 0.035) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-.how-it-works .step img {
-  width: 50px;
-  height: 50px;
-  margin-right: 1rem;
+.finalCtaInner {
+  position: relative;
+  z-index: 1;
+  max-width: 580px;
+  margin: 0 auto;
 }
 
-.how-it-works .step p {
-  font-size: 1.2rem;
+.finalCtaTitle {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: #e4e4ec;
+  margin: 0 0 1rem;
+}
+
+.finalCtaDesc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #606070;
+  margin: 0 0 2.5rem;
+  font-weight: 300;
+}
+
+.finalCtaInner .ctas {
+  justify-content: center;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 4rem 2rem;
+    min-height: auto;
+    gap: 3rem;
+  }
+
+  .heroArt { order: -1; }
+
+  .features,
+  .howItWorks,
+  .testimonials,
+  .finalCta { padding: 4rem 2rem; }
+
+  .featureGrid { grid-template-columns: 1fr; }
+
+  .steps {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .stepConnector { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero,
+  .features,
+  .howItWorks,
+  .testimonials,
+  .finalCta { padding: 3rem 1.25rem; }
 }
