@@ -5,7 +5,7 @@ import dynamic from "next/dynamic"
 
 const AdminEditButton = dynamic(() => import("../../../../_components/admin-edit-button"))
 
-async function getSong(streamId: number, id: number) {
+async function getSong(streamId: string, id: string) {
   const res = await fetch(process.env.RADIO_BACKEND_PATH + `/streams/${streamId}/songs/${id}`, { next: { revalidate: 14400 } })
 
   if (!res.ok) {
@@ -15,7 +15,7 @@ async function getSong(streamId: number, id: number) {
   return res.json()
 }
 
-export default async function SongPage({ params }: { params: Promise<{ streamId: number, id: number }> }) {
+export default async function SongPage({ params }: { params: Promise<{ streamId: string, id: string }> }) {
   const { streamId, id } = await params
   const song = await getSong(streamId, id)
 
