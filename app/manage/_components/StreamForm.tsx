@@ -12,7 +12,7 @@ interface StreamFormProps {
 
 export default function StreamForm({ initialData, onSubmit, errors }: StreamFormProps) {
   const [name, setName] = useState(initialData?.name || '')
-  const [defaultRating, setDefaultRating] = useState(initialData?.default_rating || 0)
+  const [defaultRating, setDefaultRating] = useState(initialData?.default_rating || 50)
   const [defaultFeatured, setDefaultFeatured] = useState(initialData?.default_featured || false)
   const [mastodonUrl, setMastodonUrl] = useState(initialData?.mastodon_url || '')
   const [mastodonAccessToken, setMastodonAccessToken] = useState(initialData?.mastodon_access_token || '')
@@ -78,6 +78,8 @@ export default function StreamForm({ initialData, onSubmit, errors }: StreamForm
         <input
           type="number"
           id="default_rating"
+          min={1}
+          max={99}
           value={defaultRating}
           onChange={(e) => setDefaultRating(Number(e.target.value))}
         />
