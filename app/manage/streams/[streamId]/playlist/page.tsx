@@ -160,6 +160,9 @@ export default function ChoosersIndexPage() {
   const [stream, setStream] = useState<any>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<TabType>('included')
+  const [showRandomDialog, setShowRandomDialog] = useState(false)
+  const [randomCount, setRandomCount] = useState(50)
+  const [addingRandom, setAddingRandom] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
@@ -341,6 +344,22 @@ export default function ChoosersIndexPage() {
     }
   }
 
+  const handleAddRandom = async () => {
+    if (!streamId) return
+    setAddingRandom(true)
+    try {
+      const response = await api.post<{ added: number; total: number }>(`/streams/${streamId}/random_songs`, { count: randomCount })
+      setShowRandomDialog(false)
+      setNotice(`Added ${response.data.added} random songs to playlist (${response.data.total} total)`)
+      fetchData(activeTab, currentPage)
+    } catch (error) {
+      console.error('Failed to add random songs', error)
+      setNotice('Failed to add random songs.')
+    } finally {
+      setAddingRandom(false)
+    }
+  }
+
   const renderPagination = () => {
     if (activeTab === 'newest' || totalPages <= 1) return null
 
@@ -401,45 +420,71 @@ export default function ChoosersIndexPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      {notice && <p style={{ color: 'green' }}>{notice}</p>}
+      {notice && <p className="text-sm text-[#8EF7FA]/70 mb-2">{notice}</p>}
 
       <h1>Playlist for Stream {streamId}</h1>
 
-      <div className="tabs mb-4">
+      <div className="tabs mb-4 flex flex-wrap items-center gap-1">
+        {(['included', 'available', 'newest'] as const).map((tab) => (
+          <button
+            key={tab}
+            className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+              activeTab === tab
+                ? 'bg-slate-700 text-[#8EF7FA] border border-[#8EF7FA]/30'
+                : 'bg-slate-800/60 text-slate-400 border border-slate-700/60 hover:text-slate-200 hover:bg-slate-700/60'
+            }`}
+            onClick={() => handleTabChange(tab)}
+          >
+            {tab === 'newest' ? 'New' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+
         <button
-          className={`px-4 py-2 mr-2 rounded ${
-            activeTab === 'included'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-          onClick={() => handleTabChange('included')}
+          className="px-4 py-2 ml-auto rounded text-sm font-medium bg-[#8EF7FA]/10 text-[#8EF7FA] border border-[#8EF7FA]/30 hover:bg-[#8EF7FA]/20 transition-colors"
+          onClick={() => setShowRandomDialog(true)}
         >
-          Included
-        </button>
-        <button
-          className={`px-4 py-2 mr-2 rounded ${
-            activeTab === 'available'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-          onClick={() => handleTabChange('available')}
-        >
-          Available
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${
-            activeTab === 'newest'
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-          onClick={() => handleTabChange('newest')}
-        >
-          New
+          Add Random Songs
         </button>
       </div>
 
+      {showRandomDialog && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-slate-800 border border-slate-700/60 rounded-lg p-6 w-80 shadow-2xl">
+            <h2 className="text-lg font-semibold mb-4 text-slate-100">Add Random Songs</h2>
+            <label className="block mb-2 text-sm text-slate-400">
+              How many songs to add?
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={500}
+              value={randomCount}
+              onChange={(e) => setRandomCount(Math.max(1, Math.min(500, parseInt(e.target.value) || 1)))}
+              className="w-full border border-slate-600 bg-slate-700 rounded px-3 py-2 mb-4 text-slate-100 focus:border-[#8EF7FA] focus:outline-none"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 rounded text-sm font-medium bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-colors"
+                onClick={() => setShowRandomDialog(false)}
+                disabled={addingRandom}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded text-sm font-medium bg-[#8EF7FA]/15 text-[#8EF7FA] border border-[#8EF7FA]/30 hover:bg-[#8EF7FA]/25 disabled:opacity-50 transition-colors"
+                onClick={handleAddRandom}
+                disabled={addingRandom}
+              >
+                {addingRandom ? 'Adding...' : 'Add'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {(activeTab === 'included' || activeTab === 'available') && (
-        <div className="mb-4 text-sm text-gray-600">
+        <div className="mb-4 text-sm text-slate-500">
           Showing {activeTab === 'available' ? availableSongs.length : choosers.length} of {totalItems} {activeTab === 'available' ? 'songs' : 'choosers'}
           {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
         </div>
