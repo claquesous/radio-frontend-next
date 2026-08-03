@@ -20,6 +20,28 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Deploying with SST
+
+`sst.config.ts` deploys this app to Lambda/CloudFront and adds the host running
+the backend and streaming as a second CloudFront origin, so `/api/*` and
+`/streams/*` are served same-origin.
+
+No host names or account details are committed. Supply them per deploy target,
+either in the environment or by copying `.env.example` to `.env` /
+`.env.<stage>`, which SST loads automatically and `.gitignore` excludes:
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `RADIO_ORIGIN_DOMAIN` | yes | Host serving `/api` and `/streams`, e.g. `origin.example.com` |
+| `RADIO_SITE_DOMAIN` | no | Public host for the site. Unset means the deploy is reachable only at its generated `*.cloudfront.net` name |
+| `RADIO_SITE_CERT_ARN` | no | ACM certificate ARN, us-east-1. Set when DNS is hosted outside Route53 (see below) |
+| `RADIO_BACKEND_PATH` | no | Server-side API base for the Next.js app. Defaults to `https://$RADIO_ORIGIN_DOMAIN/api` |
+| `AWS_REGION` | no | Deploy region. Falls back to the usual AWS SDK resolution (`AWS_PROFILE`, `~/.aws/config`) |
+
+```bash
+npx sst deploy --stage production
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
