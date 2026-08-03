@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import StreamSearchbox from './_components/stream-searchbox'
+import StreamSearchboxWrapper from './_components/stream-searchbox-wrapper'
 
 const DynamicGlobalPlayer = dynamic(() => import('../../_components/global-player'))
 
@@ -14,7 +14,7 @@ export default async function StreamsLayout({
     <DynamicGlobalPlayer streamId={Number(streamId)} />
     <div className="py-2">
       <div className="mb-4 flex justify-end">
-        <StreamSearchbox streamId={Number(streamId)} />
+        <StreamSearchboxWrapper streamId={Number(streamId)} />
       </div>
       {children}
     </div>
