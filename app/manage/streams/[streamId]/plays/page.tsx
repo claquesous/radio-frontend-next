@@ -36,36 +36,38 @@ export default function PlaysIndexPage() {
 
       <h1>Listing Plays</h1>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Song</th>
-            <th>Artist</th>
-            <th>Stream</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {plays.map((play, index) => (
-            <tr key={play.id}>
-              <td><Link href={`/s/${streamId}/songs/${play.song.id}`}>{play.song.title}</Link></td>
-              <td><Link href={`/s/${streamId}/artists/${play.artist.id}`}>{play.artist.name}</Link></td>
-              <td><Link href={`/manage/streams/${streamId}/plays/${play.id}`}>Show</Link></td>
-              {index === 0 && (
-                <>
-                  <td>
-                    <LoveIt streamId={Number(streamId)} playId={play.id} />
-                  </td>
-                  <td>
-                    <HateIt streamId={Number(streamId)} playId={play.id} />
-                  </td>
-                </>
-              )}
+      <div className="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Song</th>
+              <th>Artist</th>
+              <th>Stream</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {plays.map((play, index) => (
+              <tr key={play.id}>
+                <td><Link href={`/s/${streamId}/songs/${play.song.id}`}>{play.song.title}</Link></td>
+                <td><Link href={`/s/${streamId}/artists/${play.artist.id}`}>{play.artist.name}</Link></td>
+                <td><Link href={`/manage/streams/${streamId}/plays/${play.id}`}>Show</Link></td>
+                {index === 0 && (
+                  <>
+                    <td>
+                      <LoveIt streamId={Number(streamId)} playId={play.id} />
+                    </td>
+                    <td>
+                      <HateIt streamId={Number(streamId)} playId={play.id} />
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

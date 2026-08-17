@@ -18,7 +18,7 @@ export default function SongItem({ song, streamId, linkable = true }: SongItemPr
   )
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-0">
       <div className="flex items-center">
         {songTitleElement}
         <Enqueue

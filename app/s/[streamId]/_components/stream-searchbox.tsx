@@ -64,7 +64,8 @@ export default function StreamSearchbox({ streamId }: StreamSearchboxProps) {
       noOptionsText={'Type to search'}
       getOptionLabel={(option) => option ? `${option.artist.name} - ${option.title}` : ''}
       sx={{
-        width: 300,
+        width: { xs: '100%', sm: 220, md: 300 },
+        maxWidth: 300,
         '& .MuiOutlinedInput-root': {
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(10px)',

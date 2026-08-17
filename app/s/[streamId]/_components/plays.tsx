@@ -17,7 +17,7 @@ export default async function Plays(props: {streamId: number}) {
   const {streamId} = props
   const plays = await getPlays(streamId)
 
-  return <div className="grid grid-cols-3">{ plays.map((play: Play) =>
+  return <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-1 sm:gap-y-0">{ plays.map((play: Play) =>
     <Fragment key={play.id}>
       <Link className="py-7 pl-3"
         href={`/s/${streamId}/artists/${play.artist.id}`}>{play.artist.name}
