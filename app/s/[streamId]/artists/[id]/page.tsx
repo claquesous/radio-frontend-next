@@ -20,15 +20,17 @@ export default async function ArtistPage({ params }: { params: Promise<{ streamI
   const artist = await getArtist(streamId, id)
 
   return (
-    <>
-      <div className="relative flex items-center mb-4 pl-3">
-        <div className="text-2xl font-bold flex-1">{artist.name}</div>
-        <AdminEditButton href={`/admin/artists/${id}/edit`} />
+    <div className="sm:flex sm:items-start sm:gap-4">
+      <div className="sm:flex-1 min-w-0">
+        <div className="relative flex items-center mb-4 pl-3">
+          <div className="text-2xl font-bold flex-1">{artist.name}</div>
+          <AdminEditButton href={`/admin/artists/${id}/edit`} />
+        </div>
+        {artist.songs.map((song: Song) =>
+          <SongItem key={song.id} song={song} streamId={streamId} />
+        )}
       </div>
-      {artist.songs.map((song: Song) =>
-        <SongItem key={song.id} song={song} streamId={streamId} />
-      )}
       <PlayStats playStats={artist} />
-    </>
+    </div>
   )
 }

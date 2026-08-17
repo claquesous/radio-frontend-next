@@ -34,31 +34,33 @@ export default function RequestsIndexPage() {
 
       <h1>Requests for Stream {streamId}</h1>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Song</th>
-            <th>Requested at</th>
-            <th>Played</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {requests.map((request) => (
-            <tr key={request.id}>
-              <td>
-                <Link href={`/s/${streamId}/songs/${request.song.id}`}>{request.song.title}</Link>
-              </td>
-              <td>{request.requested_at}</td>
-              <td>{request.played ? 'Yes' : 'No'}</td>
-              <td>
-                <Link href={`/manage/streams/${streamId}/requests/${request.id}`}>Show</Link>
-              </td>
+      <div className="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Song</th>
+              <th>Requested at</th>
+              <th>Played</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {requests.map((request) => (
+              <tr key={request.id}>
+                <td>
+                  <Link href={`/s/${streamId}/songs/${request.song.id}`}>{request.song.title}</Link>
+                </td>
+                <td>{request.requested_at}</td>
+                <td>{request.played ? 'Yes' : 'No'}</td>
+                <td>
+                  <Link href={`/manage/streams/${streamId}/requests/${request.id}`}>Show</Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

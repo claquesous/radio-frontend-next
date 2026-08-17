@@ -253,7 +253,7 @@ export default function GlobalPlayer(props: { streamId: number }) {
   }
 
   if (error || isLoading || isValidating) {
-    return <div />
+    return <div className="w-80 h-[220px] p-2 m-4 shadow rounded-lg bg-slate-200 dark:bg-slate-700" />
   }
 
   function NowPlayingDisplay() {

@@ -449,7 +449,7 @@ export default function ChoosersIndexPage() {
 
       {showRandomDialog && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700/60 rounded-lg p-6 w-80 shadow-2xl">
+          <div className="bg-slate-800 border border-slate-700/60 rounded-lg p-6 w-[90vw] max-w-80 shadow-2xl">
             <h2 className="text-lg font-semibold mb-4 text-slate-100">Add Random Songs</h2>
             <label className="block mb-2 text-sm text-slate-400">
               How many songs to add?
