@@ -26,7 +26,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+# SST loads .env and .env.<stage> into sst.config.ts, so these hold
+# deploy-target specifics and must never be committed.
+.env
+.env.*
+!.env.example
 
 # vercel
 .vercel
@@ -34,3 +38,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sst
+.sst
+sst-env.d.ts
+
+# open-next
+.open-next

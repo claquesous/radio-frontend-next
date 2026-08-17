@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev --turbopack",
+    "lint": "next lint",
+    "start": "next start"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.6",
@@ -26,6 +26,7 @@
     "react-d3-speedometer": "^3.1.1",
     "react-dom": "^19.2.4",
     "react-timeago": "^8.2.0",
+    "sst": "4.2.7",
     "swr": "^2.3.3"
   },
   "devDependencies": {
