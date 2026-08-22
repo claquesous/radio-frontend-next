@@ -185,6 +185,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       playerRef.current.detachAudioElement()
     }
 
+    if (audioContextRef.current) {
+      audioContextRef.current.close()
+      audioContextRef.current = null
+      analyserRef.current = null
+      dataArrayRef.current = null
+      setVisualizationReady(false)
+    }
+
     setIsPlaying(true)
     setCurrentStreamId(Number(streamId)) // Ensure it's stored as a number
     setCurrentStreamName(streamName)
