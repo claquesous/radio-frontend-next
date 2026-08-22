@@ -41,7 +41,7 @@ export type Stream = {
   default_rating: number
   default_featured: boolean
   mastodon_url: string
-  mastodon_access_token: string
+  mastodon_access_token?: string
   premium: boolean
   genre: string
   description: string
