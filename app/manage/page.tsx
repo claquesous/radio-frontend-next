@@ -1,11 +1,13 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import StreamCard from './_components/StreamCard'
 import { Stream } from '../_types/types'
 import api from '../../lib/api'
+import { useAudio } from '../_contexts/audio-context'
 
 export default function ManagePage() {
+  const { isPlaying, currentStreamId, startStream, stopStream } = useAudio()
   const [lastPlayedStream, setLastPlayedStream] = useState<{ id: string, name: string } | null>(null)
 
   useEffect(() => {
@@ -95,20 +97,37 @@ export default function ManagePage() {
       <div className="mt-10">
         {notice && <p style={{ color: 'green' }}>{notice}</p>}
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Streams</h2>
-        <div id="streams">
-          {streams.map((stream) => (
-            <div key={stream.id} className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
+        <div id="streams" className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-4 gap-y-3">
+          {streams.map((stream) => {
+            const isStreamPlaying = currentStreamId === stream.id && isPlaying
+            return (
+              <Fragment key={stream.id}>
                 <StreamCard stream={stream} />
+                <button
+                  onClick={() => isStreamPlaying ? stopStream() : startStream(stream.id, stream.name)}
+                  title={isStreamPlaying ? 'Stop' : 'Play'}
+                  aria-label={isStreamPlaying ? `Stop ${stream.name}` : `Play ${stream.name}`}
+                  className="whitespace-nowrap"
+                >
+                  {isStreamPlaying ? '⏹ Stop' : '▶ Play'}
+                </button>
                 <Link
                   href={`/manage/streams/${stream.id}`}
-                  className="text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap"
+                  title="Manage this stream"
+                  className="btn whitespace-nowrap"
                 >
-                  Show this stream
+                  ⚙ Manage
                 </Link>
-              </div>
-            </div>
-          ))}
+                <Link
+                  href={`/s/${stream.id}`}
+                  title="Visit public page"
+                  className="btn whitespace-nowrap"
+                >
+                  ↗ Visit
+                </Link>
+              </Fragment>
+            )
+          })}
         </div>
         <div className="mt-6">
           <Link href="/manage/streams/new" className="btn">New stream</Link>
