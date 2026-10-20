@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import ChooserCard from '../../../_components/ChooserCard'
 import Enqueue from '../../../../_components/enqueue'
@@ -29,22 +30,35 @@ import DeleteButton from '../../../../_components/delete-button'
 import Pagination from '../../../../_components/pagination'
 import { Chooser } from '../../../../_types/types'
 import api from '../../../../../lib/api'
+import SongPicker, { PickerMode, SeedSong } from '../_components/SongPicker'
 
-type TabType = 'included' | 'available' | 'newest'
+const PAGE_SIZE = 50
 
-interface SortableChooserItemProps {
+type PlaylistStats = {
+  songs: number
+  artists: number
+  required_songs: number
+  required_artists: number
+  similar_songs_available: boolean
+}
+
+type StreamInfo = {
+  id: number
+  name: string
+  enabled: boolean
+  default_rating: number
+  playlist?: PlaylistStats
+}
+
+interface PlaylistItemProps {
   chooser: Chooser
   streamId: number
   onDelete: (chooserId: number) => void
+  // Absent when similar songs aren't available.
+  onFindSimilar?: (seed: SeedSong) => void
 }
 
-interface SongItemProps {
-  song: any
-  streamId: number
-  onAdd: (songId: number) => void
-}
-
-function RowActions({ chooser, streamId, onDelete }: SortableChooserItemProps) {
+function RowActions({ chooser, streamId, onDelete, onFindSimilar }: PlaylistItemProps) {
   return (
     <div
       className="flex gap-2"
@@ -52,6 +66,14 @@ function RowActions({ chooser, streamId, onDelete }: SortableChooserItemProps) {
       onMouseDown={e => e.stopPropagation()}
       onClick={e => e.stopPropagation()}
     >
+      {onFindSimilar && <button
+        onClick={() => onFindSimilar({ id: chooser.song.id, title: chooser.song.title })}
+        className="w-8 h-8 p-0 rounded bg-transparent font-normal text-lg leading-none text-slate-400 hover:text-[#8EF7FA] hover:bg-slate-700/60"
+        title={`Find songs similar to “${chooser.song.title}”`}
+        aria-label={`Find songs similar to ${chooser.song.title}`}
+      >
+        ≈
+      </button>}
       <Enqueue streamId={streamId} songId={chooser.song.id} />
       <DeleteButton
         onClick={e => {
@@ -67,31 +89,8 @@ function RowActions({ chooser, streamId, onDelete }: SortableChooserItemProps) {
   )
 }
 
-function SongRowActions({ song, streamId, onAdd, onDelete }: SongItemProps & { onDelete?: (chooserId: number) => void }) {
-  return (
-    <div className="flex gap-2">
-      {song.included && song.chooser_id && onDelete ? (
-        <DeleteButton
-          onClick={() => onDelete(song.chooser_id)}
-          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded"
-          title="Remove from playlist"
-        />
-      ) : (
-        <button
-          onClick={() => onAdd(song.id)}
-          className="p-2 bg-green-500 hover:bg-green-600 text-white rounded"
-          title="Add to playlist"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16" fill="#ffffff">
-            <path d="M8 0C8.55228 0 9 0.447715 9 1V7H15C15.5523 7 16 7.44772 16 8C16 8.55228 15.5523 9 15 9H9V15C9 15.5523 8.55228 16 8 16C7.44772 16 7 15.5523 7 15V9H1C0.447715 9 0 8.55228 0 8C0 7.44772 0.447715 7 1 7H7V1C7 0.447715 7.44772 0 8 0Z"/>
-          </svg>
-        </button>
-      )}
-    </div>
-  )
-}
-
-function SortableChooserItem({ chooser, streamId, onDelete }: SortableChooserItemProps) {
+function SortablePlaylistItem(props: PlaylistItemProps) {
+  const { chooser, streamId } = props
   const {
     attributes,
     listeners,
@@ -114,7 +113,7 @@ function SortableChooserItem({ chooser, streamId, onDelete }: SortableChooserIte
       {...attributes}
       className="relative"
     >
-      <div className="flex flex-row items-center w-full pl-0 sm:pl-10 gap-2 sm:gap-4">
+      <div className="flex flex-row items-center w-full gap-2 sm:gap-4">
         <div
           {...listeners}
           className="flex items-center justify-center w-8 h-10 cursor-grab z-10"
@@ -132,40 +131,70 @@ function SortableChooserItem({ chooser, streamId, onDelete }: SortableChooserIte
         </div>
         <ChooserCard chooser={chooser} streamId={streamId} />
         <span className="text-gray-600">{chooser.rating.toFixed(2)}</span>
-        <RowActions chooser={chooser} streamId={streamId} onDelete={onDelete} />
+        <RowActions {...props} />
       </div>
     </div>
   )
 }
 
-function SongItem({ song, streamId, onAdd, onDelete }: SongItemProps & { onDelete?: (chooserId: number) => void }) {
+function Meter({ label, value, required }: { label: string; value: number; required: number }) {
+  const done = value >= required
   return (
-    <div className="relative border-b py-2">
-      <div className="flex flex-row items-center w-full gap-2 sm:gap-4">
-        <div className="flex-1">
-          <h3 className="font-medium">{song.title}</h3>
-          <p className="text-sm text-gray-600">{song.artist?.name}</p>
-        </div>
-        <SongRowActions song={song} streamId={streamId} onAdd={onAdd} onDelete={onDelete} />
+    <div className="flex-1 min-w-[10rem]">
+      <div className="flex justify-between text-xs mb-1">
+        <span className="text-slate-400">{label}</span>
+        <span className={done ? 'text-[#8EF7FA]' : 'text-slate-300'}>
+          {value} / {required}{done ? ' ✓' : ''}
+        </span>
+      </div>
+      <div className="h-1.5 rounded bg-slate-700 overflow-hidden">
+        <div
+          className={`h-full rounded transition-all ${done ? 'bg-[#8EF7FA]' : 'bg-[#8EF7FA]/50'}`}
+          style={{ width: `${Math.min(100, (value / required) * 100)}%` }}
+        />
       </div>
     </div>
   )
 }
 
-export default function ChoosersIndexPage() {
+// How far the playlist is from the variety the stream needs before it can go live.
+function GoLiveProgress({ stream }: { stream: StreamInfo }) {
+  const stats = stream.playlist
+  if (!stats) return null
+  const ready = stats.songs >= stats.required_songs && stats.artists >= stats.required_artists
+
+  return (
+    <div className="mb-4 p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
+      <div className="flex flex-wrap gap-4">
+        <Meter label="Songs" value={stats.songs} required={stats.required_songs} />
+        <Meter label="Artists" value={stats.artists} required={stats.required_artists} />
+      </div>
+      <p className="mt-2 text-xs text-slate-400">
+        {stream.enabled
+          ? 'This stream is live.'
+          : ready
+            ? <>Ready to go live — <Link href={`/manage/streams/${stream.id}/edit`} className="text-[#8EF7FA] hover:underline">enable the stream</Link>.</>
+            : `A stream needs at least ${stats.required_songs} songs by ${stats.required_artists} different artists before it can go live.`}
+      </p>
+    </div>
+  )
+}
+
+export default function PlaylistPage() {
   const { streamId } = useParams()
   const [choosers, setChoosers] = useState<Chooser[]>([])
-  const [availableSongs, setAvailableSongs] = useState<any[]>([])
-  const [newSongs, setNewSongs] = useState<any[]>([])
-  const [stream, setStream] = useState<any>(null)
+  const [stream, setStream] = useState<StreamInfo | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<TabType>('included')
-  const [showRandomDialog, setShowRandomDialog] = useState(false)
-  const [randomCount, setRandomCount] = useState(50)
-  const [addingRandom, setAddingRandom] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
+  const [pickerMode, setPickerMode] = useState<PickerMode>('search')
+  const [similarSeeds, setSimilarSeeds] = useState<SeedSong[] | null>(null)
+  // The picker is always beside the list on large screens; on small ones it takes
+  // over the whole screen, opened on demand.
+  const [pickerOpen, setPickerOpen] = useState(false)
+
+  const similarAvailable = stream?.playlist?.similar_songs_available ?? false
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -239,262 +268,202 @@ export default function ChoosersIndexPage() {
       await api.patch(`/streams/${streamId}/choosers/${draggedChooser.id}`, {
         chooser: { rating: newRating }
       })
-      setNotice(`Playlist order updated successfully!`)
       // Refresh the data to show updated ratings
-      fetchData(activeTab, currentPage)
+      fetchPlaylist(currentPage)
     } catch (error) {
-      console.error(`Failed to update chooser ${draggedChooser.id}`, error)
+      console.error(`Failed to reorder song ${draggedChooser.song.id}`, error)
       setNotice(`Failed to update playlist order.`)
       // Revert the change on error
-      fetchData(activeTab, currentPage)
+      fetchPlaylist(currentPage)
     }
   }
 
-  const fetchData = useCallback(
-    async (tab: TabType, page: number = 1) => {
+  const fetchStream = useCallback(async () => {
+    if (!streamId) return
+    try {
+      const response = await api.get<StreamInfo>(`/streams/${streamId}`)
+      setStream(response.data)
+    } catch (error) {
+      console.error(`Failed to fetch stream ${streamId}`, error)
+    }
+  }, [streamId])
+
+  const fetchPlaylist = useCallback(
+    async (page: number = 1) => {
       if (!streamId) return
 
       try {
-        // Always fetch stream info for default_rating
-        const streamResp = await api.get<any>(`/streams/${streamId}`)
-        setStream(streamResp.data)
-
-        if (tab === 'included') {
-          const url = `/streams/${streamId}/choosers?limit=50&offset=${(page - 1) * 50}`
-          const response = await api.get<any>(url)
-          if (response.data.choosers) {
-            setChoosers(response.data.choosers)
-            setTotalPages(response.data.total_pages || 1)
-            setTotalItems(response.data.total || 0)
-          } else {
-            setChoosers(response.data)
-            setTotalPages(1)
-            setTotalItems(response.data.length)
-          }
-        } else if (tab === 'available') {
-          const url = `/streams/${streamId}/available_songs?limit=50&offset=${(page - 1) * 50}`
-          const response = await api.get<any>(url)
-          // If paginated, expect { songs: [...], pagination: {...} }
-          setAvailableSongs(response.data.songs)
-          setTotalPages(Math.ceil(response.data.total / 50))
-          setTotalItems(response.data.total)
-        } else if (tab === 'newest') {
-          const resp = await api.get<any>(`/streams/${streamId}/new_songs`)
-          setNewSongs(resp.data)
-          setTotalPages(1)
-          setTotalItems(resp.data.length)
-        }
-
-        setNotice(`Playlist for Stream ${streamId} loaded successfully!`)
+        const url = `/streams/${streamId}/choosers?limit=${PAGE_SIZE}&offset=${(page - 1) * PAGE_SIZE}`
+        const response = await api.get<any>(url)
+        setChoosers(response.data.choosers)
+        setTotalPages(response.data.total_pages || 1)
+        setTotalItems(response.data.total || 0)
       } catch (error) {
         console.error(`Failed to fetch playlist for stream ${streamId}`, error)
-        setNotice(`Failed to load playlist for stream ${streamId}.`)
+        setNotice('Failed to load the playlist.')
       }
     },
     [streamId]
   )
 
-  useEffect(() => {
-    setCurrentPage(1)
-    fetchData(activeTab, 1)
-  }, [streamId, activeTab, fetchData])
+  const refresh = useCallback(() => {
+    fetchStream()
+    fetchPlaylist(currentPage)
+  }, [fetchStream, fetchPlaylist, currentPage])
 
   useEffect(() => {
-    if (activeTab !== 'newest') {
-      fetchData(activeTab, currentPage)
-    }
-  }, [currentPage, activeTab, fetchData])
+    fetchStream()
+  }, [fetchStream])
 
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab)
-    setCurrentPage(1)
-  }
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
+  useEffect(() => {
+    fetchPlaylist(currentPage)
+  }, [currentPage, fetchPlaylist])
 
   const handleDelete = async (chooserId: number) => {
     if (!streamId) return
 
     try {
       await api.delete(`/streams/${streamId}/choosers/${chooserId}`)
-      // Refresh the current tab data
-      fetchData(activeTab, currentPage)
-      setNotice(`Removed from playlist successfully!`)
-    } catch (error) {
-      console.error(`Failed to remove playlist chooser ${chooserId}`, error)
-      setNotice(`Failed to remove playlist chooser.`)
+      refresh()
+      setNotice(null)
+    } catch (error: any) {
+      console.error(`Failed to remove song ${chooserId} from playlist`, error)
+      setNotice(error.response?.data?.errors?.[0] ?? 'Failed to remove the song.')
     }
   }
 
-  const handleAdd = async (songId: number) => {
-    if (!streamId || !stream) return
-
+  // Adding songs moves on to songs like them, so a playlist grows outwards from
+  // the songs you know you want.
+  const handleAdd = async (songs: SeedSong[]) => {
     try {
-      const defaultRating = stream.default_rating ?? 50
-      await api.post(`/streams/${streamId}/choosers`, {
-        chooser: { song_id: songId, rating: defaultRating }
-      })
-      fetchData(activeTab, currentPage)
-      setNotice(`Added to playlist successfully!`)
+      const response = await api.post<{ added: number[]; total: number }>(
+        `/streams/${streamId}/choosers/batch`, { song_ids: songs.map(s => s.id) })
+      const added = response.data.added.length
+      setNotice(`Added ${added} song${added === 1 ? '' : 's'}.`)
     } catch (error) {
-      console.error(`Failed to add song ${songId} to playlist`, error)
-      setNotice(`Failed to add song to playlist.`)
-    }
-  }
-
-  const handleAddRandom = async () => {
-    if (!streamId) return
-    setAddingRandom(true)
-    try {
-      const response = await api.post<{ added: number; total: number }>(`/streams/${streamId}/random_songs`, { count: randomCount })
-      setShowRandomDialog(false)
-      setNotice(`Added ${response.data.added} random songs to playlist (${response.data.total} total)`)
-      fetchData(activeTab, currentPage)
-    } catch (error) {
-      console.error('Failed to add random songs', error)
-      setNotice('Failed to add random songs.')
+      console.error('Failed to add songs to playlist', error)
+      setNotice('Failed to add songs.')
+      return false
     } finally {
-      setAddingRandom(false)
+      refresh()
     }
+    if (similarAvailable) {
+      setSimilarSeeds(songs)
+      setPickerMode('similar')
+      return true
+    }
+    return false
   }
 
-  const renderPagination = () => {
-    if (activeTab === 'newest' || totalPages <= 1) return null
-
-    return (
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    )
+  const findSimilar = (seed: SeedSong) => {
+    setSimilarSeeds([seed])
+    setPickerMode('similar')
+    setPickerOpen(true)
   }
 
-  const renderContent = () => {
-    if (activeTab === 'included') {
-      return (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={choosers.map(chooser => chooser.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {choosers.map((chooser) => (
-              <SortableChooserItem
-                key={chooser.id}
-                chooser={chooser}
-                streamId={Number(streamId)}
-                onDelete={handleDelete}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
-      )
-    } else if (activeTab === 'available') {
-      return availableSongs.map((song) => (
-        <SongItem
-          key={song.id}
-          song={song}
-          streamId={Number(streamId)}
-          onAdd={handleAdd}
-        />
-      ))
-    } else {
-      // newest tab
-      return newSongs.map((song) => (
-        <SongItem
-          key={song.id}
-          song={song}
-          streamId={Number(streamId)}
-          onAdd={handleAdd}
-          onDelete={handleDelete}
-        />
-      ))
-    }
+  // On small screens the picker covers the whole page, top bar included, so get
+  // it out of the way of the login modal when a request comes back 401.
+  useEffect(() => {
+    const close = () => setPickerOpen(false)
+    window.addEventListener('open-login-modal', close)
+    return () => window.removeEventListener('open-login-modal', close)
+  }, [])
+
+  const openPicker = (mode: PickerMode) => {
+    setPickerMode(mode)
+    setPickerOpen(true)
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      {notice && <p className="text-sm text-[#8EF7FA]/70 mb-2">{notice}</p>}
+    <div className="max-w-4xl lg:max-w-6xl mx-auto p-4 pb-24 lg:pb-4 lg:grid lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-6 lg:items-start">
+      <div>
+        <h1>{stream ? stream.name : 'Playlist'}</h1>
 
-      <h1>Playlist for Stream {streamId}</h1>
+        {stream && <GoLiveProgress stream={stream} />}
 
-      <div className="tabs mb-4 flex flex-wrap items-center gap-1">
-        {(['included', 'available', 'newest'] as const).map((tab) => (
-          <button
-            key={tab}
-            className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-              activeTab === tab
-                ? 'bg-slate-700 text-[#8EF7FA] border border-[#8EF7FA]/30'
-                : 'bg-slate-800/60 text-slate-400 border border-slate-700/60 hover:text-slate-200 hover:bg-slate-700/60'
-            }`}
-            onClick={() => handleTabChange(tab)}
-          >
-            {tab === 'newest' ? 'New' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
+        {notice && <p className="text-sm text-[#8EF7FA]/70 mb-2">{notice}</p>}
 
-        <button
-          className="px-4 py-2 ml-auto rounded text-sm font-medium bg-[#8EF7FA]/10 text-[#8EF7FA] border border-[#8EF7FA]/30 hover:bg-[#8EF7FA]/20 transition-colors"
-          onClick={() => setShowRandomDialog(true)}
-        >
-          Add Random Songs
-        </button>
-      </div>
-
-      {showRandomDialog && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-slate-800 border border-slate-700/60 rounded-lg p-6 w-[90vw] max-w-80 shadow-2xl">
-            <h2 className="text-lg font-semibold mb-4 text-slate-100">Add Random Songs</h2>
-            <label className="block mb-2 text-sm text-slate-400">
-              How many songs to add?
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={500}
-              value={randomCount}
-              onChange={(e) => setRandomCount(Math.max(1, Math.min(500, parseInt(e.target.value) || 1)))}
-              className="w-full border border-slate-600 bg-slate-700 rounded px-3 py-2 mb-4 text-slate-100 focus:border-[#8EF7FA] focus:outline-none"
-              autoFocus
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                className="px-4 py-2 rounded text-sm font-medium bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600 transition-colors"
-                onClick={() => setShowRandomDialog(false)}
-                disabled={addingRandom}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded text-sm font-medium bg-[#8EF7FA]/15 text-[#8EF7FA] border border-[#8EF7FA]/30 hover:bg-[#8EF7FA]/25 disabled:opacity-50 transition-colors"
-                onClick={handleAddRandom}
-                disabled={addingRandom}
-              >
-                {addingRandom ? 'Adding...' : 'Add'}
-              </button>
-            </div>
+        {totalItems === 0 ? (
+          <div className="p-6 rounded-lg border border-dashed border-slate-700 text-slate-400 text-sm">
+            <p className="mb-3">No songs yet. Start with one you love and grow the playlist from there:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li>
+                <button className="p-0 bg-transparent hover:bg-transparent font-normal text-[#8EF7FA] hover:underline" onClick={() => openPicker('search')}>Search</button>
+                {' '}for a song, artist or album and add it.
+              </li>
+              {similarAvailable && (
+                <li>The picker then suggests similar songs — tick the ones you like and keep going.</li>
+              )}
+              <li>
+                Or deal yourself a hand of{' '}
+                <button className="p-0 bg-transparent hover:bg-transparent font-normal text-[#8EF7FA] hover:underline" onClick={() => openPicker('random')}>random songs</button>
+                {' '}and keep the good ones.
+              </li>
+            </ol>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            <div className="mb-2 text-sm text-slate-500">
+              {totalItems} song{totalItems === 1 ? '' : 's'}, highest rated first — drag to reorder
+              {totalPages > 1 && ` (page ${currentPage} of ${totalPages})`}
+            </div>
 
-      {(activeTab === 'included' || activeTab === 'available') && (
-        <div className="mb-4 text-sm text-slate-500">
-          Showing {activeTab === 'available' ? availableSongs.length : choosers.length} of {totalItems} {activeTab === 'available' ? 'songs' : 'choosers'}
-          {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
-        </div>
-      )}
+            <div id="playlist">
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={choosers.map(chooser => chooser.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {choosers.map((chooser) => (
+                    <SortablePlaylistItem
+                      key={chooser.id}
+                      chooser={chooser}
+                      streamId={Number(streamId)}
+                      onDelete={handleDelete}
+                      onFindSimilar={similarAvailable ? findSimilar : undefined}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
 
-      <div id="choosers">
-        {renderContent()}
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
+          </>
+        )}
       </div>
 
-      {renderPagination()}
+      <aside className={`${pickerOpen ? '' : 'hidden'} lg:block lg:sticky lg:top-20`}>
+        <SongPicker
+          streamId={Number(streamId)}
+          mode={pickerMode}
+          onModeChange={setPickerMode}
+          seeds={similarSeeds}
+          onSeedsChange={setSimilarSeeds}
+          playlistSize={totalItems}
+          similarAvailable={similarAvailable}
+          onAdd={handleAdd}
+          onClose={() => setPickerOpen(false)}
+        />
+      </aside>
+
+      {!pickerOpen && (
+        <button
+          onClick={() => setPickerOpen(true)}
+          className="lg:hidden fixed bottom-4 right-4 z-40 px-5 py-3 rounded-full text-sm font-medium bg-slate-800 text-[#8EF7FA] border border-[#8EF7FA]/40 shadow-2xl"
+        >
+          + Add songs
+        </button>
+      )}
     </div>
   )
 }
