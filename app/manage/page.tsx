@@ -105,9 +105,10 @@ export default function ManagePage() {
                 <StreamCard stream={stream} />
                 <button
                   onClick={() => isStreamPlaying ? stopStream() : startStream(stream.id, stream.name)}
-                  title={isStreamPlaying ? 'Stop' : 'Play'}
+                  disabled={!stream.enabled && !isStreamPlaying}
+                  title={isStreamPlaying ? 'Stop' : stream.enabled ? 'Play' : 'Stream is not enabled'}
                   aria-label={isStreamPlaying ? `Stop ${stream.name}` : `Play ${stream.name}`}
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isStreamPlaying ? '⏹ Stop' : '▶ Play'}
                 </button>
