@@ -64,6 +64,16 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined)
 
 const VOLUME_INCREMENTS = 10
 
+// The player retries failed requests itself (e.g. Icecast 404ing the mount
+// while Liquidsoap restarts), but gives up after retryTimeout, and when
+// Icecast closes the connection cleanly because the source went away it just
+// stops. Both end in onStop, from which we reconnect on this schedule, long
+// enough to outlast the stream manager's restart backoff (up to 30s) plus
+// Liquidsoap's startup.
+const RETRY_TIMEOUT_SECONDS = 60
+const RECONNECT_DELAYS_MS = [2000, 5000, 10000, 20000, 30000]
+const MAX_RECONNECT_ATTEMPTS = 10 // ~4 minutes
+
 export function AudioProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolumeState] = useState(VOLUME_INCREMENTS)
@@ -77,9 +87,22 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const dataArrayRef = useRef<Uint8Array | null>(null)
+  // True from startStream until stopStream: a stop while this is set wasn't
+  // asked for, so reconnect.
+  const wantPlayingRef = useRef(false)
+  const reconnectAttemptRef = useRef(0)
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const clearReconnect = () => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current)
+      reconnectTimerRef.current = null
+    }
+  }
 
   useEffect(() => {
     return () => {
+      clearReconnect()
       if (playerRef.current) {
         playerRef.current.stop()
         playerRef.current.detachAudioElement()
@@ -179,10 +202,30 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const scheduleReconnect = (player: IcecastMetadataPlayer) => {
+    const attempt = reconnectAttemptRef.current++
+    if (attempt >= MAX_RECONNECT_ATTEMPTS) {
+      console.warn('Giving up reconnecting to the stream')
+      stopStream()
+      setNowPlaying('Stream unavailable')
+      return
+    }
+    setNowPlaying('Reconnecting…')
+    setCanVote(false)
+    const delay = RECONNECT_DELAYS_MS[Math.min(attempt, RECONNECT_DELAYS_MS.length - 1)]
+    reconnectTimerRef.current = setTimeout(() => {
+      reconnectTimerRef.current = null
+      if (playerRef.current !== player || !wantPlayingRef.current) return
+      player.play().catch((error) => console.error('Reconnect failed:', error))
+    }, delay)
+  }
+
   const startStream = async (streamId: number, streamName: string) => {
     if (playerRef.current) {
       playerRef.current.stop()
       playerRef.current.detachAudioElement()
+      // Clear it before the old player's onStop fires, or it would reconnect.
+      playerRef.current = null
     }
 
     if (audioContextRef.current) {
@@ -193,6 +236,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setVisualizationReady(false)
     }
 
+    clearReconnect()
+    reconnectAttemptRef.current = 0
+    wantPlayingRef.current = true
     setIsPlaying(true)
     setCurrentStreamId(Number(streamId)) // Ensure it's stored as a number
     setCurrentStreamName(streamName)
@@ -203,9 +249,24 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       // Dynamically import the player to avoid SSR issues
       const { default: IcecastMetadataPlayer } = await import('icecast-metadata-player')
 
-      let player = new IcecastMetadataPlayer(`/streams/stream-${streamId}`, {
+      const player = new IcecastMetadataPlayer(`/streams/stream-${streamId}`, {
         onMetadata,
         metadataTypes: ["icy"],
+        retryTimeout: RETRY_TIMEOUT_SECONDS,
+        onRetry: () => {
+          setNowPlaying('Reconnecting…')
+          setCanVote(false)
+        },
+        onStreamStart: () => {
+          reconnectAttemptRef.current = 0
+          setupVisualization(player.audioElement)
+        },
+        onStop: () => {
+          // Still the current player and nobody pressed stop: the connection
+          // dropped (or the player's own retries timed out), so try again.
+          if (playerRef.current !== player || !wantPlayingRef.current) return
+          scheduleReconnect(player)
+        },
       }) as IcecastMetadataPlayer
 
       if ("mediaSession" in navigator) {
@@ -214,18 +275,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         navigator.mediaSession.setActionHandler('play', () => startStream(streamId, streamName))
       }
 
-      await player.play()
+      // play() resolves when audio starts, and never does if the stream can't
+      // be reached, so don't wait on it for anything else.
       playerRef.current = player
-
-      // Set initial volume
       player.audioElement.volume = volume / VOLUME_INCREMENTS
-
-      // Set up audio visualization
-      setTimeout(() => {
-        setupVisualization(player.audioElement)
-      }, 100)
+      await player.play()
     } catch (error) {
       console.error('Failed to load audio player:', error)
+      wantPlayingRef.current = false
       setIsPlaying(false)
       setCurrentStreamId(null)
       setCurrentStreamName(null)
@@ -233,6 +290,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }
 
   const stopStream = () => {
+    wantPlayingRef.current = false
+    clearReconnect()
     setIsPlaying(false)
     setCanVote(false)
     setCurrentStreamId(null)
